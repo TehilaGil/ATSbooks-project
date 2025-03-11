@@ -197,9 +197,9 @@ const Users = () => {
         }
     };
     const confirmUser = async (id) => {
- 
+
         try {
-            const res = await axios.put('http://localhost:7000/api/user/confirm', {id})
+            const res = await axios.put('http://localhost:7000/api/user/confirm', { id })
             if (res.status === 200) {
                 console.log("res.data", res.data);
             }
@@ -224,21 +224,24 @@ const Users = () => {
 
             <div className="flex flex-wrap p-2 align-items-center gap-3">
                 <UserProfile name={item.name}></UserProfile>
+                <span className="font-semibold">{item.email}</span>
                 <div className="flex-1 flex flex-column gap-2">
-                    <span className="font-bold">{item.name}</span>
+                    {/* <span className="font-bold">{item.name}</span> */}
                     <div className="flex align-items-center gap-2">
                         <div className="flex align-items-center gap-2">
                             {/* הצגת תאריך יצירת המשתמש */}
+                           <br/>
                             <i className="pi pi-calendar text-sm"></i>
                             <span>{new Date(item.createdAt).toLocaleDateString()}</span>
                         </div>
                     </div>
-                    <FaTrashAlt
-                        size={20}
-                        className="delete-icon" // הכיתה שהוספנו לעיצוב 
-                        onClick={() => deleteUser(item._id)} // הפונקציה למחיקה
-                    />
+
                 </div>
+                <FaTrashAlt
+                    size={20}
+                    className="delete-icon" // הכיתה שהוספנו לעיצוב 
+                    onClick={() => deleteUser(item._id)} // הפונקציה למחיקה
+                />
             </div>
         );
     };
@@ -259,10 +262,10 @@ const Users = () => {
                 itemTemplate={itemTemplate}
 
                 //*** הוספת ניהול בחירה כדי לאפשר העברת יותר מפריט אחד
-                selection={sourceSelection} 
-                onSelectionChange={(e) => { 
-                    setSourceSelection(e.sourceSelection); 
-                    setTargetSelection(e.targetSelection); 
+                selection={sourceSelection}
+                onSelectionChange={(e) => {
+                    setSourceSelection(e.sourceSelection);
+                    setTargetSelection(e.targetSelection);
                 }} //***
                 filter
                 filterBy="name"

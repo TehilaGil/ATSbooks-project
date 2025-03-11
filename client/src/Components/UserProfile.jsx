@@ -18,7 +18,7 @@ import React from 'react';
          <div className="flex align-items-center">
              {/* שימוש ב-Avatar להצגת האות הראשונה עם צבע רקע אחיד לכל שם */}
              <Avatar label={firstLetter} size="large" className="mr-2" style={{ backgroundColor, color: 'white', borderRadius: '50%' }} />
-             <span className="font-semibold">{name}</span>
+             <span className="font-bold">{name}</span>
          </div>
      );
  };
