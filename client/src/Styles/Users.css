@@ -1,0 +1,31 @@
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.user-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.user-item .user-info {
+    flex-grow: 1;
+}
+
+.user-item .delete-icon {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.user-item .delete-icon:hover {
+    color: red;
+}
+
+.user-item .delete-icon svg {
+    width: 20px;
+    height: 20px;
+}

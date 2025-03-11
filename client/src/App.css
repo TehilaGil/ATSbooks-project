@@ -1,0 +1,93 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: rgb(222, 215, 215);
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/*  */
+.user-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 20px;
+  position: relative;
+}
+
+.user-name {
+  margin-right: 10px;
+  font-weight: bold;
+  color: rgb(23, 22, 22);
+}
+
+.user-dropdown {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 35px;
+  background-color: #eef4f7;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  width: 160px;
+}
+
+.dropdown-menu div {
+  padding: 8px;
+  color: rgb(24, 24, 24);
+  cursor: pointer;
+}
+
+.dropdown-menu div:hover {
+  background-color: rgba(240, 22, 22, 0.2);
+}
+
+/* Navbar.css */
+.user-dropdown .pi-caret-down {
+  color: #0b0b0b; /* צבע כחול (תוכל לשנות לפי הצורך) */
+}
+
+.avalable {
+
+font-size: xx-small;
+color: red;
+margin-top: -8px;
+}
