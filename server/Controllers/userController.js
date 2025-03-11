@@ -26,9 +26,6 @@ const sendEmail = async (to, subject, html) => {
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent successfully:', info.response);
 } ;
-// catch (error) {
-//     console.error('Failed to send email:', error);
-// }
 
 
 
@@ -82,7 +79,7 @@ const register = async (req, res) => {
         const projectLink = 'http://localhost:3000'; // שימי כאן את הקישור לפרויקט
         try {
             await sendEmail(
-                'ayali73754@gmail.com',
+                't0583271152@gmail.com',
                 'New Registration on Final Project 🎉',
                 `<p>User <strong>${name}</strong> has just registered.</p>
                  <p>You can view the project here: <a href="${projectLink}">${projectLink}</a></p>`
@@ -113,6 +110,7 @@ const login = async (req, res) => {
     if (!foundUser) {
 console.log("*********")
         return res.status(401).json({ message: 'Cant connect' })
+
     }
 
     const Match = await bcrypt.compare(password, foundUser.password)

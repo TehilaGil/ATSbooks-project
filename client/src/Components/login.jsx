@@ -114,7 +114,11 @@ const Login = ({ setUserFunc }) => {
 const login = async () => {
     if (email && password) {
         try {
+            console.log(email);
+            console.log(password);
             const res = await axios.post('http://localhost:7000/api/user/login', { email, password });
+            console.log(email);
+            console.log(password);
             if (res && res.status === 200) {
                 console.log(res.data);
                 setUserCon(res.data.user.name);
