@@ -14,7 +14,7 @@
 //     const [password, setPassword] = useState();
 //     const navigate = useNavigate();
 
-   
+
 // const  login=async()=>{
 //     if(email && password){
 //         console.log(setUser);
@@ -29,13 +29,13 @@
 //                 setError('You are not authorized.');
 //             } else {
 //                 setError('An error occurred, please try again.');
-            
+
 //          } 
 //         // if(res.status==401)
 //         //     return(<h2>you are not in</h2>)
-        
+
 // }
-    
+
 //     useEffect(() => {
 //         if (userCon) {
 //         // const navigate = useNavigate();
@@ -61,21 +61,28 @@
 //         </div>
 //     )
 // }
-        
+
 // }
 // }
 // export default Login
 
 
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 // import { register } from '../../../Server/Controllers/userController';
+import { Password } from 'primereact/password';
+import { FloatLabel } from 'primereact/floatlabel';
 
-const Register = ( ) => {
+
+
+
+
+
+const Register = () => {
     // const [userCon, setUserCon] = useState(null); // Initializing userCon with null
     const [error, setError] = useState('');
     const [email, setEmail] = useState('');
@@ -83,18 +90,21 @@ const Register = ( ) => {
     const [phone, setPhone] = useState('');
     const [name, setName] = useState('');
 
+
+
+
     const navigate = useNavigate();
 
     const register = async () => {
-        if (email && password&&name) {
+        if (email && password && name) {
             try {
-                const res = await axios.post('http://localhost:7000/api/user/register', { name,email, password ,phone});
+                const res = await axios.post('http://localhost:7000/api/user/register', { name, email, password, phone });
                 if (res && res.status === 200) {
                     console.log(res);
                     // setUserCon(res.data); // Store the response data in userCon
                 }
-            } catch (err) {    
-                    setError('An error occurred, please try again.');   
+            } catch (err) {
+                setError('An error occurred, please try again.');
             }
         } else {
             setError('Please fill in both email and password.');
@@ -103,17 +113,17 @@ const Register = ( ) => {
 
     // useEffect hook to handle redirection after successful login
     useEffect(() => {
-        
-            // Set user in parent component
-            // navigate('/login'); // Navigate to home page after login
-        
-    },[ navigate]); // Dependencies for useEffect
+
+        // Set user in parent component
+        // navigate('/login'); // Navigate to home page after login
+
+    }, [navigate]); // Dependencies for useEffect
 
     return (
         <div className="card">
             <div className="flex flex-column md:flex-row">
                 <div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
-                <div className="flex flex-wrap justify-content-center align-items-center gap-2">
+                    <div className="flex flex-wrap justify-content-center align-items-center gap-2">
                         <label className="w-6rem">Name</label>
                         <InputText
                             onChange={(e) => setName(e.target.value)}
@@ -122,7 +132,7 @@ const Register = ( ) => {
                             className="w-12rem"
                         />
                     </div>
-                    
+
                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
                         <label className="w-6rem">Email</label>
                         <InputText
@@ -132,7 +142,7 @@ const Register = ( ) => {
                             className="w-12rem"
                         />
                     </div>
-                    <div className="flex flex-wrap justify-content-center align-items-center gap-2">
+                    {/* <div className="flex flex-wrap justify-content-center align-items-center gap-2">
                         <label className="w-6rem">Password</label>
                         <InputText
                             onChange={(e) => setPassword(e.target.value)}
@@ -140,7 +150,26 @@ const Register = ( ) => {
                             type="password"
                             className="w-12rem"
                         />
+                    </div> */}
+
+
+
+                    <div className="flex flex-wrap justify-content-center align-items-center gap-2">
+                        <label className="w-6rem">Password</label>
+                        <FloatLabel>
+                            <Password
+                                inputId="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                toggleMask
+                                feedback={false}
+                                className="w-12rem"
+                            />
+                            
+                        </FloatLabel>
                     </div>
+
+
                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
                         <label className="w-6rem">Phone</label>
                         <InputText
@@ -154,9 +183,9 @@ const Register = ( ) => {
 
                     {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error if exists */}
                     <Button
-                        onClick={register} 
-                        label="Register" 
-                        icon="pi pi-user" 
+                        onClick={register}
+                        label="Register"
+                        icon="pi pi-user"
                         className="w-10rem mx-auto"
                     />
                 </div>
