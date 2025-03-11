@@ -100,6 +100,7 @@ const LazyLogOut = React.lazy(() => import('./Components/LogOut'));
 const LazyRegister = React.lazy(() => import('./Components/Register'));
 const LazyLogin= React.lazy(() => import('./Components/login'));
 const LazyUser = React.lazy(() => import('./Components/Users'));
+const LazyUpdateUser = React.lazy(() => import('./Components/UserUpdate'));
 
 function App() {
   const [user, setUser] = useState("UserName");
@@ -122,18 +123,27 @@ function App() {
         navigate('./Register');
         setMenuVisible(false);
       }
-    }] : []),
+    }] : [ {
+      label: 'Update User',
+      icon: 'pi pi-user-edit',
+      command: () => {
+        navigate('./Update');
+        setMenuVisible(false);
+      }
+    }]),
     
     {
-      label: user && user !== "UserName" ? 'Logout' : 'Login',
+      label: user && user !== "UserName" ? 'Logout'  : 'Login',
       icon: 'pi pi-user',
       command: () => {
         if (user && user !== "UserName") {
             setUser("UserName"); // ✅ איפוס המשתמש
             setMenuVisible(false); // סגירת התפריט
             navigate('/Home'); // ✅ חזרה לדף הבית
+            
         } else {
             navigate('/Login');
+            
         }
       }
   }
@@ -142,7 +152,7 @@ function App() {
   // הכפתור בצד ימין, עם שם המשתמש, לצד החץ
   const end = (
     <div className="user-container">
-      <span className="user-name">{user}{!user.confirm}<p className="avalable"><br/>You not avalable</p></span>
+      <span className="user-name">{user}{!user.confirm}<p className="avalable"><br/>You not avalible</p></span>
       <Button
         icon="pi pi-caret-down"
         className="user-dropdown"
@@ -202,6 +212,7 @@ function App() {
           <Route path='/Users' element={<Suspense fallback="loading..."><LazyUser /></Suspense>} />
           <Route path='/LogOut' element={<Suspense fallback="loading..."><LazyLogOut /></Suspense>} />
           <Route path='/Register' element={<Suspense fallback="loading..."><LazyRegister /></Suspense>} />
+          <Route path='/Update' element={<Suspense fallback="loading..."><LazyUpdateUser user={user} setUserFunc={setUserCallback}/></Suspense>} />
         </Routes>
         </UserProvider>
         </div>
