@@ -1,11 +1,12 @@
-
-// import React, { useState ,useEffect} from 'react'; 
-// import { Divider } from 'primereact/divider';
-// import { InputText } from 'primereact/inputtext';
-// import { Button } from 'primereact/button';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
-
+import React, { useState, useEffect } from 'react';
+import { Divider } from 'primereact/divider';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+// import { register } from '../../../Server/Controllers/userController';
+import { Password } from 'primereact/password';
+import { FloatLabel } from 'primereact/floatlabel';
 
 // const Login =({setUser}) =>{
 //     const [userCon, setUserCon] =useState();
@@ -67,16 +68,6 @@
 // export default Login
 
 
-import React, { useState, useEffect } from 'react';
-import { Divider } from 'primereact/divider';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-// import { register } from '../../../Server/Controllers/userController';
-import { Password } from 'primereact/password';
-import { FloatLabel } from 'primereact/floatlabel';
-
 
 
 
@@ -89,9 +80,6 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
     const [name, setName] = useState('');
-
-
-
 
     const navigate = useNavigate();
 
@@ -118,6 +106,63 @@ const Register = () => {
         // navigate('/login'); // Navigate to home page after login
 
     }, [navigate]); // Dependencies for useEffect
+    const [errorPhone, setErrorPhone] = useState("");
+    const [errors, setErrors] = useState({
+        email: "",
+        name: "",
+        password: "",
+        confirmPassword: "",
+    });
+
+    const validateEmail = (value) => {
+        setEmail(value);
+        if (!value) {
+            setErrors((prev) => ({ ...prev, email: "This field is required" }));
+        } else if (!/^\S+@\S+\.\S+$/.test(value)) {
+            setErrors((prev) => ({ ...prev, email: "Enter a valid email address" }));
+        } else {
+            setErrors((prev) => ({ ...prev, email: "" }));
+        }
+    };
+
+    const validateName = (value) => {
+        setName(value);
+        if (!value) {
+            setErrors((prev) => ({ ...prev, name: "This field is required" }));
+        } else if (value.length < 4) {
+            setErrors((prev) => ({ ...prev, name: "At least 4 characters required" }));
+        } else {
+            setErrors((prev) => ({ ...prev, name: "" }));
+        }
+    };
+
+    const validatePassword = (value) => {
+        setPassword(value);
+        if (!value) {
+            setErrors((prev) => ({ ...prev, password: "This field is required" }));
+        } else if (value.length < 6) {
+            setErrors((prev) => ({ ...prev, password: "Minimum 6 characters required" }));
+        } else {
+            setErrors((prev) => ({ ...prev, password: "" }));
+        }
+    };
+
+    const validatePhone = (value) => {
+        if (!/^\d*$/.test(value)) {
+            setErrorPhone("The phone number can only contain digits.");
+        } else if (value.length > 10) {
+            setErrorPhone("The phone number can contain up to 10 digits only.");
+        } else {
+            setErrorPhone(""); // No error
+        }
+        setPhone(value);
+    };
+    const isFormValid = Object.values(errors).every((error) => error === "") &&
+        email && name && password && !errorPhone;
+
+
+
+
 
     return (
         <div className="card">
@@ -126,22 +171,27 @@ const Register = () => {
                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
                         <label className="w-6rem">Name</label>
                         <InputText
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => { validateName(e.target.value); setName(e.target.value) }}
                             id="username"
                             type="text"
-                            className="w-12rem"
+
+                            className={`w-12rem ${errors.name ? "p-invalid" : ""}`}
+
                         />
                     </div>
+                    {errors.name && <small className="p-error">{errors.name}</small>}
 
                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
                         <label className="w-6rem">Email</label>
                         <InputText
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => { validateEmail(e.target.value); setEmail(e.target.value) }}
                             id="username"
                             type="text"
-                            className="w-12rem"
+                            className={`w-12rem ${errors.email ? "p-invalid" : ""}`}
                         />
                     </div>
+                    {errors.email && <small className="p-error">{errors.email}</small>}
+
                     {/* <div className="flex flex-wrap justify-content-center align-items-center gap-2">
                         <label className="w-6rem">Password</label>
                         <InputText
@@ -156,13 +206,12 @@ const Register = () => {
                         <label className="w-6rem">Password</label>
                         <FloatLabel >
                             <Password
-                            
                                 inputId="password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)} toggleMask
-
+                                onChange={(e) => {validatePassword(e.target.value); setPassword(e.target.value)}} toggleMask
+                                
+                                className={`w-12rem ${errors.password ? "p-invalid" : ""}`}
                                 feedback={true}
-                                className="w-12rem"
                                 promptLabel="Choose a password" weakLabel="Too simple" mediumLabel="Average complexity" strongLabel="Complex password" />
                         </FloatLabel>
                     </div>
@@ -171,21 +220,28 @@ const Register = () => {
                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
                         <label className="w-6rem">Phone</label>
                         <InputText
-                            onChange={(e) => setPhone(e.target.value)}
+                            onChange={(e) => { validatePhone(e.target.value); setPhone(e.target.value) }}
                             id="username"
                             type="text"
-                            className="w-12rem"
+
+                            className={`w-12rem ${errorPhone ? "p-invalid" : ""}`}
+
                         />
                     </div>
+                    {errorPhone && <small className="p-error">{errorPhone}</small>}
 
 
                     {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error if exists */}
+
                     <Button
                         onClick={register}
                         label="Register"
                         icon="pi pi-user"
-                        className="w-10rem mx-auto"
+                        className={`w-10rem mx-auto ${errorPhone ? "p-button-secondary opacity-50 cursor-not-allowed" : ""}`}
+                        //disabled={!!errorPhone && !!phone}
+                        disabled={!isFormValid}
                     />
+
                 </div>
             </div>
         </div>
