@@ -77,6 +77,7 @@
 import './index.css';
 import './flags.css';
 import './App.css';
+import UpdateUser from './Components/UserUpdate';
 
 import { PrimeReactProvider } from 'primereact/api';
 import 'primeicons/primeicons.css';
@@ -102,9 +103,11 @@ const LazyLogin= React.lazy(() => import('./Components/login'));
 const LazyUser = React.lazy(() => import('./Components/Users'));
 const LazyUpdateUser = React.lazy(() => import('./Components/UserUpdate'));
 
+
 function App() {
   const [user, setUser] = useState("UserName");
-  // const [name, setName] = useState("UserName");
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+
   const [menuVisible, setMenuVisible] = useState(false); // מצב הצגת התפריט
   const navigate = useNavigate();
   const setUserCallback = (user) => {
@@ -127,7 +130,7 @@ function App() {
       label: 'Update User',
       icon: 'pi pi-user-edit',
       command: () => {
-        navigate('./Update');
+        setShowUpdateDialog(true)
         setMenuVisible(false);
       }
     }]),
@@ -214,6 +217,13 @@ function App() {
           <Route path='/Register' element={<Suspense fallback="loading..."><LazyRegister /></Suspense>} />
           <Route path='/Update' element={<Suspense fallback="loading..."><LazyUpdateUser user={user} setUserFunc={setUserCallback}/></Suspense>} />
         </Routes>
+        <UpdateUser 
+  visible={showUpdateDialog} 
+  onHide={() => setShowUpdateDialog(false)} 
+  
+  user={user} 
+  setUserFunc={setUserCallback} 
+/>
         </UserProvider>
         </div>
 
