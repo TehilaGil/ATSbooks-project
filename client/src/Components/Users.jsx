@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { PickList } from 'primereact/picklist';
 import UserProfile from './UserProfile';
 import { FaTrashAlt } from 'react-icons/fa'; // אייקון פח (התקן את react-icons אם לא מותקן)
+import "../Styles/Users.css"; // או שם הקובץ הרלוונטי
 
 //  const Users = () => {
 //      const [usersData, setUsersData] = useState([])
@@ -199,7 +200,8 @@ const Users = () => {
     const confirmUser = async (id) => {
 
         try {
-            const res = await axios.put('http://localhost:7000/api/user/confirm', { id })
+            const _id=id
+            const res = await axios.put('http://localhost:7000/api/user/confirm', { _id })
             if (res.status === 200) {
                 console.log("res.data", res.data);
             }
@@ -208,9 +210,13 @@ const Users = () => {
         }
     }
     const onChange = (event) => {
-        event.forEach(element => {
-            confirmUser(element._id)
-        });
+        const movedToTarget = event.target.filter(user => !target.some(u => u._id === user._id)); // משתמשים שעברו ל"מאושרים"
+        const movedToSource = event.source.filter(user => !source.some(u => u._id === user._id)); // משתמשים שעברו ל"לא מאושרים"
+
+        // קריאה לפונקציה confirmUser עבור כל משתמש שעבר רשימה
+        movedToTarget.forEach(user => confirmUser(user._id)); // אישור משתמשים שעברו ל"מאושרים"
+        movedToSource.forEach(user => confirmUser(user._id)); // ביטול האישור של משתמשים שעברו ל"לא מאושרים"
+
         setSource(event.source);
         setTarget(event.target);
 
@@ -230,7 +236,7 @@ const Users = () => {
                     <div className="flex align-items-center gap-2">
                         <div className="flex align-items-center gap-2">
                             {/* הצגת תאריך יצירת המשתמש */}
-                           <br/>
+                            <br />
                             <i className="pi pi-calendar text-sm"></i>
                             <span>{new Date(item.createdAt).toLocaleDateString()}</span>
                         </div>
@@ -238,6 +244,7 @@ const Users = () => {
 
                 </div>
                 <FaTrashAlt
+                
                     size={20}
                     className="delete-icon" // הכיתה שהוספנו לעיצוב 
                     onClick={() => deleteUser(item._id)} // הפונקציה למחיקה

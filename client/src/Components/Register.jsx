@@ -152,10 +152,11 @@ const Register = () => {
                         />
                     </div> */}
 
-                    <div className="flex flex-wrap justify-content-center align-items-center gap-2">
+                    <div className="flex flex-wrap justify-content-center align-items-center gap-2" >
                         <label className="w-6rem">Password</label>
-                        <FloatLabel>
+                        <FloatLabel >
                             <Password
+                            
                                 inputId="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)} toggleMask

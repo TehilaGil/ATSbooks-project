@@ -21,11 +21,16 @@
     transition: color 0.3s;
 }
 
-.user-item .delete-icon:hover {
-    color: red;
-}
+.delete-icon {
+    color: black !important;
+    transition: color 0.3s ease-in-out !important;
+  }
+  
+  .delete-icon:hover {
+    color: red !important;
+  }
 
-.user-item .delete-icon svg {
-    width: 20px;
-    height: 20px;
+  .custom-password-width {
+    width: 12rem !important;
 }
+  
