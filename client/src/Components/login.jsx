@@ -121,7 +121,7 @@ const login = async () => {
             console.log(password);
             if (res && res.status === 200) {
                 console.log(res.data);
-                setUserCon(res.data.user.name);
+                setUserCon(res.data.user);
             }
         } catch (err) {
             if (err.response && err.response.status === 401) {

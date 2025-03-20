@@ -105,7 +105,7 @@ const LazyUpdateUser = React.lazy(() => import('./Components/UserUpdate'));
 
 
 function App() {
-  const [user, setUser] = useState("UserName");
+  const [user, setUser] = useState({name:"UserName"});
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
   const [menuVisible, setMenuVisible] = useState(false); // מצב הצגת התפריט
@@ -119,7 +119,7 @@ function App() {
 }, [user]);
   // הגדרת אפשרויות בתפריט הירידה (Register, LogOut)
   const userMenu = [
-    ...(!user || user === "UserName" ? [{
+    ...(!user || user.name === "UserName" ? [{
       label: 'Register',
       icon: 'pi pi-user-plus',
       command: () => {
@@ -136,14 +136,13 @@ function App() {
     }]),
     
     {
-      label: user && user !== "UserName" ? 'Logout'  : 'Login',
+      label: user && user.name !== "UserName" ? 'Logout'  : 'Login',
       icon: 'pi pi-user',
       command: () => {
         if (user && user !== "UserName") {
-            setUser("UserName"); // ✅ איפוס המשתמש
-            setMenuVisible(false); // סגירת התפריט
-            navigate('/Home'); // ✅ חזרה לדף הבית
-            
+            setUser("UserName"); 
+            setMenuVisible(false); 
+            navigate('/Home');  
         } else {
             navigate('/Login');
             
@@ -155,7 +154,7 @@ function App() {
   // הכפתור בצד ימין, עם שם המשתמש, לצד החץ
   const end = (
     <div className="user-container">
-      <span className="user-name">{user}{!user.confirm}<p className="avalable"><br/>You not avalible</p></span>
+      <div className="user-name">{user.name}{!user.confirm&&(<p className="avalable"><br/>You not avalible</p>)}</div>
       <Button
         icon="pi pi-caret-down"
         className="user-dropdown"
