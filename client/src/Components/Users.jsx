@@ -190,8 +190,11 @@ const Users = () => {
         try {
             const res = await axios.delete(`http://localhost:7000/api/user/${id}`);
             if (res.status === 200) {
-                setSource(prevSource => prevSource.filter(user => user._id !== res._id));
-                setTarget(prevTarget => prevTarget.filter(user => user._id !== res._id))
+                // setSource(prevSource => prevSource.filter(user => user._id !== res._id));
+                // setTarget(prevTarget => prevTarget.filter(user => user._id !== res._id))
+               
+                setSource(prevSource => prevSource.filter(user => user._id !== res.data._id));
+                setTarget(prevTarget => prevTarget.filter(user => user._id !== res.data._id))
             }
         } catch (e) {
             console.error(e);

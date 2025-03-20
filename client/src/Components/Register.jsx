@@ -89,6 +89,7 @@ const Register = () => {
                 const res = await axios.post('http://localhost:7000/api/user/register', { name, email, password, phone });
                 if (res && res.status === 200) {
                     console.log(res);
+                    navigate('/home'); 
                     // setUserCon(res.data); // Store the response data in userCon
                 }
             } catch (err) {

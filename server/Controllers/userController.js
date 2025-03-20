@@ -70,7 +70,7 @@ const register = async (req, res) => {
     console.log("ppp");
     const duplicate = await User.findOne({ email: email }).lean()
     if (duplicate) {
-        console.log("lll");
+         console.log("lll");
         return res.status(409).json({ message: "Duplicate email" })
     }
    
@@ -121,7 +121,9 @@ console.log("*********")
     console.log(password)
     console.log(foundUser.password)
     if (!Match) return res.status(401).json({ message: 'Cant connect' })
-          
+        if (!foundUser.confirm) {
+            return res.status(403).json({ message: 'You are not confirmed to login yet.' });
+        }
     const NewUser = {
         _id: foundUser._id,
         name: foundUser.name,

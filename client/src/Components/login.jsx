@@ -126,6 +126,8 @@ const login = async () => {
         } catch (err) {
             if (err.response && err.response.status === 401) {
                 setError('You are not authorized.');
+            } else if (err.response && err.response.status === 403) {
+                setError('Your account has not been confirmed yet.');
             } else {
                 setError('An error occurred, please try again.');
             }

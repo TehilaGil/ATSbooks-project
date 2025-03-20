@@ -139,8 +139,8 @@ function App() {
       label: user && user.name !== "UserName" ? 'Logout'  : 'Login',
       icon: 'pi pi-user',
       command: () => {
-        if (user && user !== "UserName") {
-            setUser("UserName"); 
+        if (user && user.name !== "UserName") {
+            setUser({ name: "UserName" , confirm: false}); 
             setMenuVisible(false); 
             navigate('/Home');  
         } else {
@@ -154,7 +154,9 @@ function App() {
   // הכפתור בצד ימין, עם שם המשתמש, לצד החץ
   const end = (
     <div className="user-container">
-      <div className="user-name">{user.name}{!user.confirm&&(<p className="avalable"><br/>You not avalible</p>)}</div>
+      <div className="user-name">{user.name}{user.name !== "UserName" && user.confirm === false && (
+  <p className="avalable"><br/>You are not confirmed</p>
+)}</div>
       <Button
         icon="pi pi-caret-down"
         className="user-dropdown"
