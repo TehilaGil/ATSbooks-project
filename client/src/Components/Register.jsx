@@ -80,7 +80,12 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
     const [name, setName] = useState('');
-
+    const [errors, setErrors] = useState({
+        email: "",
+        name: "",
+        password: "",
+        phone: "",
+    });
     const navigate = useNavigate();
 
     const register = async () => {
@@ -100,19 +105,17 @@ const Register = () => {
     };
 
     // useEffect hook to handle redirection after successful login
+
     useEffect(() => {
 
         // Set user in parent component
         // navigate('/login'); // Navigate to home page after login
+        // Trigger validation when the form is loaded to display initial error messages for empty fields. //****
+        validateEmail(email); //****
+        validateName(name); //****
+        validatePassword(password); //****
+    }, [email, name, password]);
 
-    }, [navigate]); // Dependencies for useEffect
-    const [errorPhone, setErrorPhone] = useState("");
-    const [errors, setErrors] = useState({
-        email: "",
-        name: "",
-        password: "",
-        confirmPassword: "",
-    });
 
     const validateEmail = (value) => {
         setEmail(value);
@@ -149,16 +152,16 @@ const Register = () => {
 
     const validatePhone = (value) => {
         if (!/^\d*$/.test(value)) {
-            setErrorPhone("The phone number can only contain digits.");
+            setErrors((prev) => ({ ...prev, phone:"The phone number can only contain digits."}));
         } else if (value.length > 10) {
-            setErrorPhone("The phone number can contain up to 10 digits only.");
+            setErrors((prev) => ({ ...prev, phone:"The phone number can contain up to 10 digits only."}));
         } else {
-            setErrorPhone(""); // No error
+            setErrors((prev) => ({ ...prev, phone: "" }));
         }
         setPhone(value);
     };
     const isFormValid = Object.values(errors).every((error) => error === "") &&
-        email && name && password && !errorPhone;
+        email && name && password;
 
 
 
@@ -215,6 +218,8 @@ const Register = () => {
                                 promptLabel="Choose a password" weakLabel="Too simple" mediumLabel="Average complexity" strongLabel="Complex password" />
                         </FloatLabel>
                     </div>
+                    {errors.password && <small className="p-error">{errors.password}</small>}
+
 
 
                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
@@ -224,11 +229,11 @@ const Register = () => {
                             id="username"
                             type="text"
 
-                            className={`w-12rem ${errorPhone ? "p-invalid" : ""}`}
+                            className={`w-12rem ${errors.phone ? "p-invalid" : ""}`}
 
                         />
                     </div>
-                    {errorPhone && <small className="p-error">{errorPhone}</small>}
+                    {errors.phone && <small className="p-error">{errors.phone}</small>}
 
 
                     {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error if exists */}
@@ -237,7 +242,7 @@ const Register = () => {
                         onClick={register}
                         label="Register"
                         icon="pi pi-user"
-                        className={`w-10rem mx-auto ${errorPhone ? "p-button-secondary opacity-50 cursor-not-allowed" : ""}`}
+                        className={`w-10rem mx-auto ${errors.phone ? "p-button-secondary opacity-50 cursor-not-allowed" : ""}`}
                         //disabled={!!errorPhone && !!phone}
                         disabled={!isFormValid}
                     />

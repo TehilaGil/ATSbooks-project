@@ -7,7 +7,7 @@ require('dotenv').config();
 //פונקצית שליחת מייל
 const sendEmail = async (to, subject, html) => {
 
-   
+
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -25,7 +25,7 @@ const sendEmail = async (to, subject, html) => {
 
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent successfully:', info.response);
-} ;
+};
 
 
 
@@ -52,8 +52,7 @@ const updateUser = async (req, res) => {
     user.email = email
     user.phone = phone
     const updateUser = await user.save()
-    if(!updateUser)
-        {return res.status(201).send("The update failed")}
+    if (!updateUser) { return res.status(201).send("The update failed") }
     res.json(updateUser)
 }
 
@@ -63,8 +62,8 @@ const updateUser = async (req, res) => {
 
 const register = async (req, res) => {
     console.log("jjj");
-    const {  password, name, email, phone } = req.body
-    if (!name || !password||!email) {
+    const { password, name, email, phone } = req.body
+    if (!name || !password || !email) {
         return res.status(400).json({ message: 'All fields are required' })
     }
     const duplicate = await User.findOne({ email: email }).lean()
@@ -88,8 +87,9 @@ const register = async (req, res) => {
             console.error('Failed to send email:', err);
         }
         return res.status(201).json({
-            
-            message: `New user ${user.email} created` })
+
+            message: `New user ${user.email} created`
+        })
     } else {
         return res.status(400).json({ message: 'Invalid user received' })
     }
@@ -108,7 +108,7 @@ const login = async (req, res) => {
     const foundUser = await User.findOne({ email }).lean()
     console.log(foundUser)
     if (!foundUser) {
-console.log("*********")
+        console.log("*********")
         return res.status(401).json({ message: 'Cant connect' })
 
     }
@@ -118,38 +118,35 @@ console.log("*********")
     console.log(password)
     console.log(foundUser.password)
     if (!Match) return res.status(401).json({ message: 'Cant connect' })
-          
+
     const NewUser = {
         _id: foundUser._id,
         name: foundUser.name,
         email: foundUser.email,
         phone: foundUser.phone,
-        roles:foundUser.roles
+        roles: foundUser.roles
 
     }
-        
-        const accessToken = jwt.sign(NewUser, process.env.ACCESS_TOKEN_SECRET)
-        res.json({ accessToken, user: NewUser })
 
-     
+    const accessToken = jwt.sign(NewUser, process.env.ACCESS_TOKEN_SECRET)
+    res.json({ accessToken, user: NewUser })
+
+
 }
 const confirmUser = async (req, res) => {
-   const {_id} = req.body
-   
-   const user = await User.findById(_id).exec()
-   if (!user)
-       return res.status(400).json({ message: 'No user found' })
-    console.log(user.confirm+"********");
-    
-   user.confirm = !user.confirm
-   console.log(user.confirm);
+    const { _id } = req.body
 
-   const updateUser = await user.save()
-   const users = await User.find().lean()
-   const projectLink = 'http://localhost:3000';
-//sent email:
-if(user.confirm )
-    {     try{
+    const user = await User.findById(_id).exec()
+    if (!user)
+        return res.status(400).json({ message: 'No user found' })
+
+    user.confirm = !user.confirm
+    const updateUser = await user.save()
+    const users = await User.find().lean()
+    const projectLink = 'http://localhost:3000';
+    //sent email:
+    if (user.confirm) {
+        try {
             await sendEmail(
                 user.email,
                 'New Registration on Final Project 🎉',
@@ -157,12 +154,13 @@ if(user.confirm )
                 <p>You avalable to log in.</p>
                  <p>You can view the project here: <a href="${projectLink}">${projectLink}</a></p>`
             );
-        } 
-            catch (err) {
+        }
+        catch (err) {
             console.error('Failed to send email:', err);
-        }}
-     res.json(users)
-            }
+        }
+    }
+    res.json(users)
+}
 
 const deleteUser = async (req, res) => {
     const { id } = req.params
@@ -174,12 +172,12 @@ const deleteUser = async (req, res) => {
     // if (!users?.length)
     //     return res.status(400).json({ message: 'No users found' })
     res.json(user)
-   
+
 }
 
 
 
-module.exports = {register,login,getAllUser,updateUser,deleteUser,confirmUser}
+module.exports = { register, login, getAllUser, updateUser, deleteUser, confirmUser }
 
 
 
