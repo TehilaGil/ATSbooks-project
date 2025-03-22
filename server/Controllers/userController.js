@@ -66,10 +66,13 @@ const register = async (req, res) => {
     if (!name || !password || !email) {
         return res.status(400).json({ message: 'All fields are required' })
     }
+    console.log("ppp");
     const duplicate = await User.findOne({ email: email }).lean()
     if (duplicate) {
+         console.log("lll");
         return res.status(409).json({ message: "Duplicate email" })
     }
+   
     const hashedpwd = await bcrypt.hash(password, 10)
     const userobject = { name, email, phone, password: hashedpwd }
     const user = await User.create(userobject)
@@ -118,7 +121,7 @@ const login = async (req, res) => {
     console.log(password)
     console.log(foundUser.password)
     if (!Match) return res.status(401).json({ message: 'Cant connect' })
-
+          
     const NewUser = {
         _id: foundUser._id,
         name: foundUser.name,

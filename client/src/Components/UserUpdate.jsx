@@ -112,12 +112,22 @@ import axios from 'axios';
 const UpdateUser = (props) => {
     const navigate = useNavigate();
     const [userCon, setUserCon] = useState(null);
-
-    const usernameRef = useRef("");
-    const passwordRef = useRef("");
+    const { setUserFunc }=props
+    // const usernameRef = useRef("");
+    // const passwordRef = useRef("");
     const nameRef = useRef("");
     const emailRef = useRef("");
     const phoneRef = useRef("");
+
+
+    useEffect(() => {
+        if (userCon) {
+            console.log("Setting user:", userCon);
+            setUserFunc(userCon); // עדכון המשתמש בקונטקסט
+            navigate('/home'); // ניווט אחרי השינוי
+        }
+    }, [userCon, setUserFunc, navigate]);
+    
 
     const updateUser = async () => {
         console.log("Updated user:");
@@ -138,6 +148,7 @@ const UpdateUser = (props) => {
                 setUserCon(updatedUser.name);
                 props.setUserFunc(updatedUser.name); // עדכון המשתמש גם באפליקציה
                 props.onHide(); // סגירת הדיאלוג
+                // setUserCon(res.data.user)//
                 navigate('/home'); // מעבר לדף הבית
             }
         } catch (e) {

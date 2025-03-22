@@ -121,11 +121,13 @@ const login = async () => {
             console.log(password);
             if (res && res.status === 200) {
                 console.log(res.data);
-                setUserCon(res.data.user.name);
+                setUserCon(res.data.user);
             }
         } catch (err) {
             if (err.response && err.response.status === 401) {
                 setError('You are not authorized.');
+            } else if (err.response && err.response.status === 403) {
+                setError('Your account has not been confirmed yet.');
             } else {
                 setError('An error occurred, please try again.');
             }
