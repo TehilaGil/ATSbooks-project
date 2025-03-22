@@ -216,7 +216,7 @@ function App() {
           <Route path='/Users' element={<Suspense fallback="loading..."><LazyUser /></Suspense>} />
           <Route path='/LogOut' element={<Suspense fallback="loading..."><LazyLogOut /></Suspense>} />
           <Route path='/Register' element={<Suspense fallback="loading..."><LazyRegister /></Suspense>} />
-          <Route path='/Update' element={<Suspense fallback="loading..."><LazyUpdateUser user={user} setUserFunc={setUserCallback}/></Suspense>} />
+          <Route path='/Update' element={<Suspense fallback="loading..."><LazyUpdateUser user={user}  setUserFunc={setUserCallback}/></Suspense>} />
         </Routes>
         <UpdateUser 
   visible={showUpdateDialog} 
