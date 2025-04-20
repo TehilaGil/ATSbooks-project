@@ -134,9 +134,11 @@ import "../Styles/Users.css"; // או שם הקובץ הרלוונטי
 
 //  export default Users
 
-
+import { useNavigate } from 'react-router-dom';
 
 const Users = () => {
+
+    const navigate = useNavigate();
     const [source, setSource] = useState([]);
     const [target, setTarget] = useState([]);
 
@@ -174,9 +176,10 @@ const Users = () => {
 
         try {
             const res = await axios.post('http://localhost:7000/api/user', newUser);
-            if (res.status === 200) {
+            if (res.status === 200 || res.status === 201) {
                 console.log("res.data", res.data);
-                getUsers()
+                // getUsers()
+                navigate('/login');
                 // setSource(prevSource => prevSource.filter(user => user._id !== res._id)); 
                 //  setTarget(prevTarget => prevTarget.filter(user => user._id !== res._id))
             }
