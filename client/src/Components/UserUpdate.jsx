@@ -121,7 +121,7 @@ const UpdateUser = (props) => {
 
 
     useEffect(() => {
-        if (userCon) {
+        if (userCon && userCon.name !== props.user.name) {
             console.log("Setting user:", userCon);
             setUserFunc(userCon); // עדכון המשתמש בקונטקסט
             navigate('/home'); // ניווט אחרי השינוי
@@ -145,15 +145,21 @@ const UpdateUser = (props) => {
             const res = await axios.put('http://localhost:7000/api/user', updatedUser);
             if (res.status === 200) {
                 console.log("Updated user:", res.data);
-                setUserCon(updatedUser.name);
-                props.setUserFunc(updatedUser.name); // עדכון המשתמש גם באפליקציה
+                
+               // // props.setUserFunc(updatedUser.name); // עדכון המשתמש גם באפליקציה
                 props.onHide(); // סגירת הדיאלוג
+                setUserCon(updatedUser);
                 // setUserCon(res.data.user)//
-                navigate('/home'); // מעבר לדף הבית
+                // navigate('/home'); // מעבר לדף הבית
+            }
+            else
+            {
+            console.log("okijuhtfrd")
             }
         } catch (e) {
             console.error("Error updating user:", e);
         }
+        
     };
 
     return (
