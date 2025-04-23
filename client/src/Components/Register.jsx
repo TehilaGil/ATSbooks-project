@@ -8,70 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Password } from 'primereact/password';
 import { FloatLabel } from 'primereact/floatlabel';
 
-// const Login =({setUser}) =>{
-//     const [userCon, setUserCon] =useState();
-//     const [error, setError] = useState('');
-//     const [email, setEmail] = useState();
-//     const [password, setPassword] = useState();
-//     const navigate = useNavigate();
-
-
-// const  login=async()=>{
-//     if(email && password){
-//         console.log(setUser);
-//      try{  
-//         const res = await axios.post('http://localhost:7000/api/user/login',{email,password})
-//         if(res&& res.status === 200){
-//             console.log(res);
-//             setUserCon(res.data)
-//         }} 
-//         catch (err) {
-//             if (err.response && err.response.status === 401) {
-//                 setError('You are not authorized.');
-//             } else {
-//                 setError('An error occurred, please try again.');
-
-//          } 
-//         // if(res.status==401)
-//         //     return(<h2>you are not in</h2>)
-
-// }
-
-//     useEffect(() => {
-//         if (userCon) {
-//         // const navigate = useNavigate();
-//           setUser(userCon);
-//           navigate('/home');
-//         }
-//       }, [userCon, setUser, navigate]);
-//     return (
-//         <div className="card">
-//             <div className="flex flex-column md:flex-row">
-//                 <div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
-//                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-//                         <label className="w-6rem">Email</label>
-//                         <InputText  onChange={(e)=>{setEmail(e.target.value)}} id="username" type="text" className="w-12rem" />
-//                     </div>
-//                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-//                         <label className="w-6rem">Password</label>
-//                         <InputText  onChange={(e)=>{setPassword(e.target.value)}} id="password" type="password" className="w-12rem" />
-//                     </div>
-//                     <Button  onClick={()=>{login()}} label="Login" icon="pi pi-user" className="w-10rem mx-auto"></Button>
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
-
-// }
-// }
-// export default Login
-
-
-
-
-
-
+import { useContext } from 'react';
 
 const Register = () => {
     // const [userCon, setUserCon] = useState(null); // Initializing userCon with null
@@ -88,20 +25,25 @@ const Register = () => {
     });
     const navigate = useNavigate();
 
-    const register = async () => {
-        if (email && password && name) {
-            try {
-                const res = await axios.post('http://localhost:7000/api/user/register', { name, email, password, phone });
-                if (res && res.status === 200) {
-                    console.log(res);
-                    // navigate('/home'); 
-                    // setUserCon(res.data); // Store the response data in userCon
-                }
-            } catch (err) {
-                setError('An error occurred, please try again.');
+  
+const createUser = async (nameRef, emailRef, phoneRef, passwordRef) => {
+        const newUser = {
+            name: nameRef.current.value ? nameRef.current.value : " ",
+            email: emailRef.current.value ? emailRef.current.value : "",
+            phone: phoneRef.current.value ? phoneRef.current.value : " ",
+            password: passwordRef.current.value ? passwordRef.current.value : " "
+        };
+
+        try {
+            const res = await axios.post('http://localhost:7000/api/user', newUser);
+            if (res.status === 200 || res.status === 201) {
+                console.log("res.data", res.data);
+                // getUsers()
+                // setSource(prevSource => prevSource.filter(user => user._id !== res._id)); 
+                //  setTarget(prevTarget => prevTarget.filter(user => user._id !== res._id))
             }
-        } else {
-            setError('Please fill in both email and password.');
+        } catch (e) {
+            console.error(e);
         }
     };
 
@@ -240,7 +182,7 @@ const Register = () => {
                     {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error if exists */}
 
                     <Button
-                        onClick={register}
+                        onClick={Register}
                         label="Register"
                         icon="pi pi-user"
                         className={`w-10rem mx-auto ${errors.phone ? "p-button-secondary opacity-50 cursor-not-allowed" : ""}`}

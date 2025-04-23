@@ -102,6 +102,10 @@ const LazyRegister = React.lazy(() => import('./Components/Register'));
 const LazyLogin= React.lazy(() => import('./Components/login'));
 const LazyUser = React.lazy(() => import('./Components/Users'));
 const LazyUpdateUser = React.lazy(() => import('./Components/UserUpdate'));
+const LazyBook = React.lazy(() => import('./Components/Books'));
+
+
+
 
 
 function App() {
@@ -190,6 +194,13 @@ function App() {
         navigate('./Grades');
       }
     },
+    {
+      label: 'Books',
+      icon: 'pi pi-user',
+      command: () => {
+        navigate('./Books');
+      }
+    },
     // user === UserName &&
     
     {
@@ -217,6 +228,7 @@ function App() {
           <Route path='/LogOut' element={<Suspense fallback="loading..."><LazyLogOut /></Suspense>} />
           <Route path='/Register' element={<Suspense fallback="loading..."><LazyRegister /></Suspense>} />
           <Route path='/Update' element={<Suspense fallback="loading..."><LazyUpdateUser user={user}  setUserFunc={setUserCallback}/></Suspense>} />
+          <Route path='/Books' element={<Suspense fallback="loading..."><LazyBook /></Suspense>} /> 
         </Routes>
         <UpdateUser 
   visible={showUpdateDialog} 

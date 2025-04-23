@@ -58,21 +58,22 @@ const updateUser = async (req, res) => {
 
 
 
+
 //register
 
 const register = async (req, res) => {
     console.log("jjj");
-    const { password, name, email, phone } = req.body
-    if (!name || !password || !email) {
+    const {  password, name, email, phone } = req.body
+    if (!name || !password||!email) {
         return res.status(400).json({ message: 'All fields are required' })
     }
     console.log("ppp");
     const duplicate = await User.findOne({ email: email }).lean()
     if (duplicate) {
-        console.log("lll");
+         console.log("lll");
         return res.status(409).json({ message: "Duplicate email" })
     }
-
+   
     const hashedpwd = await bcrypt.hash(password, 10)
     const userobject = { name, email, phone, password: hashedpwd }
     const user = await User.create(userobject)
@@ -90,13 +91,14 @@ const register = async (req, res) => {
             console.error('Failed to send email:', err);
         }
         return res.status(201).json({
-
-            message: `New user ${user.email} created`
-        })
+            
+            message: `New user ${user.email} created` })
     } else {
         return res.status(400).json({ message: 'Invalid user received' })
     }
 }
+
+
 
 
 
