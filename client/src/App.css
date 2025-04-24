@@ -91,3 +91,18 @@ font-size: xx-small;
 color: red;
 margin-top: -8px;
 }
+
+.custom-multiselect .p-multiselect-token {
+  white-space: normal !important;
+}
+
+.custom-multiselect .p-multiselect-label-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.custom-multiselect {
+  max-height: none !important;
+}

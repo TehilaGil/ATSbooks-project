@@ -114,7 +114,7 @@ import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import axios from 'axios';
-import BookCreate from  "./BookCreat"
+import BookCreate from "./BookCreat"
 
 export default function BooksDataView() {
     const [books, setBooks] = useState([]);
@@ -136,18 +136,18 @@ export default function BooksDataView() {
             console.error(e)
         }
     }
-    const createBook = async (nameRef,  selectedItem,imageRef) => {
+    const createBook = async (nameRef, selectedItem, imageRef) => {
         console.log(selectedItem)
-       
+
         const newBook = {
             name: nameRef.current.value ? nameRef.current.value : " ",
-            grades:selectedItem ? selectedItem.split(',') : "" ,
+            grades: selectedItem ? selectedItem : " ",// ? selectedItem.split(',') : "" ,
             image: imageRef.current.value ? imageRef.current.value : " "
         };
         console.log(newBook.grades)
         try {
             const res = await axios.post('http://localhost:7000/api/book', newBook)
-                
+
             if (res.status === 200 || res.status === 201) {
                 console.log("ספר נוצר:", res.data);
                 getBooks(); // אם יש לך פונקציה כזו לרענון
@@ -156,11 +156,11 @@ export default function BooksDataView() {
             console.error("שגיאה ביצירת ספר:", e);
         }
     };
-    
 
 
 
-    
+
+
 
     const listItem = (book, index) => (
         <div className="col-12" key={book._id}>
@@ -182,8 +182,14 @@ export default function BooksDataView() {
                 <div className="flex flex-column align-items-center gap-3 py-5">
                     <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} />
                     <div className="text-2xl font-bold">{book.name}</div>
-                    <div className="text-sm text-color-secondary">מותאם ל-{book.grades.length} שכבות גיל</div>
-                </div>
+                    <strong>Suitable for:</strong>
+                  
+                    {console.log("Book grades:", book.grades)}
+                    <ul className="m-0 pl-3 list-disc text-xs">
+                        {book.grades.map((grade, idx) => (
+                            <li key={idx}>{grade}</li>
+                        ))}
+                    </ul>                </div>
                 <div className="flex align-items-center justify-content-center mt-3">
                     <Button icon="pi pi-search" className="p-button-rounded" label="לפרטים"></Button>
                 </div>
@@ -208,14 +214,14 @@ export default function BooksDataView() {
 
     return (
         <div>
-        <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} />
-        <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
-        <div className="card">
-            <DataView value={books} listTemplate={listTemplate} layout={layout} header={header()} />
-        </div></div>
+            <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} />
+            <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
+            <div className="card">
+                <DataView value={books} listTemplate={listTemplate} layout={layout} header={header()} />
+            </div></div>
     );
 }
-  
+
 
 
 

@@ -7,7 +7,9 @@ const titleController = require("../Controllers/titleController")
 
 
 const createNewBook = async (req, res) => {
+
     const { name, grades, image } = req.body
+    console.log(grades)
     let gradesArr = [];
     gradesArr=grades
     if (!name) {
@@ -17,18 +19,19 @@ const createNewBook = async (req, res) => {
     if (existBook) {
         return res.status(400).send("invalid name")
     }
-    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-
-    console.log(grades)
-    //grades ? gradesArr = grades.split(',') : ""
-    // titles ? titlesArr = titles.split(',') : ""
     console.log(gradesArr)
-    const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-    console.log(resGrade)
-    // const resTitle= titlesArr.map((ele) =>Title.find({ name: ele._id }))
+    //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
 
-    const book = await Book.create({ name, grades:resGrade, image });
+    const gradeDocs = await Promise.all(
+        gradesArr.map(name => Grade.findOne({ name }))
+    );
+    
+    // סינון רק כיתות שנמצאו בפועל
+    const validGrades = gradeDocs.filter(doc => doc);
+    const gradeIds = validGrades.map(doc => doc._id);
+    console.log(gradeIds)
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    const book = await Book.create({ name, grades:gradeIds, image });
 
     if (!book.length > 0) {
         return res.status(201).send("invalid book")
