@@ -18,12 +18,15 @@ const createNewBook = async (req, res) => {
     if (existBook) {
         return res.status(400).send("invalid name")
     }
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+
     console.log(grades)
     grades ? gradesArr = grades.split(',') : ""
     // titles ? titlesArr = titles.split(',') : ""
     console.log(gradesArr)
-    // const resGrade = gradesArr.map((ele) => Grade.find({ name: ele._id }))
-    // console.log(resGrade)
+    const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    console.log(resGrade)
     // const resTitle= titlesArr.map((ele) =>Title.find({ name: ele._id }))
 
     const book = await Book.create({ name, grades:gradesArr, image });

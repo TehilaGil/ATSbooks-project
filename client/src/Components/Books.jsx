@@ -114,10 +114,12 @@ import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import axios from 'axios';
+import BookCreate from  "./BookCreat"
 
 export default function BooksDataView() {
     const [books, setBooks] = useState([]);
     const [layout, setLayout] = useState('grid');
+    const [visibleCreatBook, setVisibleCreatBook] = useState(false);
 
     useEffect(() => {
         getBooks();
@@ -125,28 +127,28 @@ export default function BooksDataView() {
 
     const getBooks = async () => {
         try {
-            const res = await axios.get('http://localhost:7000/api/books')
+            const res = await axios.get('http://localhost:7000/api/book')
             if (res.status === 200) {
                 console.log(res.data);
-                setGradesData(res.data)
+                setBooks(res.data)
             }
         } catch (e) {
             console.error(e)
         }
     }
-    const createBook = async (nameRef, imageRef, selectedGrades) => {
+    const createBook = async (nameRef,  GradesRef,imageRef) => {
         const newBook = {
-            name: nameRef.current?.value || " ",
-            image: imageRef.current?.value || " ",
-            grades: selectedGrades.map(g => g._id), // או g.value לפי איך שאת שומרת
+            name: nameRef.current.value ? nameRef.current.value : " ",
+            grades: GradesRef.current.value ? GradesRef.current.value : " ",
+            image: imageRef.current.value ? imageRef.current.value : " "
         };
     
         try {
-            const res = await axios.post('http://localhost:7000/api/books', newBook, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}` // אם את משתמשת ב־JWT
-                }
-            });
+            const res = await axios.post('http://localhost:7000/api/book', newBook)
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem("token")}` // אם את משתמשת ב־JWT
+                // }
+            
     
             if (res.status === 200 || res.status === 201) {
                 console.log("ספר נוצר:", res.data);
@@ -207,9 +209,12 @@ export default function BooksDataView() {
     );
 
     return (
+        <div>
+        <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} />
+        <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
         <div className="card">
             <DataView value={books} listTemplate={listTemplate} layout={layout} header={header()} />
-        </div>
+        </div></div>
     );
 }
   

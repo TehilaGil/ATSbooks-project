@@ -16,7 +16,7 @@ const Grades = () => {
         try {
             const res = await axios.get('http://localhost:7000/api/grade')
             if (res.status === 200) {
-                console.log(res.data);
+                //console.log(res.data);
                 setGradesData(res.data)
             }
         } catch (e) {
@@ -27,10 +27,10 @@ const Grades = () => {
     const getGradeById = async (id) => {
         try {
 
-            const res = await axios.get(`http://localhost:8000/api/Grade/${id}`)
-            if (res.status === 200) {
-                console.log(res.data);
-            }
+            const res = await axios.get(`http://localhost:7000/api/grade/${id}`)
+            // if (res.status === 200) {
+            //     console.log(res.data);
+            // }
         } catch (e) {
             console.error(e)
         }
@@ -46,7 +46,7 @@ const Grades = () => {
             const res = await axios.Grade('http://localhost:7000/api/grade', newGrade)
             if (res.status === 200) {
 
-                console.log("res.data", res.data);
+                // console.log("res.data", res.data);
                 getGrades()
             }
         }

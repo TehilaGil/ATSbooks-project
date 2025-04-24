@@ -6,17 +6,42 @@ const verifyJWT=require("../middleware/verifyJWT")
 const admirMiddleware=require("../middleware/admirMiddleware")
 
 
-router.post('/',verifyJWT,admirMiddleware,bookController.createNewBook)
+router.post('/',bookController.createNewBook)
 
 router.get('/',bookController.getAllBooks)
 
-router.get('/:id',verifyJWT,bookController.getBookById)
+router.get('/:id',bookController.getBookById)
 
-router.put('/',verifyJWT,admirMiddleware,bookController.updateBook)
+router.put('/',bookController.updateBook)
 
-router.delete('/:id',verifyJWT,admirMiddleware,bookController.deleteBook)
+router.delete('/:id',bookController.deleteBook)
 
 router.get('/:id',bookController.getAllBooksByGrade)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// router.post('/',verifyJWT,admirMiddleware,bookController.createNewBook)
+
+// router.get('/',bookController.getAllBooks)
+
+// router.get('/:id',verifyJWT,bookController.getBookById)
+
+// router.put('/',verifyJWT,admirMiddleware,bookController.updateBook)
+
+// router.delete('/:id',verifyJWT,admirMiddleware,bookController.deleteBook)
+
+// router.get('/:id',bookController.getAllBooksByGrade)
 
 
 module.exports=router
