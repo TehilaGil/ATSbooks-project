@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 // import { register } from '../../../Server/Controllers/userController';
 import { Password } from 'primereact/password';
-import { FloatLabel } from 'primereact/floatlabel';
+import  {FloatLabel}  from 'primereact/floatlabel';
 
 import { useContext } from 'react';
 
@@ -24,20 +24,22 @@ const Register = () => {
         phone: "",
     });
     const navigate = useNavigate();
-
+    
+    
   
-const createUser = async (nameRef, emailRef, phoneRef, passwordRef) => {
+const createUser = async (name, email, phone, password) => {
         const newUser = {
-            name: nameRef.current.value ? nameRef.current.value : " ",
-            email: emailRef.current.value ? emailRef.current.value : "",
-            phone: phoneRef.current.value ? phoneRef.current.value : " ",
-            password: passwordRef.current.value ? passwordRef.current.value : " "
+            name,
+            email,
+            phone,
+            password
         };
 
         try {
-            const res = await axios.post('http://localhost:7000/api/user', newUser);
+            const res = await axios.post('http://localhost:7000/api/user/register', newUser);
             if (res.status === 200 || res.status === 201) {
                 console.log("res.data", res.data);
+                navigate('/login')
                 // getUsers()
                 // setSource(prevSource => prevSource.filter(user => user._id !== res._id)); 
                 //  setTarget(prevTarget => prevTarget.filter(user => user._id !== res._id))
@@ -181,15 +183,21 @@ const createUser = async (nameRef, emailRef, phoneRef, passwordRef) => {
 
                     {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error if exists */}
 
-                    <Button
-                        onClick={Register}
-                        label="Register"
+                    {/* <Button
+                        onClick={createUser(name,email,phone,password)}
+                        label="register"
                         icon="pi pi-user"
                         className={`w-10rem mx-auto ${errors.phone ? "p-button-secondary opacity-50 cursor-not-allowed" : ""}`}
                         //disabled={!!errorPhone && !!phone}
                         disabled={!isFormValid}
-                    />
-
+                    /> */}
+<Button
+    onClick={() => createUser(name, email, phone, password)}
+    label="Register"
+    icon="pi pi-user"
+    className={`w-10rem mx-auto ${errors.phone ? "p-button-secondary opacity-50 cursor-not-allowed" : ""}`}
+    disabled={!isFormValid}
+/>
                 </div>
             </div>
         </div>
