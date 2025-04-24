@@ -58,7 +58,7 @@ const BookCreate = (props) => {
                     </div>
 
                     <div className="flex align-items-center gap-2">
-                        <Button label="Creat" onClick={(e) => { createBook(nameRef,gradesRef ,imageRef); hide(e) }} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
+                        <Button label="Creat" onClick={(e) => { createBook(nameRef,selectedItem ,imageRef); hide(e) }} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
                         <Button label="Cancel" onClick={(e) => hide(e)} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
                     </div>
                 </div>

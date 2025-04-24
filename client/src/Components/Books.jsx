@@ -136,20 +136,18 @@ export default function BooksDataView() {
             console.error(e)
         }
     }
-    const createBook = async (nameRef,  GradesRef,imageRef) => {
+    const createBook = async (nameRef,  selectedItem,imageRef) => {
+        console.log(selectedItem)
+       
         const newBook = {
             name: nameRef.current.value ? nameRef.current.value : " ",
-            grades: GradesRef.current.value ? GradesRef.current.value : " ",
+            grades:selectedItem ? selectedItem.split(',') : "" ,
             image: imageRef.current.value ? imageRef.current.value : " "
         };
-    
+        console.log(newBook.grades)
         try {
             const res = await axios.post('http://localhost:7000/api/book', newBook)
-                // headers: {
-                //     Authorization: `Bearer ${localStorage.getItem("token")}` // אם את משתמשת ב־JWT
-                // }
-            
-    
+                
             if (res.status === 200 || res.status === 201) {
                 console.log("ספר נוצר:", res.data);
                 getBooks(); // אם יש לך פונקציה כזו לרענון

@@ -9,8 +9,7 @@ const titleController = require("../Controllers/titleController")
 const createNewBook = async (req, res) => {
     const { name, grades, image } = req.body
     let gradesArr = [];
-    // let titlesArr = [];
-
+    gradesArr=grades
     if (!name) {
         return res.status(400).send("name is required")
     }
@@ -18,10 +17,10 @@ const createNewBook = async (req, res) => {
     if (existBook) {
         return res.status(400).send("invalid name")
     }
-    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
     console.log(grades)
-    grades ? gradesArr = grades.split(',') : ""
+    //grades ? gradesArr = grades.split(',') : ""
     // titles ? titlesArr = titles.split(',') : ""
     console.log(gradesArr)
     const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
@@ -29,7 +28,7 @@ const createNewBook = async (req, res) => {
     console.log(resGrade)
     // const resTitle= titlesArr.map((ele) =>Title.find({ name: ele._id }))
 
-    const book = await Book.create({ name, grades:gradesArr, image });
+    const book = await Book.create({ name, grades:resGrade, image });
 
     if (!book.length > 0) {
         return res.status(201).send("invalid book")

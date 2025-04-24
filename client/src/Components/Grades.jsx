@@ -37,10 +37,11 @@ const Grades = () => {
     }
 
     //******Grade - createGrade***** */
-    const createGrade = async (nameRef, imageRef) => {
+    const createGrade = async (selectedItem, imageRef) => {
         const newGrade = {
-            name: nameRef.current.value ? nameRef.current.value : " ",
-            image: imageRef.current.value ? imageRef.current.value : " ",
+            // name: nameRef.current.value ? nameRef.current.value : " ",
+            name:selectedItem,
+            image: imageRef.current.value ? imageRef.current.value : " "
         }
         try {
             const res = await axios.Grade('http://localhost:7000/api/grade', newGrade)
