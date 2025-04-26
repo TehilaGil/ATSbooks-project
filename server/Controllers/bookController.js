@@ -56,6 +56,18 @@ const getBookById = async (req, res) => {
     res.json(book)
 }
 
+const getBooksForGrade = async (req, res) => {
+    const { gradeId } = req.params
+
+    // חפש את כל הספרים שהכיתה עם ה-ID הזה נמצאת במערך grades
+    const books = await Book.find({ grades: gradeId }).lean().populate("grades")
+
+    if (!books?.length) {
+        return res.status(400).json({ message: 'No books found for this grade' })
+    }
+
+    res.json(books)
+}
 const updateBook = async (req, res) => {
     const { _id, name, grades, image } = req.body
     // Confirm data

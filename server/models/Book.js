@@ -8,10 +8,10 @@ const bookSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    grades: {
-        type:[mongoose.Schema.Types.ObjectId],
-        ref:"Grade"
-    },
+    grades: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Grade' // שם המודל של הכיתות
+    }],
     // titles: {
     //     type:[mongoose.Schema.Types.ObjectId],
     //     ref:"Title"
