@@ -14,10 +14,11 @@ const Grade = (props) => {
 
 
     //**********updateGrade
-    const updateGrade = async (nameRef, imageRef) => {
+    const updateGrade = async (selectedItem, imageRef) => {
+        console.log(selectedItem)
         const updatedGrade = {
             ...props.grade,
-            name: nameRef.current.value ? nameRef.current.value : props.grade.title,
+            name: selectedItem ,
             image: imageRef.current.value ? imageRef.current.value : props.grade.body,
         };
         try {

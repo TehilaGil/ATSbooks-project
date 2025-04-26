@@ -44,10 +44,10 @@ const Grades = () => {
             image: imageRef.current.value ? imageRef.current.value : " "
         }
         try {
-            const res = await axios.Grade('http://localhost:7000/api/grade', newGrade)
-            if (res.status === 200) {
+            const res = await axios.post('http://localhost:7000/api/grade', newGrade)
+            if (res.status === 201) {
 
-                // console.log("res.data", res.data);
+                console.log("res.data", res.data);
                 getGrades()
             }
         }

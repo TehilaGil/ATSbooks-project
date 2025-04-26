@@ -56,7 +56,7 @@ const UpdateGrade = (props) => {
                         <InputText id="name" label="name" className="bg-white-alpha-20 border-none p-3 text-primary-50" type="name" ref={imageRef} defaultValue={props.grade.image}></InputText>
                     </div>
                     <div className="flex align-items-center gap-2">
-                        <Button label="Update" onClick={(e) => { updateGrade(nameRef, imageRef); hide(e) }} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
+                        <Button label="Update" onClick={(e) => { updateGrade(selectedItem, imageRef); hide(e) }} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
                         <Button label="Cancel" onClick={(e) => hide(e)} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
                     </div>
                 </div>
