@@ -94,13 +94,20 @@ const updateBook = async (req, res) => {
     // const titlesArr = titles ? titles.split(',') : ""  
 
     //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
-
+    let gradesArray = grades;
+    if (!Array.isArray(grades)) {
+        if (typeof grades === 'string') {
+            gradesArray = grades.split(',').map(g => g.trim());
+        } else {
+            return res.status(400).json({ message: 'Grades must be an array or comma-separated string' });
+        }
+    }
     
 
     
     // book.titles = titlesArr
     const gradeDocs = await Promise.all(
-        grades.map(name => Grade.findOne({ name }))
+        gradesArray.map(name => Grade.findOne({ name }))
     );
     console.log("FOUND GRADE DOCS:", gradeDocs);
     // סינון רק כיתות שנמצאו בפועל
@@ -112,7 +119,7 @@ const updateBook = async (req, res) => {
     book.grades = gradeIds
 
     console.log(name)
-    console.log(grades)
+    console.log(gradesArray)
 
 
     const updatebook = await book.save()

@@ -233,13 +233,13 @@ export default function BooksDataView() {
         }
     };
 
-    const updateBook = async (nameRef, selectedItem, imageRef) => {
+    const updateBook = async (nameRef, selectedItem, imageRef,book) => {
         console.log(selectedItem)
         const updatebook = {
-            //...props.book,
-            name: nameRef.current.value,//? nameRef.current.value :book.body,
+            ...book,
+            name: nameRef.current.value? nameRef.current.value :book.name,
             grades: selectedItem,
-            image: imageRef.current.value// ? imageRef.current.value : book.body,
+            image: imageRef.current.value ?imageRef.current.value : book.image,
         };
         try {
             const res = await axios.put('http://localhost:7000/api/book', updatebook)
@@ -303,6 +303,8 @@ export default function BooksDataView() {
                             onClick={() => deleteBook(book._id)}
                             tooltip="מחק"
                         />
+             <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
+
                     </div>
 
                 </div>
@@ -338,6 +340,8 @@ export default function BooksDataView() {
                         onClick={() => deleteBook(book._id)}
                         tooltip="מחק"
                     />
+            <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
+                    
             </div>
 
             <div className="flex align-items-center justify-content-center mt-3">
@@ -354,7 +358,7 @@ export default function BooksDataView() {
     };
 
     const listTemplate = (books, layout) => (
-        <div className="grid grid-nogutter">{books.map((book, index) => itemTemplate(book, layout, index))}</div>
+        <div className="grid grid-nogutter">{books.map((book, index) => itemTemplate(book, layout, index)) } </div>
     );
 
     const header = () => (
@@ -367,7 +371,6 @@ export default function BooksDataView() {
         <div>
             <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} />
             <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
-            <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} />
             <div className="card">
                 <DataView value={books} listTemplate={listTemplate} layout={layout} header={header()} />
 

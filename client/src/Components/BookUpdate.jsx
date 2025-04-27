@@ -17,6 +17,7 @@ const BookUpdate = (props) => {
 
     const { updateBook } = props
     const { visible } = props
+    const {book}=props
 
 
     const nameRef = useRef("")
@@ -46,7 +47,7 @@ const BookUpdate = (props) => {
                         <label htmlFor="Postname" className="text-primary-50 font-semibold">
                             name
                         </label>
-                        <InputText id="name" label="name" className="bg-white-alpha-20 border-none p-3 text-primary-50" type="name" ref={nameRef} ></InputText>
+                        <InputText id="name" label="name" className="bg-white-alpha-20 border-none p-3 text-primary-50" type="name" ref={nameRef}defaultValue={book.name} ></InputText>
                     </div>
                     <div className="inline-flex flex-column gap-2">
                         <label htmlFor="Bookname" className="text-primary-50 font-semibold">
@@ -59,10 +60,10 @@ const BookUpdate = (props) => {
                         <label htmlFor="Postname" className="text-primary-50 font-semibold">
                             image
                         </label>
-                        <InputText id="name" label="name" className="bg-white-alpha-20 border-none p-3 text-primary-50" type="name" ref={imageRef} ></InputText>
+                        <InputText id="name" label="name" className="bg-white-alpha-20 border-none p-3 text-primary-50" type="name" ref={imageRef} defaultValue={book.image}></InputText>
                     </div>
                     <div className="flex align-items-center gap-2">
-                        <Button label="Update" onClick={(e) => { updateBook(nameRef,selectedItem, imageRef); hide(e) }} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
+                        <Button label="Update" onClick={(e) => { updateBook(nameRef,selectedItem, imageRef,book); hide(e) }} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
                         <Button label="Cancel" onClick={(e) => hide(e)} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
                     </div>
                 </div>
