@@ -32,7 +32,7 @@ const createNewBook = async (req, res) => {
     console.log(gradeIds)
     console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     const book = await Book.create({ name, grades:gradeIds, image });
-
+console.log(book.grades)
     if (!book.length > 0) {
         return res.status(201).send("invalid book")
     }
@@ -75,17 +75,32 @@ const updateBook = async (req, res) => {
     if (!book) {
         return res.status(400).json({ message: 'Book not found' })
     }
-    const gradesArr = grades ? grades.split(',') : "";
+    
     // const titlesArr = titles ? titles.split(',') : ""  
 
     //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
 
+    
+
+    
+    // book.titles = titlesArr
+    const gradeDocs = await Promise.all(
+        grades.map(name => Grade.findOne({ name }))
+    );
+    console.log("FOUND GRADE DOCS:", gradeDocs);
+    // סינון רק כיתות שנמצאו בפועל
+    const validGrades = gradeDocs.filter(doc => doc);
+    const gradeIds = validGrades.map(doc => doc._id);
+
     book.name = name
     book.image = image
-    book.grades = gradesArr
-    // book.titles = titlesArr
+    book.grades = gradeIds
 
-    const updateBook = await book.save()
+    console.log(name)
+    console.log(grades)
+
+
+    const updatebook = await book.save()
     const books = await Book.find().lean().populate("grades")
     if (!books?.length) {
         return res.status(400).json({ message: 'No books found' })
