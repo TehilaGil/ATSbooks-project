@@ -189,22 +189,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
@@ -212,6 +196,11 @@ import { classNames } from 'primereact/utils';
 import axios from 'axios';
 import BookCreate from "./BookCreat"
 import BookUpdate from './BookUpdate';
+
+import { Link } from 'react-router-dom'; // ייבוא של Link
+import Tittles from './Tittels';
+import { Route } from 'react-router-dom'; // ייבוא של Route
+
 
 export default function BooksDataView() {
     const [books, setBooks] = useState([]);
@@ -235,21 +224,21 @@ export default function BooksDataView() {
         }
     }
 
-      const deleteBook = async (bookId) => {
-    try {
-      await axios.delete(`http://localhost:7000/api/book/${bookId}`);
-      getBooks();
-    } catch (err) {
-      console.error('Error deleting book:', err);
-    }
-  };
+    const deleteBook = async (bookId) => {
+        try {
+            await axios.delete(`http://localhost:7000/api/book/${bookId}`);
+            getBooks();
+        } catch (err) {
+            console.error('Error deleting book:', err);
+        }
+    };
 
-  const updateBook = async (nameRef,selectedItem, imageRef) => {
+    const updateBook = async (nameRef, selectedItem, imageRef) => {
         console.log(selectedItem)
         const updatebook = {
             //...props.book,
-            name: nameRef.current.value ,//? nameRef.current.value :book.body,
-            grades: selectedItem ,
+            name: nameRef.current.value,//? nameRef.current.value :book.body,
+            grades: selectedItem,
             image: imageRef.current.value// ? imageRef.current.value : book.body,
         };
         try {
@@ -264,7 +253,7 @@ export default function BooksDataView() {
         }
     }
 
-     const createBook = async (nameRef, selectedItem, imageRef) => {
+    const createBook = async (nameRef, selectedItem, imageRef) => {
         console.log(selectedItem)
 
         const newBook = {
@@ -283,43 +272,44 @@ export default function BooksDataView() {
         } catch (e) {
             console.error("שגיאה ביצירת ספר:", e);
         }
+
     };
 
 
 
     const listItem = (book, index) => (
         <div className="col-12" key={book._id}>
-          <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
-            <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={book.image} alt={book.name} />
-            
-            <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4 w-full">
-              {/* מידע על הספר */}
-              <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                <div className="text-2xl font-bold text-900">{book.name}</div>
-                <div className="text-sm text-color-secondary">מספר שכבות גיל: {book.grades.length}</div>
-              </div>
-      
-              {/* כפתורים בצד ימין */}
-              <div className="flex align-items-center justify-content-end gap-2 w-full sm:w-auto">
-                <Button
-                  icon="pi pi-pencil"
-                  className="p-button-rounded p-button-warning"
-                  onClick={() => setVisible(true)}
-                  tooltip="ערוך"
-                />
-                <Button
-                  icon="pi pi-trash"
-                  className="p-button-rounded p-button-danger"
-                  onClick={() => deleteBook(book._id)}
-                  tooltip="מחק"
-                />
-              </div>
-      
+            <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
+                <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={book.image} alt={book.name} />
+
+                <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4 w-full">
+                    {/* מידע על הספר */}
+                    <div className="flex flex-column align-items-center sm:align-items-start gap-3">
+                        <div className="text-2xl font-bold text-900">{book.name}</div>
+                        <div className="text-sm text-color-secondary">מספר שכבות גיל: {book.grades.length}</div>
+                    </div>
+
+                    {/* כפתורים בצד ימין */}
+                    <div className="flex align-items-center justify-content-end gap-2 w-full sm:w-auto">
+                        <Button
+                            icon="pi pi-pencil"
+                            className="p-button-rounded p-button-warning"
+                            onClick={() => setVisible(true)}
+                            tooltip="ערוך"
+                        />
+                        <Button
+                            icon="pi pi-trash"
+                            className="p-button-rounded p-button-danger"
+                            onClick={() => deleteBook(book._id)}
+                            tooltip="מחק"
+                        />
+                    </div>
+
+                </div>
             </div>
-          </div>
         </div>
-      );
-      
+    );
+
     const gridItem = (book) => (
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={book._id}>
             <div className="p-4 border-1 surface-border surface-card border-round">
@@ -327,29 +317,35 @@ export default function BooksDataView() {
                     <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} />
                     <div className="text-2xl font-bold">{book.name}</div>
                     <strong>Suitable for:</strong>
-                  
+
                     {console.log("Book grades:", book.grades)}
                     <ul className="m-0 pl-3 list-disc text-xs">
                         {book.grades.map((grade, idx) => (
                             <li key={idx}>{grade.name}</li>
                         ))}
-                    </ul>                </div>
-                <div className="flex align-items-center justify-content-center mt-3">
-                     <Button
-            icon="pi pi-pencil"
-            className="p-button-rounded p-button-warning"
-             onClick={() =>setVisible(true)}
-            tooltip="ערוך"
-          />
-          <Button
-            icon="pi pi-trash"
-            className="p-button-rounded p-button-danger"
-            onClick={() => deleteBook(book._id)}
-            tooltip="מחק"
-            />
+                    </ul>
                 </div>
+                <div className="flex align-items-center justify-content-center mt-3">
+                    <Button
+                        icon="pi pi-pencil"
+                        className="p-button-rounded p-button-warning"
+                        onClick={() => setVisible(true)}
+                        tooltip="ערוך"
+                    />
+                    <Button
+                        icon="pi pi-trash"
+                        className="p-button-rounded p-button-danger"
+                        onClick={() => deleteBook(book._id)}
+                        tooltip="מחק"
+                    />
             </div>
+
+            <div className="flex align-items-center justify-content-center mt-3">
+            </div> <Link to={`/book/${book._id}`} className="text-center p-2">
+                <Button icon="pi pi-search" className="p-button-rounded" label="לפרטים" />
+            </Link>
         </div>
+        </div >
     );
 
     const itemTemplate = (book, layout, index) => {
@@ -374,24 +370,8 @@ export default function BooksDataView() {
             <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} />
             <div className="card">
                 <DataView value={books} listTemplate={listTemplate} layout={layout} header={header()} />
+
             </div></div>
     );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -152,10 +152,7 @@ const UpdateUser = (props) => {
                 // setUserCon(res.data.user)//
                 // navigate('/home'); // מעבר לדף הבית
             }
-            else
-            {
-            console.log("okijuhtfrd")
-            }
+            
         } catch (e) {
             console.error("Error updating user:", e);
         }

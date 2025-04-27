@@ -1,78 +1,3 @@
-// import './index.css';
-// import './flags.css';
-// import './App.css';
-
-// import { PrimeReactProvider } from 'primereact/api';
-
-// import 'primeicons/primeicons.css';
-// import 'primeflex/primeflex.css';
-// import 'primereact/resources/primereact.css';
-// import 'primereact/resources/themes/lara-light-indigo/theme.css';
-// import  { Suspense, useState } from 'react';
-// import userName from './Context/UserName';
-
-// import React from 'react'; 
-// import { Menubar } from 'primereact/menubar';
-// import { useNavigate } from 'react-router-dom';
-// //import userName from './Context'
-
-// import { Link, Route, Routes } from 'react-router-dom'
-
-// const LazyGrade = React.lazy(() => import('./Components/Grades'))
-// const LazyHome = React.lazy(() => import('./Components/Home'))
-// const LazyLogOut = React.lazy(() => import('./Components/LogOut'))
-
-// //import App from './App';
-// function App() {
-//   const [name, setName] = useState("userName")
-//   const navigate = useNavigate();
-//   const items = [
-//         {
-//             label: 'Home',
-//             icon: 'pi pi-home',
-//             command: () => {
-//               navigate('./Home')
-//         }
-//       },
-//         {
-//             label: 'Grades',
-//             icon: 'pi pi-user',
-//             command: () => {
-//              navigate('./Grades')
-//           }
-//         },
-//         {
-//           label: name,
-//           icon: 'pi pi-user',
-//           command: () => {
-//            navigate('./LogOut')
-//         }
-//       }
-//     ];
-    
-//   return (
-//       <div className="App">
-//         <div className="card">
-//             <Menubar model={items} />
-//         </div>
-        
-//      <div id="navbar">
-//        </div>
- 
-//       <userName.Provider value={{ name, setName }} >
-//        <Routes> 
-//        <Route path='/Home' element={<Suspense fallback="loading..."><LazyHome  /></Suspense>} />
-//        <Route path='/Grades' element={<Suspense fallback="loading..."><LazyGrade  /></Suspense>} />
-//        <Route path='/LogOut' element={<Suspense fallback="loading..."><LazyLogOut  /></Suspense>} />
-//        </Routes>
-//        </userName.Provider>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-
 
 import './index.css';
 import './flags.css';
@@ -84,7 +9,7 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import 'primereact/resources/primereact.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
-import React, { Suspense, useState ,useEffect} from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import userName from './Context/UserName';
 
 // import UserProvider from './Context/Provider';
@@ -99,17 +24,17 @@ const LazyGrade = React.lazy(() => import('./Components/Grades'));
 const LazyHome = React.lazy(() => import('./Components/Home'));
 const LazyLogOut = React.lazy(() => import('./Components/LogOut'));
 const LazyRegister = React.lazy(() => import('./Components/Register'));
-const LazyLogin= React.lazy(() => import('./Components/login'));
+const LazyLogin = React.lazy(() => import('./Components/login'));
 const LazyUser = React.lazy(() => import('./Components/Users'));
 const LazyUpdateUser = React.lazy(() => import('./Components/UserUpdate'));
 const LazyBook = React.lazy(() => import('./Components/Books'));
-
+const LazyTittles = React.lazy(() => import('./Components/Tittels'));
 
 
 
 
 function App() {
-  const [user, setUser] = useState({name:"UserName"});
+  const [user, setUser] = useState({ name: "UserName" });
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
   const [menuVisible, setMenuVisible] = useState(false); // מצב הצגת התפריט
@@ -120,7 +45,7 @@ function App() {
 
   useEffect(() => {
     console.log("User state in App updated:", user);
-}, [user]);
+  }, [user]);
   // הגדרת אפשרויות בתפריט הירידה (Register, LogOut)
   const userMenu = [
     ...(!user || user.name === "UserName" ? [{
@@ -130,7 +55,7 @@ function App() {
         navigate('./Register');
         setMenuVisible(false);
       }
-    }] : [ {
+    }] : [{
       label: 'Update User',
       icon: 'pi pi-user-edit',
       command: () => {
@@ -138,29 +63,29 @@ function App() {
         setMenuVisible(false);
       }
     }]),
-    
+
     {
-      label: user && user.name !== "UserName" ? 'Logout'  : 'Login',
+      label: user && user.name !== "UserName" ? 'Logout' : 'Login',
       icon: 'pi pi-user',
       command: () => {
         if (user && user.name !== "UserName") {
-            setUser({ name: "UserName" , confirm: false}); 
-            setMenuVisible(false); 
-            navigate('/Home');  
+          setUser({ name: "UserName", confirm: false });
+          setMenuVisible(false);
+          navigate('/Home');
         } else {
-            navigate('/Login');
-            
+          navigate('/Login');
+
         }
       }
-  }
+    }
   ];
 
   // הכפתור בצד ימין, עם שם המשתמש, לצד החץ
   const end = (
     <div className="user-container">
       <div className="user-name">{user.name}{user.name !== "UserName" && user.confirm === false && (
-  <p className="avalable"><br/>You are not confirmed</p>
-)}</div>
+        <p className="avalable"><br />You are not confirmed</p>
+      )}</div>
       <Button
         icon="pi pi-caret-down"
         className="user-dropdown"
@@ -202,7 +127,7 @@ function App() {
       }
     },
     // user === UserName &&
-    
+
     {
       label: 'Users',
       icon: 'pi pi-user',
@@ -217,28 +142,31 @@ function App() {
       <div className="card">
         <Menubar model={items} end={end} />
       </div>
-      <UserProvider  userCon={user}>
-     
+      <UserProvider userCon={user}>
+
         <Routes>
-        <Route path='/Login' element={<Suspense fallback="loading..."><LazyLogin setUserFunc={setUserCallback} /></Suspense>} />
+          <Route path='/Login' element={<Suspense fallback="loading..."><LazyLogin setUserFunc={setUserCallback} /></Suspense>} />
           {/* <Route path='/Login'  setUserFunc={setUserCallback} element={<Suspense fallback="loading..."><LazyLogin /></Suspense>} /> */}
           <Route path='/Home' element={<Suspense fallback="loading..."><LazyHome /></Suspense>} />
           <Route path='/Grades' element={<Suspense fallback="loading..."><LazyGrade /></Suspense>} />
           <Route path='/Users' element={<Suspense fallback="loading..."><LazyUser /></Suspense>} />
           <Route path='/LogOut' element={<Suspense fallback="loading..."><LazyLogOut /></Suspense>} />
           <Route path='/Register' element={<Suspense fallback="loading..."><LazyRegister /></Suspense>} />
-          <Route path='/Update' element={<Suspense fallback="loading..."><LazyUpdateUser user={user}  setUserFunc={setUserCallback}/></Suspense>} />
-          <Route path='/Books' element={<Suspense fallback="loading..."><LazyBook /></Suspense>} /> 
+          <Route path='/Update' element={<Suspense fallback="loading..."><LazyUpdateUser user={user} setUserFunc={setUserCallback} /></Suspense>} />
+          <Route path='/Books' element={<Suspense fallback="loading..."><LazyBook /></Suspense>} />
+          <Route path="/book/:bookId" element={<LazyTittles />} />
+
+
         </Routes>
-        <UpdateUser 
-  visible={showUpdateDialog} 
-  onHide={() => setShowUpdateDialog(false)} 
-  
-  user={user} 
-  setUserFunc={setUserCallback} 
-/>
-        </UserProvider>
-        </div>
+        <UpdateUser
+          visible={showUpdateDialog}
+          onHide={() => setShowUpdateDialog(false)}
+
+          user={user}
+          setUserFunc={setUserCallback}
+        />
+      </UserProvider>
+    </div>
 
   );
 }
@@ -246,10 +174,10 @@ function App() {
 export default App;
 
 
- 
 
 
 
-      
+
+
 
 
