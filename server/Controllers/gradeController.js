@@ -1,4 +1,8 @@
 const Grade = require("../models/Grade");
+const Book = require("../Controllers/bookController")
+
+const { deleteBook } = require('../Controllers/bookController');
+
 // create
 const creatNewGrade = async (req, res) => {
     const { name, image } = req.body;
@@ -41,7 +45,7 @@ const updateGrade = async (req, res) => {
     if (!name) {
         return res.status(400).json({ message: "Name is required" });
     }
-    console.log( _id, name, image );
+    console.log(_id, name, image);
     const grade = await Grade.findById(_id);
     console.log(grade);
     if (!grade) {
@@ -67,6 +71,8 @@ const updateGrade = async (req, res) => {
 
 
 // delete
+
+
 const deleteGrade = async (req, res) => {
     const { id } = req.params;
     const grade = await Grade.findById(id);
@@ -74,16 +80,30 @@ const deleteGrade = async (req, res) => {
         return res.status(400).json({ message: `Grade with ID ${id} not found` });
     }
 
+    const books = await Book.find({ Grade: id }).exec();
+
+    if (books.length > 0) {
+        await Promise.all(books.map(async (book) => {
+            if (book.grades.length <= 1) {
+                await deleteBook({ params: { id: book._id } }, res);
+            } else {
+                book.grades = book.grades.filter(bookGrade => bookGrade._id !== grade._id);
+                await book.save(); 
+            }
+        }));
+    }
+
     const result = await Grade.deleteOne({ _id: id });
     if (!result.deletedCount) {
         return res.status(500).json({ message: "Failed to delete grade" });
     }
 
+    // החזרת הרשימה החדשה של הכיתות
     const grades = await Grade.find().lean();
     if (!grades?.length) {
         return res.status(204).json({ message: 'No grades found' });
     }
+    
     res.json(grades);
 };
-
 module.exports = { creatNewGrade, getAllGrade, updateGrade, deleteGrade };//,getGradeById

@@ -12,9 +12,9 @@ router.get('/getAllTitles/:id',titleController.getAllTitles)
 
 router.get('/getTitleById/:id',titleController.getTitleById)
 
-router.delete('/:id',verifyJWT,admirMiddleware,titleController.deleteTitle)
+// router.delete('/:id',verifyJWT,admirMiddleware,titleController.deleteTitle)
 
-router.delete('/:id',verifyJWT,titleController.deleteTitle)
+router.delete('/:id',titleController.deleteTitle)
 
 
 module.exports=router
