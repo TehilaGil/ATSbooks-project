@@ -18,21 +18,24 @@ const createFile = async (req, res) => {
   }
 };
 
-// שליפת כל הקבצים לפי כותרת מסוימת
-const getFilesByTitle = async (req, res) => {
-  try {
-    const { titleId } = req.params;
 
-    // חיפוש קבצים ששייכים לכותרת מסוימת
-    const files = await File.find({ title: titleId }).populate("title");
-    if (!files.length) {
-      return res.status(404).json({ message: "No files found for this" });
-    }
-    res.status(200).json(files);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+
+// שליפת קבצים לפי כותרת
+
+const getFilesByTitle = async (req, res) => {
+  const { titleId } = req.params;  // ה-ID של הכותרת שנשלח בכתובת
+  try {
+      const files = await File.find({ title: titleId }).lean();  // שליפת כל הקבצים ששייכים לכותרת זו
+      if (!files?.length) {
+          return res.status(400).json({ message: 'No files found for this title' });
+      }
+      res.json(files);  // מחזירים את הקבצים
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
 
 // שליפת קובץ לפי מזהה
 const getFileById = async (req, res) => {

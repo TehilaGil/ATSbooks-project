@@ -30,13 +30,30 @@ const createNewBook = async (req, res) => {
     const validGrades = gradeDocs.filter(doc => doc);
     const gradeIds = validGrades.map(doc => doc._id);
     console.log(gradeIds)
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     const book = await Book.create({ name, grades:gradeIds, image });
 
+
+    // if (!book)
     if (!book.length > 0) {
         return res.status(201).send("invalid book")
     }
+
+    const title1= 'Book'
+    const title2='Exams'
+    const title3='Exercises'
+    const title4= 'Disk'
+
+    const titleN1 = await Title.create({ name:title1, book: book._id });
+    const titleN2 = await Title.create({ name:title2, book: book._id });  
+    const titleN3 = await Title.create({ name:title3, book: book._id });
+    const titleN4 = await Title.create({ name:title4, book: book._id });
+    console.log(titleN1, titleN2, titleN3, titleN4);  // לדפוק לוג ולראות את התשובות
+
+    if (!titleN1 || !titleN2 || !titleN3 || !titleN4) {
+        return res.status(500).json({ message: 'Failed to create title' });
+    }
     res.json(book)
+ 
 }
 
 const getAllBooks = async (req, res) => {
