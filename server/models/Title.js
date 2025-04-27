@@ -10,7 +10,7 @@ const titleSchema = new mongoose.Schema({
     book: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "Book",
+        ref: "Book"
     }
 }, {
     timestamps: true
