@@ -6,7 +6,7 @@ const verifyJWT=require("../middleware/verifyJWT")
 const admirMiddleware=require("../middleware/admirMiddleware")
 
 
-router.post('/',verifyJWT,admirMiddleware,titleController.createNewTitle)
+router.post('/',titleController.createNewTitle)
 
 router.get('/getAllTitles/:id',titleController.getAllTitles)
 

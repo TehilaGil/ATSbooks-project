@@ -9,9 +9,8 @@ const titleController = require("../Controllers/titleController")
 const createNewBook = async (req, res) => {
 
     const { name, grades, image } = req.body
-    console.log(grades)
     let gradesArr = [];
-    gradesArr=grades
+    gradesArr = grades
     if (!name) {
         return res.status(400).send("name is required")
     }
@@ -25,33 +24,62 @@ const createNewBook = async (req, res) => {
     const gradeDocs = await Promise.all(
         gradesArr.map(name => Grade.findOne({ name }))
     );
-    
+    console.log("111")
+
     // סינון רק כיתות שנמצאו בפועל
     const validGrades = gradeDocs.filter(doc => doc);
     const gradeIds = validGrades.map(doc => doc._id);
-    console.log(gradeIds)
-    const book = await Book.create({ name, grades:gradeIds, image });
 
-    if (!book.length > 0) {
+    if (validGrades.length === 0) {
+        return res.status(400).send("No valid grades found for the book");
+    }
+
+    console.log("222")
+
+    const book = await Book.create({ name, grades: gradeIds, image });
+    console.log("@@@@@@@");
+
+    console.log(book)
+    if (!book) {
+        console.log("invalid");
+
         return res.status(201).send("invalid book")
     }
 
-    const title1= 'Book'
-    const title2='Exams'
-    const title3='Exercises'
-    const title4= 'Disk'
+    // const title1= 'Book'
+    // const title2='Exams'
+    // const title3='Exercises'
+    // const title4= 'Disk'
 
-    const titleN1 = await Title.create({ name:title1, book: book._id });
-    const titleN2 = await Title.create({ name:title2, book: book._id });  
-    const titleN3 = await Title.create({ name:title3, book: book._id });
-    const titleN4 = await Title.create({ name:title4, book: book._id });
-    console.log(titleN1, titleN2, titleN3, titleN4);  // לדפוק לוג ולראות את התשובות
+    // const titleN1 = await Title.create({ name:title1, book: book._id });
+    // const titleN2 = await Title.create({ name:title2, book: book._id });  
+    // const titleN3 = await Title.create({ name:title3, book: book._id });
+    // const titleN4 = await Title.create({ name:title4, book: book._id });
+    // console.log(titleN1, titleN2, titleN3, titleN4);  // לדפוק לוג ולראות את התשובות
 
-    if (!titleN1 || !titleN2 || !titleN3 || !titleN4) {
-        return res.status(500).json({ message: 'Failed to create title' });
+    // if (!titleN1 || !titleN2 || !titleN3 || !titleN4) {
+    //     return res.status(500).json({ message: 'Failed to create title' });
+    // }
+    // res.json(book)
+
+
+    try {
+        console.log("ppp");
+
+        const titles = ['Book', 'Exams', 'Exercises', 'Disk'];
+
+        const titleDocs = await Promise.all(
+            titles.map(name => Title.create({ name, book: book._id }))
+        );
+
+        console.log('Titles created:', titleDocs);
+
+        res.json(book);
+    } catch (error) {
+        console.error('Error creating titles:', error);
+        return res.status(500).json({ message: 'Failed to create titles', error: error.message });
     }
-    res.json(book)
- 
+
 }
 
 const getAllBooks = async (req, res) => {
@@ -90,14 +118,14 @@ const updateBook = async (req, res) => {
     if (!book) {
         return res.status(400).json({ message: 'Book not found' })
     }
-    
+
     // const titlesArr = titles ? titles.split(',') : ""  
 
     //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
 
-    
 
-    
+
+
     // book.titles = titlesArr
     const gradeDocs = await Promise.all(
         grades.map(name => Grade.findOne({ name }))
