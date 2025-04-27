@@ -46,12 +46,12 @@ const createNewBook = async (req, res) => {
         return res.status(201).send("invalid book")
     }
 
-    // const title1= 'Book'
-    // const title2='Exams'
-    // const title3='Exercises'
-    // const title4= 'Disk'
+    const title1= 'Book'
+    const title2='Exams'
+    const title3='Exercises'
+    const title4= 'Disk'
 
-    // const titleN1 = await Title.create({ name:title1, book: book._id });
+     const titleN1 = await Title.create({ name:title1, book: book._id });
     // const titleN2 = await Title.create({ name:title2, book: book._id });  
     // const titleN3 = await Title.create({ name:title3, book: book._id });
     // const titleN4 = await Title.create({ name:title4, book: book._id });
@@ -170,10 +170,10 @@ const deleteBook = async (req, res) => {
         // מחיקת כל הכותרות שקשורות לספר *** (שינוי)
         await Promise.all(titles.map((title) => title.deleteOne())); // מחיקת כל הכותרות בו-זמנית
     }
-    const result = await Book.deleteOne()
+    const result = await Book.deleteOne({ _id: id })
     const books = await Book.find().lean().populate("grades")
     if (!books?.length) {
-        return res.status(400).json({ message: 'No books found' })
+        return res.json([]); // החזר מערך ריק במקום הודעת שגיאה
     }
     res.json(books)
 }

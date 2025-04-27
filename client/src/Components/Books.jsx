@@ -224,22 +224,25 @@ export default function BooksDataView() {
         }
     }
 
+ 
     const deleteBook = async (bookId) => {
         try {
-            await axios.delete(`http://localhost:7000/api/book/${bookId}`);
-            getBooks();
+            const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`);
+            // קרא ל-getBooks בכל מקרה, גם אם אין ספרים
+            setBooks(res.data)
         } catch (err) {
             console.error('Error deleting book:', err);
+            // יתכן שתרצה לקרוא ל-getBooks גם במקרה של שגיאה:
         }
     };
 
-    const updateBook = async (nameRef, selectedItem, imageRef,book) => {
+    const updateBook = async (nameRef, selectedItem, imageRef, book) => {
         console.log(selectedItem)
         const updatebook = {
             ...book,
-            name: nameRef.current.value? nameRef.current.value :book.name,
+            name: nameRef.current.value ? nameRef.current.value : book.name,
             grades: selectedItem,
-            image: imageRef.current.value ?imageRef.current.value : book.image,
+            image: imageRef.current.value ? imageRef.current.value : book.image,
         };
         try {
             const res = await axios.put('http://localhost:7000/api/book', updatebook)
@@ -284,7 +287,14 @@ export default function BooksDataView() {
                     {/* מידע על הספר */}
                     <div className="flex flex-column align-items-center sm:align-items-start gap-3">
                         <div className="text-2xl font-bold text-900">{book.name}</div>
-                        <div className="text-sm text-color-secondary">מספר שכבות גיל: {book.grades.length}</div>
+                        <strong>Suitable for:</strong>
+
+                        {console.log("Book grades:", book.grades)}
+                        <ul className="m-0 pl-3 list-disc text-xs">
+                            {book.grades.map((grade, idx) => (
+                                <li key={idx}>{grade.name}</li>
+                            ))}
+                        </ul>
                     </div>
 
                     {/* כפתורים בצד ימין */}
@@ -301,7 +311,7 @@ export default function BooksDataView() {
                             onClick={() => deleteBook(book._id)}
                             tooltip="מחק"
                         />
-             <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
+                        <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
 
                     </div>
 
@@ -338,15 +348,15 @@ export default function BooksDataView() {
                         onClick={() => deleteBook(book._id)}
                         tooltip="מחק"
                     />
-            <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
-                    
-            </div>
+                    <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
 
-            <div className="flex align-items-center justify-content-center mt-3">
-            </div> <Link to={`/book/${book._id}`} className="text-center p-2">
-                <Button icon="pi pi-search" className="p-button-rounded" label="לפרטים" />
-            </Link>
-        </div>
+                </div>
+
+                <div className="flex align-items-center justify-content-center mt-3">
+                </div> <Link to={`/book/${book._id}`} className="text-center p-2">
+                    <Button icon="pi pi-search" className="p-button-rounded" label="לפרטים" />
+                </Link>
+            </div>
         </div >
     );
 
@@ -356,7 +366,7 @@ export default function BooksDataView() {
     };
 
     const listTemplate = (books, layout) => (
-        <div className="grid grid-nogutter">{books.map((book, index) => itemTemplate(book, layout, index)) } </div>
+        <div className="grid grid-nogutter">{books.map((book, index) => itemTemplate(book, layout, index))} </div>
     );
 
     const header = () => (
