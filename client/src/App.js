@@ -154,7 +154,9 @@ function App() {
           <Route path='/Register' element={<Suspense fallback="loading..."><LazyRegister /></Suspense>} />
           <Route path='/Update' element={<Suspense fallback="loading..."><LazyUpdateUser user={user} setUserFunc={setUserCallback} /></Suspense>} />
           <Route path='/Books' element={<Suspense fallback="loading..."><LazyBook /></Suspense>} />
-          <Route path="/book/:bookId" element={<LazyTittles />} />
+          <Route path="/Book/:bookName" element={<Suspense fallback="loading..."><LazyTittles /></Suspense>} />
+          <Route path="/Grades/:gradeName" element={<Suspense fallback="loading..."><LazyHome /></Suspense>} />
+
 
 
         </Routes>
