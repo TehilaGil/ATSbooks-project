@@ -59,7 +59,7 @@ console.log("gradeDocs",gradeDocs)
     if (!titleN1 || !titleN2 || !titleN3 || !titleN4) {
         return res.status(500).json({ message: 'Failed to create title' });
     }
-    res.json(book)
+    // res.json(book)
 
 
     try {
