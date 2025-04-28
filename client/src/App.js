@@ -29,6 +29,8 @@ const LazyUser = React.lazy(() => import('./Components/Users'));
 const LazyUpdateUser = React.lazy(() => import('./Components/UserUpdate'));
 const LazyBook = React.lazy(() => import('./Components/Books'));
 const LazyTitles = React.lazy(() => import('./Components/Titles'));
+const LazyRecorder = React.lazy(() => import('./Components/Recorder'));
+
 
 
 

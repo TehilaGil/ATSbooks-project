@@ -1,38 +1,30 @@
-const mongoose=require("mongoose")
-
+const mongoose = require("mongoose");
 
 const fileSchema = new mongoose.Schema({
-
-
-    name:
-    {      
-    type:String,
-    lowercase:true,
-    required:true 
+    name: {
+        type: String,
+        lowercase: true,
+        required: true
     },
-    path:{
-        type:String,
-        lowercase:true,
-        required:true 
-
+    path: {
+        type: String,
+        lowercase: true,
+        required: true
+     },
+    // type: {
+    //     type: String,
+    //     required: true,
+    //     enum: ["pdf", "audio", "image", "video", "mp3", "wav", "txt", "doc", "docx"]
+    // },
+    size: {
+        type: Number,  // שדה גודל כמספר (בייטים)
+        required: true
     },
-    type:
-    {
-        type:String,
-        required:true,
-        enum: ["pdf", "audio", "image", "video" ,"mp3", "wav","txt", "doc","docx",]
-    },
-    size:
-    {
-        type:String,
-        required:true
-    },
- title: {
-        type:mongoose.Schema.Types.ObjectId,
+    title: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref:"Title"
+        ref: "Title"
     }
-},{})
+}, { timestamps: true });  // הוספת תאריכים של יצירה ועדכון של הקובץ
 
-
-module.exports=mongoose.model("File",fileSchema)
+module.exports = mongoose.model("File", fileSchema);

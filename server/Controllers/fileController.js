@@ -1,98 +1,152 @@
-const File = require("../models/File")
+const File = require("../models/File"); 
+const fs = require("fs");
+const path = require("path");
 
-// יצירת קובץ חדש
-const createFile = async (req, res) => {
+
+const uploadFile = async (req, res) => {
   try {
-    const { name, path, type, size, title } = req.body;
+    const { title } = req.body; 
 
-    // בדיקת שדות חובה
-    if (!name || !path || !type || !size || !title) {
-      return res.status(400).json({ message: "כל השדות חובה" });
+    if (!req.file) {
+      return res.status(400).send({ message: "לא נבחר קובץ להעלאה" });
     }
 
-    // יצירת ושמירת הקובץ
-    const newFile = await File.create({ name, path, type, size, title });
-    res.status(201).json(newFile);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const newFile = new File({
+      name: req.file.name,        
+      path: req.file.path,                 
+      type: req.file.mimetype.split('/')[1], 
+      size: (req.file.size / 1024).toFixed(2) + " KB", 
+      title: title,                       
+    });
+
+    await newFile.save();
+
+    res.status(201).send(newFile);
+  } catch (err) {
+    res.status(500).send({ message: "שגיאה בהעלאת קובץ", error: err.message });
   }
 };
 
 
-
-// שליפת קבצים לפי כותרת
 
 const getFilesByTitle = async (req, res) => {
-  const { titleId } = req.params;  // ה-ID של הכותרת שנשלח בכתובת
   try {
-      const files = await File.find({ title: titleId }).lean();  // שליפת כל הקבצים ששייכים לכותרת זו
-      if (!files?.length) {
-          return res.status(400).json({ message: 'No files found for this title' });
-      }
-      res.json(files);  // מחזירים את הקבצים
-  } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Internal Server Error' });
-  }
-};
+    const { titleId } = req.params;
+    const files = await File.find({ title: titleId }).populate('title').exec();
 
-
-// שליפת קובץ לפי מזהה
-const getFileById = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // חיפוש הקובץ לפי מזהה
-    const file = await File.findById(id).populate("title");
-    if (!file) {
-      return res.status(404).json({ message: "File not found" });
+    if (files.length === 0) {
+      return res.status(404).send({ message: "לא נמצאו קבצים תחת כותרת זו" });
     }
-    res.status(200).json(file);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+
+    res.status(200).send(files);
+  } catch (err) {
+    res.status(500).send({ message: "שגיאה בהבאת קבצים לפי כותרת", error: err.message });
   }
 };
 
-// עדכון קובץ
+
+
+// שליפת כל הקבצים
+const getAllFiles = async (req, res) => {
+  try {
+    const files = await File.find().populate('title').exec();
+    res.status(200).send(files);
+  } catch (err) {
+    res.status(500).send({ message: "שגיאה בהבאת הקבצים", error: err.message });
+  }
+};
+
+
+
+// הורדת קובץ
+const downloadFile = async (req, res) => {
+  try {
+    const { fileId } = req.params;
+    const file = await File.findById(fileId);
+
+    if (!file) {
+      return res.status(404).send({ message: "קובץ לא נמצא" });
+    }
+
+    res.download(file.path, file.name);
+  } catch (err) {
+    res.status(500).send({ message: "שגיאה בהורדת קובץ", error: err.message });
+  }
+};
+
+const deleteFile = async (req, res) => {
+  try {
+    const { fileId } = req.params;
+
+    const file = await File.findById(fileId);
+    if (!file) {
+      return res.status(404).send({ message: "קובץ לא נמצא" });
+    }
+
+    // מחיקה מהשרת (פיזית)
+    fs.unlink(path.resolve(file.path), async (err) => {
+      if (err) {
+        return res.status(500).send({ message: "שגיאה במחיקת קובץ מהשרת", error: err.message });
+      }
+
+      // מחיקה מהמסד נתונים
+      await File.findByIdAndDelete(fileId);
+
+      res.status(200).send({ message: "קובץ נמחק בהצלחה" });
+    });
+  } catch (err) {
+    res.status(500).send({ message: "שגיאה במחיקת קובץ", error: err.message });
+  }
+};
+
 const updateFile = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, path, type, size, title } = req.body;
+    const { fileId } = req.params;
+    const { newName, newTitle } = req.body;
+    const newFile = req.file; // אם עלה קובץ חדש
 
-    // חיפוש הקובץ לפי מזהה
-    const file = await File.findById(id);
+    const file = await File.findById(fileId);
     if (!file) {
-      return res.status(404).json({ message: "File not found" });
+      return res.status(404).send({ message: "קובץ לא נמצא" });
     }
 
-    // עדכון שדות
-    file.name = name;
-    file.path = path;
-    file.type = type;
-    file.size = size;
-    file.title = title;
+    // אם עלה קובץ חדש, מוחקים את הקובץ הישן מהשרת
+    if (newFile) {
+      fs.unlink(path.resolve(file.path), (err) => {
+        if (err) {
+          console.error("שגיאה במחיקת הקובץ הישן:", err.message);
+        }
+      });
 
-    // שמירת השינויים
-    const updatedFile = await file.save();
-    res.status(200).json(updatedFile);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+      // מעדכנים פרטי הקובץ במסד נתונים
+      file.name = newFile.name.toLowerCase();
+      file.path = newFile.path;
+      file.type = newFile.mimetype.split("/")[1]; // לדוג' "pdf", "jpeg"
+      file.size = newFile.size.toString();
+    }
+
+    // גם אם לא עלה קובץ חדש, ניתן לעדכן שם וכותרת
+    if (newName) {
+      file.name = newName.toLowerCase();
+    }
+    if (newTitle) {
+      file.title = newTitle;
+    }
+
+    await file.save();
+
+    res.status(200).send(file);
+
+  } catch (err) {
+    res.status(500).send({ message: "שגיאה בעדכון קובץ", error: err.message });
   }
 };
-
-// מחיקת קובץ
-const deleteFile = async (req, res) => {
-    const { id } = req.params
-    const file = await File.findById(id).exec()
-    if (!file) {
-        return res.status(400).json({ message: 'file not found' })
-    }
-    const result = await File.deleteOne()
-    const files = await File.find().lean().populate("title")
-    if (!files?.length) {
-        return res.status(400).json({ message: 'No files found' })
-    }
-    res.json(files)
+module.exports = {
+  uploadFile,
+  getAllFiles,
+  getFilesByTitle,
+  downloadFile,
+  deleteFile,
+  updateFile
 };
 
-module.exports = {createFile,getFilesByTitle,getFileById,updateFile,deleteFile};
