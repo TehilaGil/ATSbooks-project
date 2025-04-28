@@ -8,6 +8,8 @@ import UpdateGrade from "./GradeUpdate"
 import 'primeicons/primeicons.css';
 import axios from 'axios'
 import '../Grade.css';
+import { Link } from 'react-router-dom'; 
+
 
 const Grade = (props) => {
     const [visible, setVisible] = useState(false);
@@ -40,31 +42,47 @@ const Grade = (props) => {
     }
 
 
+    // const footer = (
+
+    //     <div className="card flex flex-wrap gap-2 justify-content-center">
+
+    //         <Button icon="pi pi-times" label="Delete" onClick={() => { deleteGrade(props.grade._id) }} />
+
+    //         <Button label="Update" icon="pi pi-pencil" onClick={() => setVisible(true)} />
+
+    //          <Link to={`/grads/${props.grade._id}`} className="text-center p-2">
+    //                 <Button icon="pi pi-search" className="p-button-rounded" label="For details" />
+    //         </Link>
+
+    //         {/* <GradesUpdate VisibleUpdatGrade={VisibleUpdatGrade} setVisibleUpdatGrade={setVisibleUpdatGrade} updateGrade={updateGrade} grade={props.grade} /> */}
+    //         <UpdateGrade updateGrade={updateGrade} setVisible={setVisible} visible={visible} grade={props.grade} />
+    //     </div>
+    // );
+
     const footer = (
-
         <div className="card flex flex-wrap gap-2 justify-content-center">
-
             <Button icon="pi pi-times" label="Delete" onClick={() => { deleteGrade(props.grade._id) }} />
-
-            <Button label="Update" icon="pi pi-pencil" onClick={() => setVisible(true)} />
-
-            {/* <GradesUpdate VisibleUpdatGrade={VisibleUpdatGrade} setVisibleUpdatGrade={setVisibleUpdatGrade} updateGrade={updateGrade} grade={props.grade} /> */}
+            <Button label="Update" icon="pi pi-pencil" onClick={() => setVisible(true)} />  
             <UpdateGrade updateGrade={updateGrade} setVisible={setVisible} visible={visible} grade={props.grade} />
         </div>
     );
 
+
     return (
 
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={props.grade._id}>
+          
             <div className="p-4 border-1 surface-border surface-card border-round">
+            <Link to={`/grads/${props.grade.name}`} className="link-custom">
                 <div className="flex flex-column align-items-center gap-3 py-5">
                     <img className="w-9 shadow-2 border-round" src={`/pictures/${props.grade.name}.png `} alt={props.grade.name} footer={footer} />
                     {/* ${grade.image} */}
                     <div className="text-2xl font-bold">{props.grade.name} {footer}</div>
                 </div>
+                 </Link>
             </div>
         </div>
-
+       
     )
 
 }

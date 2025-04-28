@@ -106,3 +106,14 @@ margin-top: -8px;
 .custom-multiselect {
   max-height: none !important;
 }
+
+.link-custom {
+  text-decoration: none; /* מסיר את ההדגשה */
+  color: inherit; /* מבטיח שהצבע יהיה כמו הטקסט הסביבתי */
+}
+
+.link-custom:hover,
+.link-custom:focus,
+.link-custom:active {
+  color: inherit; /* שומר על הצבע המקורי גם בעת ריחוף או לחיצה */
+}
