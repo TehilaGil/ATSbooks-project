@@ -28,7 +28,7 @@ const LazyLogin = React.lazy(() => import('./Components/login'));
 const LazyUser = React.lazy(() => import('./Components/Users'));
 const LazyUpdateUser = React.lazy(() => import('./Components/UserUpdate'));
 const LazyBook = React.lazy(() => import('./Components/Books'));
-const LazyTittles = React.lazy(() => import('./Components/Tittels'));
+const LazyTitles = React.lazy(() => import('./Components/Titles'));
 
 
 
@@ -154,10 +154,13 @@ function App() {
           <Route path='/Register' element={<Suspense fallback="loading..."><LazyRegister /></Suspense>} />
           <Route path='/Update' element={<Suspense fallback="loading..."><LazyUpdateUser user={user} setUserFunc={setUserCallback} /></Suspense>} />
           <Route path='/Books' element={<Suspense fallback="loading..."><LazyBook /></Suspense>} />
-          <Route path="/Book/:bookName" element={<Suspense fallback="loading..."><LazyTittles /></Suspense>} />
-          <Route path="/Grades/:gradeName" element={<Suspense fallback="loading..."><LazyHome /></Suspense>} />
+          {/* <Route path="/Book/:bookName" element={<Suspense fallback="loading..."><LazyTittles /></Suspense>} /> */}
+          <Route path="/Books/:gradeId" element={<Suspense fallback="loading..."><LazyBook /></Suspense>} />
+          <Route path="/Titles/:bookId" element={<Suspense fallback="loading..."><LazyTitles /></Suspense>} />
 
-
+          
+                
+            
 
         </Routes>
         <UpdateUser

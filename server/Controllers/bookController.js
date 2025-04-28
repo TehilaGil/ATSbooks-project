@@ -45,21 +45,21 @@ console.log("gradeDocs",gradeDocs)
         return res.status(201).send("invalid book")
     }
 
-    // const title1= 'Book'
-    // const title2='Exams'
-    // const title3='Exercises'
-    // const title4= 'Disk'
+    const title1= 'Book'
+    const title2='Exams'
+    const title3='Exercises'
+    const title4= 'Disk'
 
-    //  const titleN1 = await Title.create({ name:title1, book: book._id });
-    // const titleN2 = await Title.create({ name:title2, book: book._id });  
-    // const titleN3 = await Title.create({ name:title3, book: book._id });
-    // const titleN4 = await Title.create({ name:title4, book: book._id });
-    // console.log(titleN1, titleN2, titleN3, titleN4);  // לדפוק לוג ולראות את התשובות
+     const titleN1 = await Title.create({ name:title1, book: book._id });
+    const titleN2 = await Title.create({ name:title2, book: book._id });  
+    const titleN3 = await Title.create({ name:title3, book: book._id });
+    const titleN4 = await Title.create({ name:title4, book: book._id });
+    console.log(titleN1, titleN2, titleN3, titleN4);  // לדפוק לוג ולראות את התשובות
 
-    // if (!titleN1 || !titleN2 || !titleN3 || !titleN4) {
-    //     return res.status(500).json({ message: 'Failed to create title' });
-    // }
-    // res.json(book)
+    if (!titleN1 || !titleN2 || !titleN3 || !titleN4) {
+        return res.status(500).json({ message: 'Failed to create title' });
+    }
+    res.json(book)
 
 
     try {
@@ -99,10 +99,10 @@ const getBookById = async (req, res) => {
 }
 
 const getBooksForGrade = async (req, res) => {
-    const { gradeId } = req.params
+    const { Id } = req.params
 
     // חפש את כל הספרים שהכיתה עם ה-ID הזה נמצאת במערך grades
-    const books = await Book.find({ grades: gradeId }).lean().populate("grades")
+    const books = await Book.find({ grades:Id }).lean().populate("grades")
 
     if (!books?.length) {
         return res.status(400).json({ message: 'No books found for this grade' })
@@ -163,7 +163,7 @@ const deleteBook = async (req, res) => {
     if (!book) {
         return res.status(400).json({ message: 'book not found' })
     }
-    
+
     const result = await Book.deleteOne({ _id: id })
     const books = await Book.find().lean().populate("grades")
     if (!books?.length) {
@@ -172,17 +172,17 @@ const deleteBook = async (req, res) => {
     res.json(books)
 }
 
-const getAllBooksByGrade = async (req, res) => {
-    const { id } = req.params
-    // getGradeById(id)//???
+// const getAllBooksByGrade = async (req, res) => {
+//     const { id } = req.params
+//     // getGradeById(id)//???
 
-    if (!booksForGrade?.length) {
-        return res.status(400).json({ message: 'There are no books for this grade' })
-    }
-    res.json(booksForGrade)
-}
-
-
+//     if (!booksForGrade?.length) {
+//         return res.status(400).json({ message: 'There are no books for this grade' })
+//     }
+//     res.json(booksForGrade)
+// }
 
 
-module.exports = { createNewBook, getAllBooks, getBookById, updateBook, deleteBook, getAllBooksByGrade }
+
+
+module.exports = { createNewBook, getAllBooks, getBookById, updateBook, deleteBook, getBooksForGrade }

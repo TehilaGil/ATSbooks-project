@@ -74,7 +74,7 @@ const Grade = (props) => {
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={props.grade._id}>
           
             <div className="p-4 border-1 surface-border surface-card border-round">
-            <Link to={`/grads/${props.grade.name}`} className="link-custom">
+            <Link to={`/books/${props.grade._id}`} className="link-custom">
                 <div className="flex flex-column align-items-center gap-3 py-5">
                     <img className="w-9 shadow-2 border-round" src={`/pictures/${props.grade.name}.png `} alt={props.grade.name} footer={footer} />
                     {/* ${grade.image} */}

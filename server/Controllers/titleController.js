@@ -23,26 +23,26 @@ const createNewTitle = async (req, res) => {
 };
 
 //הנוכחי book  להביא את כל הכותרות ל 
-const getAllTitles = async (req, res) => {
-    const { id } = req.params;
+// const getTitlesForBook = async (req, res) => {
+//     const { id } = req.params;
 
-    if (!id) {
-        return res.status(400).json({ message: 'Book ID is required' });
-    }
+//     if (!id) {
+//         return res.status(400).json({ message: 'Book ID is required' });
+//     }
 
-    const titles = await Title.find({ book: id }).populate('book').exec();
-    if (!titles.length) {
-        return res.status(200).json({ message: 'No titles found' });
-    }
+//     const titles = await Title.find({ book: id }).populate('book').exec();
+//     if (!titles.length) {
+//         return res.status(200).json({ message: 'No titles found' });
+//     }
 
-    res.status(200).json(titles);
-};
-//titlebybook
+//     res.status(200).json(titles);
+// };
+// //titlebybook
 
 
 const getTitleById = async (req, res) => {
     const { id } = req.params
-    const title = await Title.findById(id).lean()
+    const title = await Title.findById(id).populate('book').lean()
     if (!title) {
         return res.status(404).json({ message: 'No title found' })
     }
@@ -51,9 +51,12 @@ const getTitleById = async (req, res) => {
 
 
 const getTitlesByBook = async (req, res) => {
-    const { bookId } = req.params;  // ה-ID של הספר שנשלח בכתובת
+    const { id } = req.params;  // ה-ID של הספר שנשלח בכתובת
     try {
-        const titles = await Title.find({ book: bookId }).lean();  // שליפת כל הכותרות ששייכות לספר זה
+        if (!id) {
+            return res.status(400).json({ message: 'Book ID is required' });
+        }
+        const titles = await Title.find({ book: id }).populate('book').exec();
         if (!titles?.length) {
             return res.status(400).json({ message: 'No titles found for this book' });
         }
@@ -85,11 +88,8 @@ const deleteTitle = async (req, res) => {
     }
     res.json(titles)
 }
-const functionDeleteTitle=async(id)=>{
-
-    
-}
 
 
 
-module.exports = { createNewTitle, getAllTitles, getTitleById, deleteTitle, getTitlesByBook }
+
+module.exports = { createNewTitle, getTitlesByBook, getTitleById, deleteTitle }

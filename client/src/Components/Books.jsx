@@ -1,193 +1,3 @@
-// import React, { useState, useEffect, useRef } from 'react';
-// import { Button } from 'primereact/button';
-// import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
-// import { classNames } from 'primereact/utils';
-// import axios from 'axios';
-// import BookCreate from "./BookCreat";
-
-// export default function BooksDataView() {
-//   const [books, setBooks] = useState([]);
-//   const [layout, setLayout] = useState('grid');
-//   const [templateMode, setTemplateMode] = useState('item'); // 'item' or 'list'
-//   const [visibleCreateBook, setVisibleCreateBook] = useState(false);
-//   const [editingBook, setEditingBook] = useState(null);
-
-//   // Fetch all books
-//   const getBooks = async () => {
-//     try {
-//       const res = await axios.get('http://localhost:7000/api/book');
-//       if (res.status === 200) setBooks(res.data);
-//     } catch (e) {
-//       console.error(e);
-//     }
-//   };
-
-//   useEffect(() => {
-//     getBooks();
-//   }, []);
-
-//   // Create or book
-
-//      const createBook = async (nameRef, selectedItem, imageRef) => {
-//         console.log(selectedItem)
-
-//         const newBook = {
-//             name: nameRef.current.value ? nameRef.current.value : " ",
-//             grades: selectedItem ? selectedItem : " ",// ? selectedItem.split(',') : "" ,
-//             image: imageRef.current.value ? imageRef.current.value : " "
-//         };
-//         console.log(newBook.grades)
-//         try {
-//             const res = await axios.post('http://localhost:7000/api/book', newBook)
-
-//             if (res.status === 200 || res.status === 201) {
-//                 console.log("ספר נוצר:", res.data);
-//                 getBooks(); // אם יש לך פונקציה כזו לרענון
-//             }
-//         } catch (e) {
-//             console.error("שגיאה ביצירת ספר:", e);
-//         }
-//     };
-//   // Delete handler
-//   const deleteBook = async (bookId) => {
-//     try {
-//       await axios.delete(`http://localhost:7000/api/book/${bookId}`);
-//       getBooks();
-//     } catch (err) {
-//       console.error('Error deleting book:', err);
-//     }
-//   };
-
-//   // Edit handler
-//   const handleEdit = (book) => {
-//     setEditingBook(book);
-//     setVisibleCreateBook(true);
-//   };
-
-//   // Render list item
-//   const listItem = (book, index) => (
-//     <div className="col-12" key={book._id}>
-//       <div
-//         className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', {
-//           'border-top-1 surface-border': index !== 0
-//         })}
-//       >
-//         <img
-//           className="w-9 sm:w-16rem xl:w-10rem shadow-2 block mx-auto border-round"
-//           src={book.image}
-//           alt={book.name}
-//         />
-//         <div className="flex flex-column sm:flex-row justify-content-between align-items-center flex-1 gap-4">
-//           <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-//             <div className="text-2xl font-bold text-900">{book.name}</div>
-//             <div className="text-sm text-color-secondary">
-//               מספר שכבות גיל: {book.grades.length}
-//             </div>
-//           </div>
-//           <div className="flex align-items-center gap-2">
-//             <Button
-//               icon="pi pi-pencil"
-//               className="p-button-rounded p-button-warning"
-//               onClick={() => handleEdit(book)}
-//               tooltip="ערוך"
-//             />
-//             <Button
-//               icon="pi pi-trash"
-//               className="p-button-rounded p-button-danger"
-//               onClick={() => deleteBook(book._id)}
-//               tooltip="מחק"
-//             />
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-
-//   // Render grid item
-//   const gridItem = (book) => (
-//     <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={book._id}>
-//       <div className="p-4 border-1 surface-border surface-card border-round">
-//         <div className="flex flex-column align-items-center gap-3 py-5">
-//           <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} />
-//           <div className="text-2xl font-bold">{book.name}</div>
-//           <strong>Suitable for:</strong>
-//           <ul className="m-0 pl-3 list-disc text-xs">
-//             {book.grades.map((grade, idx) => (
-//               <li key={idx}>{grade.name}</li>
-//             ))}
-//           </ul>
-//         </div>
-//         <div className="flex align-items-center justify-content-center mt-3 gap-2">
-//           <Button
-//             icon="pi pi-pencil"
-//             className="p-button-rounded p-button-warning"
-//             onClick={() => handleEdit(book)}
-//             tooltip="ערוך"
-//           />
-//           <Button
-//             icon="pi pi-trash"
-//             className="p-button-rounded p-button-danger"
-//             onClick={() => deleteBook(book._id)}
-//             tooltip="מחק"
-//           />
-//         </div>
-//       </div>
-//     </div>
-//   );
-
-//   // Item template for DataView
-//   const itemTemplate = (book, layoutType, index) => {
-//     if (!book) return null;
-//     return layoutType === 'list' ? listItem(book, index) : gridItem(book);
-//   };
-
-//   // Manual listTemplate
-//   const listTemplate = (booksArr, layoutType) => (
-//     <div className="grid grid-nogutter">
-//       {booksArr.map((book, idx) => itemTemplate(book, layoutType, idx))}
-//     </div>
-//   );
-
-//   // Header with layout switcher
-//   const header = (
-//     <div className="flex justify-content-end gap-2">
-//       <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
-//       <Button
-//         label="DataView"
-//         className={templateMode === 'item' ? 'p-button-outlined' : ''}
-//         onClick={() => setTemplateMode('item')}
-//       />
-//       <Button
-//         label="Custom List"
-//         className={templateMode === 'list' ? 'p-button-outlined' : ''}
-//         onClick={() => setTemplateMode('list')}
-//       />
-//     </div>
-//   );
-
-//   return (
-//     <div>
-//       <Button icon="pi pi-plus" rounded aria-label="Add" onClick={() => setVisibleCreateBook(true)} />
-//       <BookCreate
-//         createBook={createBook}
-//         setVisibleCreatBook={setVisibleCreateBook}
-//         visibleCreatBook={visibleCreateBook}
-//       />
-//       <div className="card">
-//         {templateMode === 'item' ? (
-//           <DataView
-//             value={books}
-//             itemTemplate={itemTemplate}
-//             layout={layout}
-//             header={header}
-//           />
-//         ) : (
-//           listTemplate(books, layout)
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
 
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
@@ -197,8 +7,8 @@ import axios from 'axios';
 import BookCreate from "./BookCreat"
 import BookUpdate from './BookUpdate';
 
-import { Link } from 'react-router-dom';
-import Tittles from './Tittels';
+import { Link, useParams } from 'react-router-dom';
+import Tittles from './Titles';
 import { Route } from 'react-router-dom';
 
 
@@ -207,10 +17,21 @@ export default function BooksDataView() {
     const [layout, setLayout] = useState('grid');
     const [visibleCreatBook, setVisibleCreatBook] = useState(false);
     const [visible, setVisible] = useState(false);
+    const { gradeId } = useParams(); // Get gradeId from URL
+
+    // useEffect(() => {
+        
+    //     getBooks();
+    // }, []);
 
     useEffect(() => {
-        getBooks();
-    }, []);
+        
+        if (gradeId) {
+            getBooksByGrade(gradeId); // Fetch books for the specific grade
+        } else {
+            getBooks(); // Fetch all books if no gradeId is provided
+        }
+    }, [gradeId]);
 
     const getBooks = async () => {
         try {
@@ -223,7 +44,19 @@ export default function BooksDataView() {
             console.error(e)
         }
     }
+    const getBooksByGrade = async (Id) => {
+        try {
+            const res = await axios.get(`http://localhost:7000/api/book/grade/${Id}`)
+            if (res.status === 200) {
+                console.log(res.data);
+                setBooks(res.data)
+            }
+        }
+        catch (e) {
+            console.log(e)
 
+        }
+    }
 
     const deleteBook = async (bookId) => {
         try {
@@ -257,7 +90,6 @@ export default function BooksDataView() {
     }
 
     const createBook = async (nameRef, selectedItem, imageRef) => {
-
         const newBook = {
             name: nameRef.current.value ? nameRef.current.value : " ",
             grades: selectedItem ? selectedItem : " ",// ? selectedItem.split(',') : "" ,
@@ -320,11 +152,10 @@ export default function BooksDataView() {
         </div>
     );
 
+
     const gridItem = (book) => (
-
-
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={book._id}>
-            <Link to={`/Book/${book.name}`} className="link-custom">
+            <Link to={`/Titles/${book._id}`} className="link-custom">
                 <div className="p-4 border-1 surface-border surface-card border-round">
                     <div className="flex flex-column align-items-center gap-3 py-5">
                         <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} />
@@ -391,4 +222,5 @@ export default function BooksDataView() {
             </div></div>
     );
 }
+
 

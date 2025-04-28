@@ -16,7 +16,7 @@ router.put('/',bookController.updateBook)
 
 router.delete('/:id',bookController.deleteBook)
 
-router.get('/:id',bookController.getAllBooksByGrade)
+router.get('/grade/:Id',bookController.getBooksForGrade)
 
 
 

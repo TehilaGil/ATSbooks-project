@@ -8,9 +8,9 @@ const admirMiddleware=require("../middleware/admirMiddleware")
 
 router.post('/',titleController.createNewTitle)
 
-router.get('/getAllTitles/:id',titleController.getAllTitles)
+router.get('/getTitlesByBook/:id',titleController.getTitlesByBook)
 
-router.get('/getTitleById/:id',titleController.getTitleById)
+router.get('/:id',titleController.getTitleById)
 
 // router.delete('/:id',verifyJWT,admirMiddleware,titleController.deleteTitle)
 
