@@ -49,6 +49,20 @@ const getTitleById = async (req, res) => {
     res.status(200).json(title);
 }
 
+
+const getTitlesByBook = async (req, res) => {
+    const { bookId } = req.params;  // ה-ID של הספר שנשלח בכתובת
+    try {
+        const titles = await Title.find({ book: bookId }).lean();  // שליפת כל הכותרות ששייכות לספר זה
+        if (!titles?.length) {
+            return res.status(400).json({ message: 'No titles found for this book' });
+        }
+        res.json(titles);  // מחזירים את הכותרות
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
 const deleteTitle = async (req, res) => {
     const { id } = req.params
     const title = await Title.findById(id).exec()
@@ -71,21 +85,10 @@ const deleteTitle = async (req, res) => {
     }
     res.json(titles)
 }
-const getTitlesByBook = async (req, res) => {
-    const { bookId } = req.params;  // ה-ID של הספר שנשלח בכתובת
-    try {
-        const titles = await Title.find({ book: bookId }).lean();  // שליפת כל הכותרות ששייכות לספר זה
-        if (!titles?.length) {
-            return res.status(400).json({ message: 'No titles found for this book' });
-        }
-        res.json(titles);  // מחזירים את הכותרות
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-};
+const functionDeleteTitle=async(id)=>{
 
-
+    
+}
 
 
 

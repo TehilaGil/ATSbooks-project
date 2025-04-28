@@ -163,12 +163,7 @@ const deleteBook = async (req, res) => {
     if (!book) {
         return res.status(400).json({ message: 'book not found' })
     }
-
-    const titles = await Title.find({ book: id }).exec();
-    if (titles.length > 0) {
-        // מחיקת כל הכותרות שקשורות לספר *** (שינוי)
-        await Promise.all(titles.map((title) => title.deleteOne())); // מחיקת כל הכותרות בו-זמנית
-    }
+    
     const result = await Book.deleteOne({ _id: id })
     const books = await Book.find().lean().populate("grades")
     if (!books?.length) {

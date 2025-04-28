@@ -36,7 +36,8 @@ const Grade = (props) => {
     //************delete
     const deleteGrade = async (id) => {
         const res = await axios.delete(`http://localhost:7000/api/grade/${id}`)
-        props.setGradesData(res.data)
+        if (Array.isArray(res.data)) 
+            {props.setGradesData(res.data)}
     }
 
 
