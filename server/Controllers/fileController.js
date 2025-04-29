@@ -11,15 +11,14 @@ const uploadFile = async (req, res) => {
       return res.status(400).send({ message: "לא נבחר קובץ להעלאה" });
     }
 
-    const newFile = new File({
-      name: req.file.name,        
-      path: req.file.path,                 
-      type: req.file.mimetype.split('/')[1], 
-      size: (req.file.size / 1024).toFixed(2) + " KB", 
-      title: title,                       
+    const newFile = await File.create({
+      name: req.file.originalname,
+      path: req.file.path,
+      // type: req.file.mimetype.split('/')[1],
+      size: Number((req.file.size / 1024).toFixed(2)),
+      title: title,
     });
-
-    await newFile.save();
+    
 
     res.status(201).send(newFile);
   } catch (err) {
@@ -90,7 +89,7 @@ const deleteFile = async (req, res) => {
       }
 
       // מחיקה מהמסד נתונים
-      await File.findByIdAndDelete(fileId);
+      await File.deleteOne({_id:fileId});
 
       res.status(200).send({ message: "קובץ נמחק בהצלחה" });
     });
@@ -119,10 +118,10 @@ const updateFile = async (req, res) => {
       });
 
       // מעדכנים פרטי הקובץ במסד נתונים
-      file.name = newFile.name.toLowerCase();
+      file.name = newFile.originalname.toLowerCase();
       file.path = newFile.path;
-      file.type = newFile.mimetype.split("/")[1]; // לדוג' "pdf", "jpeg"
-      file.size = newFile.size.toString();
+      // file.type = newFile.mimetype.split("/")[1]; // לדוג' "pdf", "jpeg"
+      file.size = Number((newFile.size / 1024).toFixed(2))
     }
 
     // גם אם לא עלה קובץ חדש, ניתן לעדכן שם וכותרת
@@ -141,6 +140,7 @@ const updateFile = async (req, res) => {
     res.status(500).send({ message: "שגיאה בעדכון קובץ", error: err.message });
   }
 };
+
 module.exports = {
   uploadFile,
   getAllFiles,
