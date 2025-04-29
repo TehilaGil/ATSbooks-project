@@ -10,6 +10,7 @@ import BookUpdate from './BookUpdate';
 import { Link, useParams } from 'react-router-dom';
 import Tittles from './Titles';
 import { Route } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function BooksDataView() {
@@ -92,27 +93,37 @@ export default function BooksDataView() {
     const createBook = async (nameRef, selectedItem, imageRef) => {
         const newBook = {
             name: nameRef.current.value ? nameRef.current.value : " ",
-            grades: selectedItem ? selectedItem : " ",// ? selectedItem.split(',') : "" ,
+            grades: selectedItem ? selectedItem : " ",
             image: imageRef.current.value ? imageRef.current.value : " "
         };
         try {
-            const res = await axios.post('http://localhost:7000/api/book', newBook)
-
+            const res = await axios.post('http://localhost:7000/api/book', newBook);
+    
             if (res.status === 200 || res.status === 201) {
-                console.log("ספר נוצר:", res.data);
-                getBooks(); // אם יש לך פונקציה כזו לרענון
+                if (gradeId) {
+                    getBooksByGrade(gradeId); // רענון לפי כיתה
+                } else {
+                    getBooks();
+                }
+                // setBooks(res.data);
+
             }
         } catch (e) {
             console.error("שגיאה ביצירת ספר:", e);
         }
-
     };
-
+    
 
 
     const listItem = (book, index) => (
-        <div className="col-12" key={book._id}>
+        // <div className="col-12" key={book._id}>
             <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
+                
+            <div
+    className="p-4 border-1 surface-border surface-card border-round"
+    onClick={() => navigate(`/Titles/${book._id}`)}
+    style={{ cursor: 'pointer' }}
+>
                 <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={book.image} alt={book.name} />
 
                 <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4 w-full">
@@ -134,13 +145,16 @@ export default function BooksDataView() {
                         <Button
                             icon="pi pi-pencil"
                             className="p-button-rounded p-button-warning"
-                            onClick={() => setVisible(true)}
+                            onClick={(e) =>{e.stopPropagation()
+                                 setVisible(true)}}
                             tooltip="ערוך"
+
                         />
                         <Button
                             icon="pi pi-trash"
                             className="p-button-rounded p-button-danger"
-                            onClick={() => deleteBook(book._id)}
+                            onClick={(e) =>{e.stopPropagation() 
+                                deleteBook(book._id)}}
                             tooltip="מחק"
                         />
                         <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
@@ -153,10 +167,18 @@ export default function BooksDataView() {
     );
 
 
+const navigate = useNavigate();
+ // <Link to={`/Titles/${book._id}`} className="link-custom"> //
+                // <div className="p-4 border-1 surface-border surface-card border-round">
     const gridItem = (book) => (
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={book._id}>
-            <Link to={`/Titles/${book._id}`} className="link-custom">
-                <div className="p-4 border-1 surface-border surface-card border-round">
+
+<div
+    className="p-4 border-1 surface-border surface-card border-round"
+    onClick={() => navigate(`/Titles/${book._id}`)}
+    style={{ cursor: 'pointer' }}
+>
+
                     <div className="flex flex-column align-items-center gap-3 py-5">
                         <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} />
                         <div className="text-2xl font-bold">{book.name}</div>
@@ -171,17 +193,20 @@ export default function BooksDataView() {
                     </div>
 
                     <div className="flex align-items-center justify-content-center mt-3">
-                        <Button
+                    <Button
                             icon="pi pi-pencil"
                             className="p-button-rounded p-button-warning"
-                            onClick={() => setVisible(true)}
-                            tooltip="Edit"
+                            onClick={(e) =>{e.stopPropagation()
+                                 setVisible(true)}}
+                            tooltip="ערוך"
+
                         />
                         <Button
                             icon="pi pi-trash"
                             className="p-button-rounded p-button-danger"
-                            onClick={() => deleteBook(book._id)}
-                            tooltip="Delete"
+                            onClick={(e) =>{e.stopPropagation() 
+                                deleteBook(book._id)}}
+                            tooltip="מחק"
                         />
                         <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
 
@@ -192,7 +217,7 @@ export default function BooksDataView() {
 
                 </div>
 
-            </Link>
+            {/* </Link> */}
         </div >
 
     );
