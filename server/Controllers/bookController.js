@@ -17,7 +17,7 @@ const createNewBook = async (req, res) => {
     if (existBook) {
         return res.status(400).send("invalid name")
     }
-    console.log(gradesArr)
+   
     //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
 
     const gradeDocs = await Promise.all(
@@ -42,7 +42,7 @@ const createNewBook = async (req, res) => {
     if (!book) {
         console.log("invalid");
 
-        return res.status(201).send("invalid book")
+        return res.status(400).send("invalid book")
     }
 
     const title1 = 'Book'
@@ -167,10 +167,11 @@ const deleteBook = async (req, res) => {
     if (titles.length > 0) {
         await Promise.all(books.map(async (title) => {
 
-            await deleteTitle({ params: { id: title._id } }, res);
+           await deleteTitle({ params: { id: title._id } }, res);
 
         }));
     }
+
     const result = await Book.deleteOne({ _id: id })
     const books = await Book.find().lean().populate("grades")
     if (!books?.length) {

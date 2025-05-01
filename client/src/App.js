@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import UserProvider from './Context/Provider';
+import { CascadeSelect } from 'primereact/cascadeselect';
 
 const LazyGrade = React.lazy(() => import('./Components/Grades'));
 const LazyHome = React.lazy(() => import('./Components/Home'));
@@ -159,12 +160,9 @@ function App() {
           {/* <Route path="/Book/:bookName" element={<Suspense fallback="loading..."><LazyTittles /></Suspense>} /> */}
           <Route path="/Books/:gradeId" element={<Suspense fallback="loading..."><LazyBook /></Suspense>} />
           <Route path="/Titles/:bookId" element={<Suspense fallback="loading..."><LazyTitles /></Suspense>} />
-
-          
-                
-            
-
         </Routes>
+
+
         <UpdateUser
           visible={showUpdateDialog}
           onHide={() => setShowUpdateDialog(false)}
@@ -172,6 +170,7 @@ function App() {
           user={user}
           setUserFunc={setUserCallback}
         />
+
       </UserProvider>
     </div>
 

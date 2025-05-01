@@ -104,12 +104,12 @@ export default function BooksDataView() {
             const res = await axios.post('http://localhost:7000/api/book', newBook);
     
             if (res.status === 200 || res.status === 201) {
-                // if (gradeId) {
-                //     getBooksByGrade(gradeId); // רענון לפי כיתה
-                // } else {
-                //     getBooks();
-                // }
-                setBooks(prevBooks => [...prevBooks, res.data]);
+                if (gradeId) {
+                    getBooksByGrade(gradeId); // רענון לפי כיתה
+                } else {
+                    getBooks();
+                }
+                // setBooks(res.data);
 
             }
         } catch (e) {

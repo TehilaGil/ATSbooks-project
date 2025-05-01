@@ -17,11 +17,13 @@ const FilesDataView = ({ titleId }) => {
 
     useEffect(() => {
         if (titleId) {
+            setLoading(true);
             fetchFiles();
         }
     }, [titleId]);
 
     const fetchFiles = async () => {
+        setFiles([]);
         try {
             const res = await axios.get(`http://localhost:7000/api/file/title/${titleId}`);
             setFiles(res.data);
@@ -63,8 +65,14 @@ const FilesDataView = ({ titleId }) => {
         }
     };
 
+
+
     const handleDownload = (fileId) => {
         window.open(`http://localhost:7000/api/file/download/${fileId}`, '_blank');
+    };
+
+    const handleView = (fileId) => {
+        window.open(`http://localhost:7000/api/file/view/${fileId}`, '_blank');
     };
 
     const handleUpdate = async (e) => {
@@ -90,14 +98,16 @@ const FilesDataView = ({ titleId }) => {
             <Button label="הוסף קובץ" icon="pi pi-plus" onClick={() => setVisibleCreate(true)} className="mb-3" />
 
             <div className="grid">
-                {files.map(file => (
+                {
+                Array.isArray(files) && 
+                files.map(file => (
                     <div key={file._id} className="col-12 md:col-6 lg:col-4">
                         <div className="p-3 border-1 surface-border surface-card border-round flex flex-column gap-2">
                             <div className="text-xl">{file.name}</div>
                             <div className="text-sm text-color-secondary">{file.size}</div>
 
                             <div className="flex gap-2 mt-2">
-                                <Button icon="pi pi-eye" className="p-button-sm p-button-info" onClick={() => window.open(`http://localhost:7000/${file.path}`, '_blank')} tooltip="צפה" />
+                                <Button icon="pi pi-eye" className="p-button-sm p-button-info" onClick={() => handleView(file._id)} tooltip="צפה" />
                                 <Button icon="pi pi-download" className="p-button-sm p-button-success" onClick={() => handleDownload(file._id)} tooltip="הורד" />
                                 <Button icon="pi pi-pencil" className="p-button-sm p-button-warning" onClick={() => { setSelectedFile(file); setVisibleUpdate(true); }} tooltip="ערוך" />
                                 <Button icon="pi pi-trash" className="p-button-sm p-button-danger" onClick={() => handleDelete(file._id)} tooltip="מחק" />
