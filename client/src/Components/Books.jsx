@@ -64,7 +64,7 @@ export default function BooksDataView() {
 
 
 
-            
+
             const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`);
             // קרא ל-getBooks בכל מקרה, גם אם אין ספרים
             setBooks(res.data)
@@ -117,7 +117,7 @@ export default function BooksDataView() {
         }
     };
     
-
+    
 
     const listItem = (book, index) => (
         // <div className="col-12" key={book._id}>

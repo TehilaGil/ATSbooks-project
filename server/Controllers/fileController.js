@@ -14,7 +14,7 @@ const uploadFile = async (req, res) => {
     const newFile = await File.create({
       name: req.file.originalname,
       path: req.file.path,
-      type: req.file.mimetype.split('/')[1],
+      // type: req.file.mimetype.split('/')[1],
       size: Number((req.file.size / 1024).toFixed(2)),
       title: title,
     });
@@ -75,36 +75,75 @@ const downloadFile = async (req, res) => {
 };
 
 
-const deleteFile = async (req, res) => {
+
+
+
+
+const deleteFileFunction = async (fileId) => {
+  const file = await File.findById(fileId);
+  if (!file) throw new Error("File not found");
+
   try {
-    const { fileId } = req.params;
-
-    // מצא את הקובץ במסד הנתונים
-    const file = await File.findById(fileId);
-    if (!file) {
-      return res.status(404).send({ message: "קובץ לא נמצא" });
-    }
-
-    // מחק את הקובץ מהשרת (פיזית)
     await fs.promises.unlink(path.resolve(file.path));
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err;
+    // אם הקובץ לא נמצא - נמשיך למחוק מה-DB
+  }
 
-    // מחק את הרשומה ממסד הנתונים
-    await File.deleteOne({ _id: fileId });
+  await File.deleteOne({ _id: fileId });
+};
+
+
+
+
+
+
+
+// const deleteFile = async (req, res) => {
+//   try {
+//     const { fileId } = req.params;
+
+//     // מצא את הקובץ במסד הנתונים
+//     const file = await File.findById(fileId);
+//     if (!file) {
+//       return res.status(404).send({ message: "קובץ לא נמצא" });
+//     }
+
+//     // מחק את הקובץ מהשרת (פיזית)
+//     await fs.promises.unlink(path.resolve(file.path));
+
+//     // מחק את הרשומה ממסד הנתונים
+//     await File.deleteOne({ _id: fileId });
+
+//     res.status(200).send({ message: "קובץ נמחק בהצלחה" });
+//   } catch (err) {
+//     console.error("שגיאה במחיקת הקובץ:", err.message);
+
+//     // בדוק אם השגיאה נגרמה מכך שהקובץ לא נמצא במערכת הקבצים
+//     if (err.code === 'ENOENT') {
+//       // אם הקובץ לא נמצא פיזית, מחק רק את הרשומה ממסד הנתונים
+//       await File.deleteOne({ _id: req.params.fileId });
+//       return res.status(200).send({ message: "הרשומה נמחקה, אך הקובץ לא נמצא במערכת הקבצים" });
+//     }
+
+//     res.status(500).send({ message: "שגיאה במחיקת קובץ", error: err.message });
+//   }
+// };
+
+const deleteFile = async (req, res) => {
+  const { fileId } = req.params;
+
+  try {
+    await deleteFileFunction(fileId); // 🟢 קריאה לפונקציה המרכזית
 
     res.status(200).send({ message: "קובץ נמחק בהצלחה" });
   } catch (err) {
     console.error("שגיאה במחיקת הקובץ:", err.message);
 
-    // בדוק אם השגיאה נגרמה מכך שהקובץ לא נמצא במערכת הקבצים
-    if (err.code === 'ENOENT') {
-      // אם הקובץ לא נמצא פיזית, מחק רק את הרשומה ממסד הנתונים
-      await File.deleteOne({ _id: req.params.fileId });
-      return res.status(200).send({ message: "הרשומה נמחקה, אך הקובץ לא נמצא במערכת הקבצים" });
-    }
-
     res.status(500).send({ message: "שגיאה במחיקת קובץ", error: err.message });
   }
 };
+
 
 const updateFile = async (req, res) => {
   try {
@@ -134,8 +173,10 @@ const updateFile = async (req, res) => {
 
     // גם אם לא עלה קובץ חדש, ניתן לעדכן שם וכותרת
     if (newName) {
-      file.name = newName.toLowerCase();
+      const extension = path.extname(file.name); // שומר את הסיומת המקורית, למשל ".pdf"
+      file.name = (newName + extension).toLowerCase();
     }
+    
     if (newTitle) {
       file.title = newTitle;
     }
@@ -164,6 +205,7 @@ const viewFileContent = async (req, res) => {
 };
 module.exports = {
   viewFileContent,
+  deleteFileFunction,
   uploadFile,
   getAllFiles,
   getFilesByTitle,

@@ -82,12 +82,18 @@ const deleteGrade = async (req, res) => {
     if (books.length > 0) {
         await Promise.all(books.map(async (book) => {
             if (book.grades.length <= 1) {
-                await deleteBook({ params: { id: book._id } }, res);
+                const dummyRes = {
+                    status: () => dummyRes,
+                    json: () => {},
+                };
+                await deleteBook({ params: { id: book._id } }, dummyRes);
             } else {
-                book.grades = book.grades.filter(bookGrade => bookGrade._id !== grade._id);
+                book.grades = book.grades.filter(bookGrade => bookGrade._id.toString() !== grade._id.toString());
                 await book.save(); 
             }
-        }));}
+        }));
+    }    
+
     const result = await Grade.deleteOne({ _id: id });
     if (!result.deletedCount) {
         return res.status(500).json({ message: "Failed to delete grade" });

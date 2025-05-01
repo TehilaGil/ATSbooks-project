@@ -1,6 +1,7 @@
 const Book = require("../models/Book")
 const Grade = require("../models/Grade")
 const Title = require("../models/Title")
+const { deleteTitle } = require('./titleController');
 
 
 
@@ -157,28 +158,56 @@ const updateBook = async (req, res) => {
     res.json(books)
 }
 
+// const deleteBook = async (req, res) => {
+//     const { id } = req.params
+//     const book = await Book.findById(id).exec()
+//     if (!book) {
+//         return res.status(400).json({ message: 'book not found' })
+//     }
+//     const titles = await Title.find({ book: id }).exec();
+//     if (titles.length > 0 && Array.isArray(titles)) {
+//         await Promise.all(titles.map(async (title) => {
+
+//            await deleteTitle({ params: { id: title._id } }, res);
+
+//         }));
+//     }
+
+//     const result = await Book.deleteOne({ _id: id })
+//     const books = await Book.find().lean().populate("grades")
+//     if (!books?.length) {
+//         return res.json([]); // החזר מערך ריק במקום הודעת שגיאה
+//     }
+//     res.json(books)
+// }
+
+
+
 const deleteBook = async (req, res) => {
-    const { id } = req.params
-    const book = await Book.findById(id).exec()
-    if (!book) {
-        return res.status(400).json({ message: 'book not found' })
+    try {
+      const { id } = req.params;
+      const book = await Book.findById(id).exec();
+      if (!book) {
+        return res.status(400).json({ message: 'book not found' });
+      }
+  
+      const titles = await Title.find({ book: id }).exec();
+      if (Array.isArray(titles)) {
+        for (let title of titles) {
+          await deleteTitle(title._id); // שים לב - אין שימוש ב-res
+        }
+      }
+  
+      await Book.deleteOne({ _id: id });
+  
+      const books = await Book.find().lean().populate("grades");
+      res.json(books?.length ? books : []);
+    } catch (error) {
+      console.error("Error deleting book:", error.message);
+      res.status(500).json({ message: "Failed to delete book", error: error.message });
     }
-    const titles = await Title.find({ book: id }).exec();
-    if (titles.length > 0) {
-        await Promise.all(books.map(async (title) => {
-
-           await deleteTitle({ params: { id: title._id } }, res);
-
-        }));
-    }
-
-    const result = await Book.deleteOne({ _id: id })
-    const books = await Book.find().lean().populate("grades")
-    if (!books?.length) {
-        return res.json([]); // החזר מערך ריק במקום הודעת שגיאה
-    }
-    res.json(books)
-}
+  };
+  
 
 // const getAllBooksByGrade = async (req, res) => {
 //     const { id } = req.params
