@@ -72,10 +72,12 @@ const deleteTitle = async (req, res) => {
     if (!title) {
         return res.status(400).json({ message: 'title not found' })
     }
+
     const files = await File.find({ title: title._id }).exec();
     if (files?.length > 0) {
         for (let file of files) {
-            await File.deleteOne({ _id: file._id });  // מחיקת קובץ אחד אחרי השני - ***
+             await deleteFile({ params: { id: file._id } }, res);
+
         }
     }
     const result = await Title.deleteOne({ _id: id });  // ***

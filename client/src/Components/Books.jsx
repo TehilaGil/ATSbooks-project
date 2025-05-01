@@ -61,6 +61,10 @@ export default function BooksDataView() {
 
     const deleteBook = async (bookId) => {
         try {
+
+
+
+            
             const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`);
             // קרא ל-getBooks בכל מקרה, גם אם אין ספרים
             setBooks(res.data)

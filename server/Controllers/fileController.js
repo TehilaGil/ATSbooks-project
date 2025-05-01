@@ -14,7 +14,7 @@ const uploadFile = async (req, res) => {
     const newFile = await File.create({
       name: req.file.originalname,
       path: req.file.path,
-      // type: req.file.mimetype.split('/')[1],
+      type: req.file.mimetype.split('/')[1],
       size: Number((req.file.size / 1024).toFixed(2)),
       title: title,
     });
