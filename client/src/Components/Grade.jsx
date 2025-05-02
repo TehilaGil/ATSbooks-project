@@ -3,7 +3,10 @@ import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { useNavigate } from 'react-router-dom';
-
+import { Toast } from 'primereact/toast';
+import { ConfirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog } from 'primereact/confirmdialog';
+import { useRef } from 'react';
 import UpdateGrade from "./GradeUpdate"
 
 import 'primeicons/primeicons.css';
@@ -14,6 +17,7 @@ import { Link } from 'react-router-dom';
 
 const Grade = (props) => {
     const [visible, setVisible] = useState(false);
+    const toast = useRef(null);
 
     const navigate = useNavigate();
     //**********updateGrade
@@ -30,18 +34,47 @@ const Grade = (props) => {
 
                 console.log("res.data", res.data);
                 props.setGradesData(res.data)
+                toast.current.show({ severity: 'success', summary: 'Updated successfully', life: 3000 });
             }
         } catch (e) {
             console.error(e)
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error updating',
+                detail: e.response?.data?.message || e.message,
+                life: 4000
+            });
         }
     }
 
-    //************delete
+ 
     const deleteGrade = async (id) => {
-        const res = await axios.delete(`http://localhost:7000/api/grade/${id}`)
-        if (Array.isArray(res.data)) 
-            {props.setGradesData(res.data)}
-    }
+        confirmDialog({
+            message: 'האם אתה בטוח שברצונך למחוק את הכיתה?',
+            header: 'אישור מחיקה',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'כן',
+            rejectLabel: 'לא',
+            accept: async () => {
+                try {
+                    const res = await axios.delete(`http://localhost:7000/api/grade/${id}`);
+                    if (Array.isArray(res.data)) {
+                        props.setGradesData(res.data);
+                        if (toast.current) {
+                        toast.current.show({ severity: 'success', summary: 'נמחק בהצלחה', life: 3000 });}
+                    }
+                } catch (e) {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'שגיאה במחיקה',
+                        detail: e.response?.data?.message || e.message,
+                        life: 4000
+                    });
+                }
+            }
+        });
+    };
+    
 
 
     // const footer = (
@@ -74,7 +107,9 @@ const Grade = (props) => {
 
 
     return (
-
+        <>
+<Toast ref={toast} />
+        <ConfirmDialog />
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={props.grade._id}>
           
           <div
@@ -89,7 +124,7 @@ const Grade = (props) => {
                 </div>
             </div>
         </div>
-       
+       </>
     )
 
 }
