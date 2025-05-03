@@ -6,6 +6,7 @@ import { classNames } from 'primereact/utils';
 import axios from 'axios';
 import BookCreate from "./BookCreat"
 import BookUpdate from './BookUpdate';
+import './Grades.css';
 
 import { Link, useParams } from 'react-router-dom';
 import Tittles from './Titles';
@@ -104,13 +105,13 @@ export default function BooksDataView() {
             const res = await axios.post('http://localhost:7000/api/book', newBook);
     
             if (res.status === 200 || res.status === 201) {
-                if (gradeId) {
-                    getBooksByGrade(gradeId); // רענון לפי כיתה
-                } else {
-                    getBooks();
-                }
+                // if (gradeId) {
+                //     getBooksByGrade(gradeId); // רענון לפי כיתה
+                // } else {
+                //     getBooks();
+                // }
                 // setBooks(res.data);
-
+                setBooks((prevBooks) => [...prevBooks, res.data]);
             }
         } catch (e) {
             console.error("שגיאה ביצירת ספר:", e);
@@ -243,7 +244,7 @@ const navigate = useNavigate();
 
     return (
         <div>
-            <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} />
+            <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)}  className="add-button"/>
             <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
             <div className="card">
                 <DataView value={books} listTemplate={listTemplate} layout={layout} header={header()} />

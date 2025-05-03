@@ -50,6 +50,7 @@ const Grade = (props) => {
 
  
     const deleteGrade = async (id) => {
+        console.log("Deleting grade with ID:", id);
         confirmDialog({
             message: 'האם אתה בטוח שברצונך למחוק את הכיתה?',
             header: 'אישור מחיקה',
@@ -58,6 +59,7 @@ const Grade = (props) => {
             rejectLabel: 'לא',
             accept: async () => {
                 try {
+                    console.log("Accept function triggered");
                     const res = await axios.delete(`http://localhost:7000/api/grade/${id}`);
                     if (Array.isArray(res.data)) {
                         props.setGradesData(res.data);
@@ -104,6 +106,7 @@ const Grade = (props) => {
 
             <Button icon="pi pi-times" label="Delete"  onClick={(e) =>{e.stopPropagation() 
                                 deleteGrade(props.grade._id)}} />
+                                
             <Button label="Update" icon="pi pi-pencil" onClick={(e) =>{e.stopPropagation() 
                                 setVisible(true)}} />  
             <UpdateGrade updateGrade={updateGrade} setVisible={setVisible} visible={visible} grade={props.grade} />
@@ -113,8 +116,8 @@ const Grade = (props) => {
 
     return (
         <>
-{/* <Toast ref={toast} />
-        <ConfirmDialog /> */}
+        <Toast ref={toast} />
+        <ConfirmDialog />
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={props.grade._id}>
           
           <div

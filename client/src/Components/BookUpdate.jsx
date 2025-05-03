@@ -1,10 +1,9 @@
-
-import React, { useRef, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { MultiSelect } from 'primereact/multiselect';
-
+import axios from 'axios';
 import { AutoComplete } from "primereact/autocomplete";
 
 
@@ -12,16 +11,41 @@ import { AutoComplete } from "primereact/autocomplete";
 
 const BookUpdate = (props) => {
     const [selectedItem, setSelectedItem] = useState(null);
-    const grades = [
-        { label: 'First Grade', value: 'first grade' },
-        { label: 'Second Grade', value: 'second grade' },
-        { label: 'Third Grade', value: 'third grade' },
-        { label: 'Fourth Grade', value: 'fourth grade' },
-        { label: 'Fifth Grade', value: 'fifth grade' },
-        { label: 'Sixth Grade', value: 'sixth grade' },
-        { label: 'Seventh Grade', value: 'seventh grade' },
-        { label: 'Eighth Grade', value: 'eighth grade' }
-    ];
+    // const grades = [
+    //     { label: 'First Grade', value: 'first grade' },
+    //     { label: 'Second Grade', value: 'second grade' },
+    //     { label: 'Third Grade', value: 'third grade' },
+    //     { label: 'Fourth Grade', value: 'fourth grade' },
+    //     { label: 'Fifth Grade', value: 'fifth grade' },
+    //     { label: 'Sixth Grade', value: 'sixth grade' },
+    //     { label: 'Seventh Grade', value: 'seventh grade' },
+    //     { label: 'Eighth Grade', value: 'eighth grade' }
+    // ];
+
+    const [grades, setGrades] = useState([]);
+
+    const AvailablGrade = async () => {
+        try {
+            const res = await axios.get('http://localhost:7000/api/grade');
+            if (res.status === 204) {
+                setGrades([]);
+            } else {
+                const gradeOptions = res.data.map((grade) => ({
+                    label: grade.name,
+                    value: grade.name,
+                }));
+                setGrades(gradeOptions);
+            }
+        } catch (error) {
+            console.error('Error fetching grades:', error);
+            setGrades([]);
+        }
+    };
+
+    useEffect(() => {
+        AvailablGrade();
+    }, []);
+
     const [filteredItems, setFilteredItems] = useState(null);
     const [selectedGrades, setSelectedGrades] = useState([]);
 
