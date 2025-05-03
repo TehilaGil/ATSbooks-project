@@ -1,72 +1,249 @@
 
+// import React, { useEffect, useState, useRef } from 'react';
+// import { Toast } from 'primereact/toast';
+// import { useParams } from 'react-router-dom';
+// import FilesDataView from './Files'; // קבלת קומפוננטת הקבצים
+// import axios from 'axios';
+
+// const Titles = () => {
+//     const [titles, setTitles] = useState([]);  // רשימת כותרות
+//     const [loading, setLoading] = useState(true); // סטטוס טעינה
+//     const toast = useRef(null);
+//     const { bookId } = useParams(); // קבלת bookId מה-URL
+//     const [selectedTitleId, setSelectedTitleId] = useState(null); // הכותרת שנבחרה
+
+//     // שליפת כותרות מהשרת
+//     const getTitles = async () => {
+//         try {
+//             const res = await axios.get(`http://localhost:7000/api/title/getTitlesByBook/${bookId}`);
+//             if (Array.isArray(res.data)) {
+//                 setTitles(res.data);
+//             } else {
+//                 console.error("Response data is not an array", res.data);
+//                 toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'פורמט נתונים שגוי', life: 3000 });
+//             }
+//             setLoading(false);
+//         } catch (err) {
+//             console.error("Error fetching titles:", err);
+//             toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'שגיאה בטעינת כותרות', life: 3000 });
+//             setLoading(false);
+//         }
+//     };
+
+//     useEffect(() => {
+//         getTitles();
+//     }, []);
+
+//     const handleSelectTitle = (title) => {
+//         setSelectedTitleId(title._id);
+//     };
+
+//     if (loading) {
+//         return <div>טוען כותרות...</div>;
+//     }
+
+//     return (
+//         <div>
+//             <div className="grid">
+//                 {titles.map(title => (
+//                     <div key={title._id} className="col">
+//                         <div
+//                             className="p-2 border-1 surface-border surface-card border-round cursor-pointer"
+//                             onClick={() => handleSelectTitle(title)}
+//                         >
+//                             {title.name}
+//                         </div>
+//                     </div>
+//                 ))}
+//             </div>
+
+//             {selectedTitleId && (
+//                 <div className="mt-5">
+//                     <h3>קבצים של הכותרת הנבחרת</h3>
+//                     <FilesDataView titleId={selectedTitleId} />
+//                 </div>
+//             )}
+
+//             <Toast ref={toast} />
+//         </div>
+//     );
+// }
+
+// export default Titles;
+
+
 import React, { useEffect, useState, useRef } from 'react';
+import { PanelMenu } from 'primereact/panelmenu';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { FileUpload } from 'primereact/fileupload';
 import { Toast } from 'primereact/toast';
-import { useParams } from 'react-router-dom';
-import FilesDataView from './Files'; // קבלת קומפוננטת הקבצים
+import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Titles = () => {
-    const [titles, setTitles] = useState([]);  // רשימת כותרות
-    const [loading, setLoading] = useState(true); // סטטוס טעינה
+    const [items, setItems] = useState([]);
+    const [visibleUpload, setVisibleUpload] = useState(false);
+    const [uploadTitleId, setUploadTitleId] = useState(null);
+    const [visibleUpdate, setVisibleUpdate] = useState(false);
+    const [newFileName, setNewFileName] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [filesByTitle, setFilesByTitle] = useState({});
     const toast = useRef(null);
-    const { bookId } = useParams(); // קבלת bookId מה-URL
-    const [selectedTitleId, setSelectedTitleId] = useState(null); // הכותרת שנבחרה
+    const { bookId } = useParams();
+    const navigate = useNavigate();
 
-    // שליפת כותרות מהשרת
-    const getTitles = async () => {
+    useEffect(() => {
+        fetchTitles();
+    }, []);
+
+    const fetchTitles = async () => {
         try {
             const res = await axios.get(`http://localhost:7000/api/title/getTitlesByBook/${bookId}`);
-            if (Array.isArray(res.data)) {
-                setTitles(res.data);
-            } else {
-                console.error("Response data is not an array", res.data);
-                toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'פורמט נתונים שגוי', life: 3000 });
+            const titles = res.data;
+
+            const filesMap = {};
+            for (const title of titles) {
+                const filesRes = await axios.get(`http://localhost:7000/api/file/title/${title._id}`);
+                filesMap[title._id] = filesRes.data;
             }
-            setLoading(false);
+
+            setFilesByTitle(filesMap);
+            const panelItems = titles.map(title => ({
+                label: (
+                    <div className="flex justify-between align-items-center w-full">
+                        <span>{title.name}</span>
+                        <Button icon="pi pi-plus" rounded text size="small" onClick={(e) => {
+                            e.stopPropagation();
+                            setUploadTitleId(title._id);
+                            setVisibleUpload(true);
+                        }} />
+                    </div>
+                ),
+                items: (filesMap[title._id] || []).map(file => ({
+                    label: (
+                        <div className="flex justify-between align-items-center w-full gap-2">
+                            <span>{ file.name }</span>
+                            <span className="flex gap-2">
+                                <Button icon="pi pi-eye" rounded text size="small" onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/FileView/${file._id}`);
+                                }} />
+                                <Button icon="pi pi-download" rounded text size="small" onClick={(e) => {
+                                    e.stopPropagation();
+                                    window.open(`http://localhost:7000/api/file/download/${file._id}?name=${file.customName || file.name}`, '_blank');
+                                }} />
+                                <Button icon="pi pi-pencil" rounded text size="small" onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEdit({ id: file._id, name: file.customName || file.name });
+                                }} />
+                                <Button icon="pi pi-trash" rounded text size="small" severity="danger" onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDelete(file._id, title._id);
+                                }} />
+                            </span>
+                        </div>
+                    )
+                }))
+            }));
+
+            setItems(panelItems);
         } catch (err) {
-            console.error("Error fetching titles:", err);
-            toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'שגיאה בטעינת כותרות', life: 3000 });
-            setLoading(false);
+            console.error(err);
+            toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'שגיאה בטעינה', life: 3000 });
         }
     };
 
-    useEffect(() => {
-        getTitles();
-    }, []);
-
-    const handleSelectTitle = (title) => {
-        setSelectedTitleId(title._id);
+    const handleDelete = async (fileId, titleId) => {
+        try {
+            await axios.delete(`http://localhost:7000/api/file/${fileId}`);
+            setFilesByTitle(prev => ({
+                ...prev,
+                [titleId]: prev[titleId].filter(f => f._id !== fileId)
+            }));
+            fetchTitles();
+            toast.current?.show({ severity: 'success', summary: 'נמחק', detail: 'קובץ נמחק', life: 2000 });
+        } catch (err) {
+            console.error(err);
+            toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'לא ניתן למחוק', life: 3000 });
+        }
     };
 
-    if (loading) {
-        return <div>טוען כותרות...</div>;
+    const handleUpload = async ({ files }) => {
+        const file = files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('title', uploadTitleId);
+        formData.append('customName', newFileName); // שליחת שם מותאם אישית
+
+        try {
+            await axios.post('http://localhost:7000/api/file', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setVisibleUpload(false);
+            setNewFileName('');
+            fetchTitles();
+            toast.current?.show({ severity: 'success', summary: 'הועלה', detail: 'קובץ הועלה בהצלחה', life: 2000 });
+        } catch (err) {
+            console.error(err);
+            toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'העלאה נכשלה', life: 3000 });
+        }
+    };
+
+    const handleEdit = ({ id, name }) => {
+        setSelectedFile(id);
+        setNewFileName(name);
+        setVisibleUpdate(true);
+    };
+
+    const handleUpdate = async () => {
+    const formData = new FormData();
+    formData.append('newName', newFileName); // שליחת שם חדש
+    if (selectedFile) {
+        formData.append('file', selectedFile); // אם יש קובץ חדש, שלח אותו
     }
 
+    try {
+        const res = await axios.put(`http://localhost:7000/api/file/${selectedFile}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        // עדכון הרשימה המקומית
+        setFilesByTitle(prev => ({
+            ...prev,
+            [uploadTitleId]: prev[uploadTitleId].map(file =>
+                file._id === res.data._id ? res.data : file
+            )
+        }));
+
+        setVisibleUpdate(false);
+        setNewFileName('');
+        toast.current?.show({ severity: 'success', summary: 'הצלחה', detail: 'קובץ עודכן', life: 3000 });
+    } catch (err) {
+        console.error(err);
+        toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'בעיה בעדכון קובץ', life: 3000 });
+    }
+};
+
     return (
-        <div>
-            <div className="grid">
-                {titles.map(title => (
-                    <div key={title._id} className="col">
-                        <div
-                            className="p-2 border-1 surface-border surface-card border-round cursor-pointer"
-                            onClick={() => handleSelectTitle(title)}
-                        >
-                            {title.name}
-                        </div>
-                    </div>
-                ))}
-            </div>
+        <div className="card flex justify-content-center">
+            <PanelMenu model={items} className="w-full md:w-30rem" />
+            <Dialog header="העלאת קובץ חדש" visible={visibleUpload} onHide={() => setVisibleUpload(false)}>
+                <InputText placeholder="שם קובץ" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} />
+                <FileUpload mode="basic" auto customUpload uploadHandler={handleUpload} chooseLabel="בחר קובץ" />
+            </Dialog>
 
-            {selectedTitleId && (
-                <div className="mt-5">
-                    <h3>קבצים של הכותרת הנבחרת</h3>
-                    <FilesDataView titleId={selectedTitleId} />
-                </div>
-            )}
-
+            <Dialog header="עריכת קובץ" visible={visibleUpdate} style={{ width: '30vw' }} onHide={() => setVisibleUpdate(false)}>
+                <form onSubmit={(e) => { e.preventDefault(); handleUpdate(); }} className="flex flex-column gap-3">
+                    <InputText placeholder="שם קובץ חדש" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} />
+                    <FileUpload mode="basic" auto customUpload uploadHandler={({ files }) => setSelectedFile(files[0])} chooseLabel="בחר קובץ חדש" />
+                    <Button label="שמור" type="submit" />
+                </form>
+            </Dialog>
             <Toast ref={toast} />
         </div>
     );
-}
+};
 
 export default Titles;

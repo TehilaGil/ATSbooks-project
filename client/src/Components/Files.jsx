@@ -5,6 +5,8 @@ import { InputText } from 'primereact/inputtext';
 import { FileUpload } from 'primereact/fileupload';
 import { Toast } from 'primereact/toast';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+
 
 const FilesDataView = ({ titleId }) => {
     const [files, setFiles] = useState([]);
@@ -14,6 +16,7 @@ const FilesDataView = ({ titleId }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [newFileName, setNewFileName] = useState('');
     const toast = useRef(null);
+     const navigate = useNavigate();
 
     useEffect(() => {
         if (titleId) {
@@ -107,7 +110,11 @@ const FilesDataView = ({ titleId }) => {
                             <div className="text-sm text-color-secondary">{file.size}</div>
 
                             <div className="flex gap-2 mt-2">
-                                <Button icon="pi pi-eye" className="p-button-sm p-button-info" onClick={() => handleView(file._id)} tooltip="צפה" />
+                                {/* <Button icon="pi pi-eye" className="p-button-sm p-button-info" onClick={() => handleView(file._id)} tooltip="צפה" /> */}
+                                <Button icon="pi pi-eye" rounded text size="small" onClick={(e) => {
+                                     e.stopPropagation();
+                                     navigate(`/FileView/${file._id}`);
+                               }} />
                                 <Button icon="pi pi-download" className="p-button-sm p-button-success" onClick={() => handleDownload(file._id)} tooltip="הורד" />
                                 <Button icon="pi pi-pencil" className="p-button-sm p-button-warning" onClick={() => { setSelectedFile(file); setVisibleUpdate(true); }} tooltip="ערוך" />
                                 <Button icon="pi pi-trash" className="p-button-sm p-button-danger" onClick={() => handleDelete(file._id)} tooltip="מחק" />
