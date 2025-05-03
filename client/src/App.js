@@ -31,8 +31,7 @@ const LazyUpdateUser = React.lazy(() => import('./Components/UserUpdate'));
 const LazyBook = React.lazy(() => import('./Components/Books'));
 const LazyTitles = React.lazy(() => import('./Components/Titles'));
 const LazyRecorder = React.lazy(() => import('./Components/Recorder'));
-
-
+const LazyFileView = React.lazy(() => import('./Components/FileView'));
 
 
 
@@ -160,8 +159,9 @@ function App() {
           {/* <Route path="/Book/:bookName" element={<Suspense fallback="loading..."><LazyTittles /></Suspense>} /> */}
           <Route path="/Books/:gradeId" element={<Suspense fallback="loading..."><LazyBook /></Suspense>} />
           <Route path="/Titles/:bookId" element={<Suspense fallback="loading..."><LazyTitles /></Suspense>} />
-        </Routes>
-
+          <Route path="/FileView/:fileId" element={<Suspense fallback="loading..."><LazyFileView /></Suspense>} />
+         
+          </Routes>
 
         <UpdateUser
           visible={showUpdateDialog}
