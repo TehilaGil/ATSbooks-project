@@ -1,5 +1,6 @@
 const Title = require("../models/Title")
 const File = require("../models/File")
+const { deleteFileFunction } = require('./fileController');
 
 
 const createNewTitle = async (req, res) => {
@@ -66,28 +67,55 @@ const getTitlesByBook = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-const deleteTitle = async (req, res) => {
-    const { id } = req.params
-    const title = await Title.findById(id).exec()
-    if (!title) {
-        return res.status(400).json({ message: 'title not found' })
-    }
+
+
+
+
+
+const deleteTitle = async (titleId) => {
+    const title = await Title.findById(titleId).exec();
+    if (!title) throw new Error("Title not found");
+  
     const files = await File.find({ title: title._id }).exec();
     if (files?.length > 0) {
-        for (let file of files) {
-            await File.deleteOne({ _id: file._id });  // מחיקת קובץ אחד אחרי השני - ***
-        }
+      for (let file of files) {
+        await deleteFileFunction(file._id); // גם פה, תשנה את deleteFile שיחזיר Promise
+      }
     }
-    const result = await Title.deleteOne({ _id: id });  // ***
-    if (result.deletedCount === 0) {
-        return res.status(400).json({ message: 'Failed to delete title' });
-    }
-    const titles = await Title.find().lean().populate("book")
-    if (!titles?.length) {
-        return res.status(400).json({ message: 'No titles found' })
-    }
-    res.json(titles)
-}
+  
+    const result = await Title.deleteOne({ _id: titleId });
+    if (result.deletedCount === 0) throw new Error("Failed to delete title");
+  };
+  
+
+
+
+
+
+// const deleteTitle = async (req, res) => {
+//     const { id } = req.params
+//     const title = await Title.findById(id).exec()
+//     if (!title) {
+//         return res.status(400).json({ message: 'title not found' })
+//     }
+
+//     const files = await File.find({ title: title._id }).exec();
+//     if (files?.length > 0) {
+//         for (let file of files) {
+//              await deleteFile({ params: { id: file._id } }, res);
+
+//         }
+//     }
+//     const result = await Title.deleteOne({ _id: id });  // ***
+//     if (result.deletedCount === 0) {
+//         return res.status(400).json({ message: 'Failed to delete title' });
+//     }
+//     const titles = await Title.find().lean().populate("book")
+//     if (!titles?.length) {
+//         return res.status(400).json({ message: 'No titles found' })
+//     }
+//     res.json(titles)
+// }
 
 
 

@@ -41,18 +41,15 @@ const UpdateGrade = (props) => {
             modal
             onHide={() => { if (!visible) return; props.setVisible(false); }}
             content={({ hide }) => (
-                <div className="flex flex-column px-8 py-5 gap-4" style={{ borderRadius: '12px', backgroundImage: 'radial-gradient(circle at left top, var(--primary-400), var(--primary-700))' }}>
+                <div className="flex flex-column gap-3" style={{ minWidth: '300px' }}>
                     <div className="inline-flex flex-column gap-2">
-                        <label htmlFor="Gradename" className="text-primary-50 font-semibold">
-                            name
-                        </label>
+                    <label className="font-medium">Name</label>
                         <AutoComplete value={selectedItem} suggestions={filteredItems} completeMethod={searchItems}
                             virtualScrollerOptions={{ itemSize: 38 }}  dropdown onChange={(e) => setSelectedItem(e.value)} />
                     </div>
                     <div className="inline-flex flex-column gap-2">
-                        <label htmlFor="Postname" className="text-primary-50 font-semibold">
-                            image
-                        </label>
+                    <label className="font-medium">Image</label>
+                    //     <InputText ref={imageRef} />
                         <InputText id="name" label="name" className="bg-white-alpha-20 border-none p-3 text-primary-50" type="name" ref={imageRef} defaultValue={props.grade.image}></InputText>
                     </div>
                     <div className="flex align-items-center gap-2">
@@ -60,6 +57,13 @@ const UpdateGrade = (props) => {
                         <Button label="Cancel" onClick={(e) => hide(e)} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
                     </div>
                 </div>
+
+
+
+
+
+
+
             )}
         ></Dialog>
 
