@@ -79,6 +79,7 @@ const createNewBook = async (req, res) => {
         console.error('Error creating titles:', error);
         return res.status(500).json({ message: 'Failed to create titles', error: error.message });
     }
+    
 
 }
 

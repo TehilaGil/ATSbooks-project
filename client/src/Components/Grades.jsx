@@ -6,7 +6,7 @@ import axios from 'axios'
 import Grade from "./Grade"
 import CreatGrade from "./GradeCreat"
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
-
+import './Grades.css';
 const Grades = () => {
     const [gradesData, setGradesData] = useState([])
     const [visibleCreatGrade, setVisibleCreatGrade] = useState(false);
@@ -80,7 +80,7 @@ const Grades = () => {
     return (<>
 
         {/* if(maneger) */}
-        <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatGrade(true)} />
+        <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatGrade(true)}  className="add-button"/>
         <CreatGrade createGrade={createGrade} setVisibleCreatGrade={setVisibleCreatGrade} visibleCreatGrade={visibleCreatGrade} />
 
         <div className="card">
