@@ -1,6 +1,7 @@
 const File = require("../models/File"); 
 const fs = require("fs");
 const path = require("path");
+const mime = require('mime-types');
 
 
 const uploadFile = async (req, res) => {
@@ -189,6 +190,21 @@ const updateFile = async (req, res) => {
     res.status(500).send({ message: "שגיאה בעדכון קובץ", error: err.message });
   }
 };
+// const viewFileContent = async (req, res) => {
+//   try {
+//     const { fileId } = req.params;
+//     const file = await File.findById(fileId);
+
+//     if (!file) {
+//       return res.status(404).send({ message: "קובץ לא נמצא" });
+//     }
+//     // שליחת תוכן הקובץ
+//     res.sendFile(path.resolve(file.path));
+//   } catch (err) {
+//     res.status(500).send({ message: "שגיאה בהצגת תוכן הקובץ", error: err.message });
+//   }
+// };
+
 const viewFileContent = async (req, res) => {
   try {
     const { fileId } = req.params;
@@ -197,12 +213,27 @@ const viewFileContent = async (req, res) => {
     if (!file) {
       return res.status(404).send({ message: "קובץ לא נמצא" });
     }
-    // שליחת תוכן הקובץ
-    res.sendFile(path.resolve(file.path));
+
+    const absolutePath = path.resolve(file.path);
+    const contentType = mime.lookup(file.name) || 'application/octet-stream';
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', 'inline'); // מאפשר הצגה בתוך iframe
+
+    // זרימת נתונים (stream) לתמיכה בקבצים גדולים
+    const stream = fs.createReadStream(absolutePath);
+    stream.pipe(res);
+
+    stream.on('error', (err) => {
+      res.status(500).send({ message: "שגיאה בקריאת הקובץ", error: err.message });
+    });
   } catch (err) {
     res.status(500).send({ message: "שגיאה בהצגת תוכן הקובץ", error: err.message });
   }
+
+  
 };
+
 module.exports = {
   viewFileContent,
   deleteFileFunction,
