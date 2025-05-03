@@ -34,11 +34,12 @@ const Grade = (props) => {
 
                 console.log("res.data", res.data);
                 props.setGradesData(res.data)
+                if (toast?.current){
                 toast.current.show({ severity: 'success', summary: 'Updated successfully', life: 3000 });
-            }
+           } }
         } catch (e) {
             console.error(e)
-            toast.current.show({
+            props.toast?.current.show({
                 severity: 'error',
                 summary: 'Error updating',
                 detail: e.response?.data?.message || e.message,
@@ -71,6 +72,10 @@ const Grade = (props) => {
                         life: 4000
                     });
                 }
+               
+                },
+                reject: () => {
+                    toast.current?.show({ severity: 'info', summary: 'המחיקה בוטלה', life: 2000 });
             }
         });
     };
@@ -108,8 +113,8 @@ const Grade = (props) => {
 
     return (
         <>
-<Toast ref={toast} />
-        <ConfirmDialog />
+{/* <Toast ref={toast} />
+        <ConfirmDialog /> */}
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={props.grade._id}>
           
           <div

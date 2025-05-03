@@ -13,6 +13,7 @@ const creatNewGrade = async (req, res) => {
     if (duplicate) {
         return res.status(409).json({ message: "Duplicate grade name" });
     }
+    
     const grade = await Grade.create({ name, image });
     if (!grade) {
         return res.status(500).json({ message: "Failed to create grade" });

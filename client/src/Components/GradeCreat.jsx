@@ -42,55 +42,59 @@ const CreateGrade = (props) => {
 
     const searchItems = (event) => {
         setFilteredItems(items);
-    };
+    }; 
 
     const imageRef = useRef("");
 
     return (
         <Dialog
-            visible={visibleCreatGrade}
-            modal
-            onHide={() => props.setVisibleCreatGrade(false)}
-            content={({ hide }) => (
-                <div className="flex flex-row items-end p-6 gap-6 bg-white rounded-xl">
-                    <div className="flex flex-col gap-2">
-                        <label className="text-gray-700 font-medium">Name</label>
-                        <AutoComplete
-                            value={selectedItem}
-                            suggestions={filteredItems}
-                            completeMethod={searchItems}
-                            virtualScrollerOptions={{ itemSize: 38 }}
-                            dropdown
-                            onChange={(e) => setSelectedItem(e.value)}
-                            className="p-inputtext p-3 border border-gray-300 rounded-md w-64"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label className="text-gray-700 font-medium">Image</label>
-                        <InputText
-                            className="p-3 border border-gray-300 rounded-md w-64"
-                            ref={imageRef}
-                        />
-                    </div>
-
-                    <div className="flex flex-row gap-3 self-end">
-                        <Button
-                            label="Create"
-                            onClick={(e) => { createGrade(selectedItem, imageRef); hide(e); }}
-                            className="bg-indigo-500 text-white px-5 py-2 rounded-md hover:bg-indigo-600"
-                        />
-                        <Button
-                            label="Cancel"
-                            onClick={(e) => hide(e)}
-                            className="bg-gray-500 text-white px-5 py-2 rounded-md hover:bg-gray-600"
-                        />
-                    </div>
+        visible={visibleCreatGrade}
+        modal
+        onHide={() => props.setVisibleCreatGrade(false)}
+        content={({ hide }) => (
+            <div className="flex flex-row items-end p-6 gap-6 bg-white rounded-xl">
+                <div className="flex flex-col gap-2">
+                    <label className="text-gray-700 font-medium">Name</label>
+                    <AutoComplete
+                        value={selectedItem}
+                        suggestions={filteredItems}
+                        completeMethod={searchItems}
+                        virtualScrollerOptions={{ itemSize: 38 }}
+                        dropdown
+                        onChange={(e) => setSelectedItem(e.value)}
+                        className="p-inputtext p-3 border border-gray-300 rounded-md w-64"
+                    />
                 </div>
-            )}
-        />
+
+                <div className="flex flex-col gap-2">
+                    <label className="text-gray-700 font-medium">Image</label>
+                    <InputText
+                        className="p-3 border border-gray-300 rounded-md w-64"
+                        ref={imageRef}
+                    />
+                </div>
+
+                <div className="flex flex-row gap-3 self-end">
+                    <Button
+                        label="Create"
+                        onClick={(e) => { createGrade(selectedItem, imageRef); hide(e); }}
+                        className="bg-indigo-500 text-white px-5 py-2 rounded-md hover:bg-indigo-600"
+                    />
+                    <Button
+                        label="Cancel"
+                        onClick={(e) => hide(e)}
+                        className="bg-gray-500 text-white px-5 py-2 rounded-md hover:bg-gray-600"
+                    />
+                </div>
+            </div>
+        )}
+    />
+    
     );
 };
+
+
+
 
 export default CreateGrade;
 
