@@ -28,7 +28,7 @@ const LazyBook = React.lazy(() => import('./Components/Books'));
 const LazyTitles = React.lazy(() => import('./Components/Titles'));
 const LazyRecorder = React.lazy(() => import('./Components/Recorder'));
 const LazyFileView = React.lazy(() => import('./Components/FileView'));
-const LazyEnglishCourseSignUp = React.lazy(() => import('./Components/EnglishCourseSignUp '));
+const LazyEnglishCourseSignUp = React.lazy(() => import('./Components/EnglishCourseSignUp'));
 
 
 
@@ -43,7 +43,7 @@ function App() {
       <Routes>
         <Route path='/Login' element={<Suspense fallback="loading..."><LazyLogin /></Suspense>} />
         {/* <Route path='/Login'  setUserFunc={setUserCallback} element={<Suspense fallback="loading..."><LazyLogin /></Suspense>} /> */}
-        <Route path='/Home' element={<Suspense fallback="loading..."><LazyEnglishCourseSignUp /></Suspense>} />
+        <Route path='/Home' element={<Suspense fallback="loading..."><LazyHome /></Suspense>} />
         <Route path='/Grades' element={<Suspense fallback="loading..."><LazyGrade /></Suspense>} />
         <Route path='/Users' element={<Suspense fallback="loading..."><LazyUser /></Suspense>} />
         <Route path='/LogOut' element={<Suspense fallback="loading..."><LazyLogOut /></Suspense>} />
@@ -54,6 +54,7 @@ function App() {
         <Route path="/Books/:gradeId" element={<Suspense fallback="loading..."><LazyBook /></Suspense>} />
         <Route path="/Titles/:bookId" element={<Suspense fallback="loading..."><LazyTitles /></Suspense>} />
         <Route path="/FileView/:fileId" element={<Suspense fallback="loading..."><LazyFileView /></Suspense>} />
+        <Route path="/Course" element={<Suspense fallback="loading..."><LazyEnglishCourseSignUp /></Suspense>} />
 
       </Routes>
 

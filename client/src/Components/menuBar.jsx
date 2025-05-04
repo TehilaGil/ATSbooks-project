@@ -6,6 +6,7 @@ import { Button } from 'primereact/button';
 import { setToken, logOut } from '../redux/tokenSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import UpdateUser from './UserUpdate';
+import EnglishCourseSignUp  from './EnglishCourseSignUp'
 const MenuBar = () => {
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const { token } = useSelector((state) => state.token);
@@ -96,13 +97,20 @@ const MenuBar = () => {
         navigate('./Grades');
       }
     },
+    
+      {
+        label: 'Books',
+        icon: 'pi pi-user',
+        command: () => {
+          navigate('./Books');
+        }
+    },
     {
-      label: 'Books',
+      label: 'Course',
       icon: 'pi pi-user',
       command: () => {
-        navigate('./Books');
-      }
-    },
+        navigate('./Course');
+      }},
     // user === UserName &&
 
    ]

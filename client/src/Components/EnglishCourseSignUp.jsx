@@ -15,6 +15,35 @@ const EnglishCourseSignUp = () => {
     audioFile: null,
   });
 
+  const SentRequestForJoinTheCourse = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("firstName", form.firstName);
+      formData.append("lastName", form.lastName);
+      formData.append("schoolName", form.schoolName);
+      formData.append("email", form.email);
+      formData.append("grade", form.grade);
+      formData.append("audioFile", form.audioFile);
+  
+      const response = await fetch("http://localhost:7000/api/cours", {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (response.ok) {
+        alert("Your request was sent successfully! ✅");
+      } else {
+        alert("There was a problem sending your request. ❌");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error sending request ❗");
+    }
+  }; // ← כאן עצור! אל תוסיף סוגר נוסף
+  
+
+
+
   const grades = [
     { label: "1st Grade", value: "1st Grade" },
     { label: "2nd Grade", value: "2nd Grade" },
@@ -34,10 +63,10 @@ const EnglishCourseSignUp = () => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  const handleSubmit = () => {
-    console.log("Form submitted:", form);
-    alert("Thank you for signing up! We'll get back to you soon.");
-  };
+  // const handleSubmit = () => {
+  //   console.log("Form submitted:", form);
+  //   alert("Thank you for signing up! We'll get back to you soon.");
+  // };
 
   return (
     <div className="signup-form-container">
@@ -141,12 +170,11 @@ const EnglishCourseSignUp = () => {
             label="Sign me up! 🎉"
             icon="pi pi-send"
             className="cute-button"
-            onClick={handleSubmit}
+            onClick={SentRequestForJoinTheCourse}
           />
         </div>
       </div>
     </div>
   );
-};
-
+}
 export default EnglishCourseSignUp;
