@@ -75,7 +75,7 @@ const register = async (req, res) => {
     }
    
     const hashedpwd = await bcrypt.hash(password, 10)
-    const userobject = { name, email, phone, password: hashedpwd }
+    const userobject = { name, email, phone,confirm:false,roles:"User", password: hashedpwd }
     const user = await User.create(userobject)
 
     if (user) {
@@ -125,7 +125,7 @@ const login = async (req, res) => {
     if (!Match) return res.status(401).json({ message: 'Cant connect' })
 
 
-    if (!foundUser.confirm) {
+    if (!foundUser.confirm&&foundUser.roles!="Admin") {
         return res.status(403).json({ message: 'You are not confirmed to login yet.' });
     }
 

@@ -13,20 +13,23 @@ import 'primeicons/primeicons.css';
 import axios from 'axios'
 import '../Grade.css';
 import { Link } from 'react-router-dom'; 
-
+import { useSelector } from "react-redux";
 
 const Grade = (props) => {
     const [visible, setVisible] = useState(false);
     const toast = useRef(null);
-
+    const { token } = useSelector((state) => state.token);
+    const { user } = useSelector((state) => state.token);
     const navigate = useNavigate();
     //**********updateGrade
-    const updateGrade = async (selectedItem, imageRef) => {
+    const updateGrade = async (selectedItem) => {
+       
+
         console.log(selectedItem)
         const updatedGrade = {
             ...props.grade,
             name: selectedItem ,
-            image: imageRef.current.value ? imageRef.current.value : props.grade.body,
+            // image: imageRef.current.value ? imageRef.current.value : props.grade.body,
         };
         try {
             const res = await axios.put('http://localhost:7000/api/grade', updatedGrade)
@@ -103,16 +106,29 @@ const Grade = (props) => {
 
     const footer = (
         <div className="card flex flex-wrap gap-2 justify-content-center">
-
-            <Button icon="pi pi-times" label="Delete"  onClick={(e) =>{e.stopPropagation() 
-                                deleteGrade(props.grade._id)}} />
-                                
-            <Button label="Update" icon="pi pi-pencil" onClick={(e) =>{e.stopPropagation() 
-                                setVisible(true)}} />  
+            {user?.roles === "Admin" && (
+                <>
+                    <Button 
+                        icon="pi pi-times" 
+                        label="Delete"  
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            deleteGrade(props.grade._id);
+                        }} 
+                    />
+                    <Button 
+                        label="Update" 
+                        icon="pi pi-pencil" 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setVisible(true);
+                        }} 
+                    />
+                </>
+            )}
             <UpdateGrade updateGrade={updateGrade} setVisible={setVisible} visible={visible} grade={props.grade} />
         </div>
     );
-
 
     return (
         <>

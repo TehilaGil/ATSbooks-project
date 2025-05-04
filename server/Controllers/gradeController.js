@@ -23,11 +23,23 @@ const creatNewGrade = async (req, res) => {
 
 // read
 const getAllGrade = async (req, res) => {
-    const grades = await Grade.find().lean().sort({ name: 1 });
-    if (!grades?.length) {
-        return res.status(204).json({ message: 'No grades found' });
+    try {
+        const grades = await Grade.find().lean(); // שליפת הכיתות
+        if (!grades?.length) {
+            return res.status(204).json({ message: 'No grades found' });
+        }
+
+        // מיון לפי סדר ה-enum
+        const enumOrder = ['first grade', 'second grade', 'third grade', 'fourth grade', 'fifth grade', 'sixth grade', 'seventh grade', 'eighth grade'];
+        grades.sort((a, b) => {
+            return enumOrder.indexOf(a.name) - enumOrder.indexOf(b.name);
+        });
+
+        res.json(grades);
+    } catch (error) {
+        console.error("Error fetching grades:", error.message);
+        res.status(500).json({ message: "Failed to fetch grades", error: error.message });
     }
-    res.json(grades);
 };
 
 // read by id

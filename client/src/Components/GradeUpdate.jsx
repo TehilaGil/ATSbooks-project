@@ -1,6 +1,6 @@
 
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState,useEffect } from "react";
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
@@ -14,6 +14,12 @@ const UpdateGrade = (props) => {
     const { updateGrade, visible, setVisible, grade } = props;
     const nameRef = useRef("");
     const imageRef = useRef("");
+
+    useEffect(() => {
+        if (grade) {
+            setSelectedItem(grade.name); // הגדרת הכיתה הנוכחית
+        }
+    }, [grade]); // יפעל מחדש אם הערך של grade משתנה
 
     const searchItems = (event) => {
         setFilteredItems(items);
@@ -43,7 +49,7 @@ const UpdateGrade = (props) => {
                     />
                 </div>
 
-                <div className="flex flex-column gap-2">
+                {/* <div className="flex flex-column gap-2">
                     <label htmlFor="image" className="font-medium">Image</label>
                     <InputText
                         id="image"
@@ -52,20 +58,23 @@ const UpdateGrade = (props) => {
                         placeholder="Enter image URL"
                         className="p-inputtext-sm"
                     />
-                </div>
+                </div> */}
 
                 <div className="flex justify-content-center gap-2">
                     <Button
                         label="Update"
-                        onClick={() => {
-                            updateGrade(selectedItem, imageRef);
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            updateGrade(selectedItem);
                             setVisible(false);
                         }}
                         className="p-button p-button-primary"
                     />
                     <Button
                         label="Cancel"
-                        onClick={() => setVisible(false)}
+                        onClick={(e) => 
+                            {e.stopPropagation()
+                            setVisible(false)}}
                         className="p-button p-button-secondary"
                     />
                 </div>

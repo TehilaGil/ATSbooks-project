@@ -86,8 +86,8 @@ const BookCreate = (props) => {
             style={{ width: '400px', borderRadius: '8px' }}
             onHide={() => setVisibleCreatBook(false)}
         >
-            <div className="flex flex-column px-8 py-5 gap-4">
-                <div className="inline-flex flex-column gap-2">
+            <div className="flex flex-column gap-4" style={{ padding: '1rem' }}>
+            <div className="inline-flex flex-column gap-2">
                     <label htmlFor="name" className="font-medium">Name</label>
                     <InputText
                         id="name"

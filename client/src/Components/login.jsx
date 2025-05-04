@@ -73,7 +73,9 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { setToken, logOut } from '../redux/tokenSlice'
 
 
 // const login = async () => {
@@ -103,12 +105,15 @@ import { useNavigate } from 'react-router-dom';
 //     }
 // }, [userCon, setUserFunc, navigate]);
 
-const Login = ({ setUserFunc }) => {
+const Login = () => {
     const [userCon, setUserCon] = useState(null); // Initializing userCon with null
     const [error, setError] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const {token} = useSelector((state) => state.token);
+    const {user} = useSelector((state) => state.token);
 
 
 const login = async () => {
@@ -120,9 +125,10 @@ const login = async () => {
             console.log(email);
             console.log(password);
             if (res && res.status === 200) {
+                dispatch(setToken({token:res.data.accessToken,user:res.data.user}))
+        navigate('../home'); // ניווט אחרי השינוי
+
                 console.log(res.data);
-                localStorage.setItem('loggedInUser', JSON.stringify(res.data.user));
-                setUserCon(res.data.user);
             }
         } catch (err) {
             if (err.response && err.response.status === 401) {
@@ -138,13 +144,13 @@ const login = async () => {
     }
 };
 // עיכוב הניווט עד שהמשתמש נשמר
-useEffect(() => {
-    if (userCon) {
-        console.log("Setting user:", userCon);
-        setUserFunc(userCon); // עדכון המשתמש בקונטקסט
-        navigate('/home'); // ניווט אחרי השינוי
-    }
-}, [userCon, setUserFunc, navigate]);
+// useEffect(() => {
+//     if (user) {
+//         console.log("Setting user:", user);
+       
+//         navigate('/home'); // ניווט אחרי השינוי
+//     }
+// }, [user]);
 
     return (
         <div className="card">

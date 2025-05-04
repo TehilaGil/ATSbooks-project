@@ -124,7 +124,17 @@ const Titles = () => {
                 items: (filesMap[title._id] || []).map(file => ({
                     label: (
                         <div className="flex justify-between align-items-center w-full gap-2">
-                            <span>{ file.name }</span>
+                            <span
+                                style={{
+                                    maxWidth: '30%', // חצי מהרוחב של השורה
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap'
+                                }}
+                                title={file.name} // מציג את השם המלא כ-tooltip על מעבר עכבר
+                            >
+                                {file.name}
+                            </span>
                             <span className="flex gap-2">
                                 <Button icon="pi pi-eye" rounded text size="small" onClick={(e) => {
                                     e.stopPropagation();
@@ -198,40 +208,103 @@ const Titles = () => {
     };
 
     const handleUpdate = async () => {
-    const formData = new FormData();
-    formData.append('newName', newFileName); // שליחת שם חדש
-    if (selectedFile) {
-        formData.append('file', selectedFile); // אם יש קובץ חדש, שלח אותו
-    }
+        const formData = new FormData();
+        formData.append('newName', newFileName); // שליחת שם חדש
+        if (selectedFile) {
+            formData.append('file', selectedFile); // אם יש קובץ חדש, שלח אותו
+        }
 
-    try {
-        const res = await axios.put(`http://localhost:7000/api/file/${selectedFile}`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        try {
+            const res = await axios.put(`http://localhost:7000/api/file/${selectedFile}`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
 
-        // עדכון הרשימה המקומית
-        setFilesByTitle(prev => ({
-            ...prev,
-            [uploadTitleId]: prev[uploadTitleId].map(file =>
-                file._id === res.data._id ? res.data : file
-            )
-        }));
+            // עדכון הרשימה המקומית
+            setFilesByTitle(prev => ({
+                ...prev,
+                [uploadTitleId]: prev[uploadTitleId].map(file =>
+                    file._id === res.data._id ? res.data : file
+                )
+            }));
 
-        setVisibleUpdate(false);
-        setNewFileName('');
-        toast.current?.show({ severity: 'success', summary: 'הצלחה', detail: 'קובץ עודכן', life: 3000 });
-    } catch (err) {
-        console.error(err);
-        toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'בעיה בעדכון קובץ', life: 3000 });
-    }
-};
+            setVisibleUpdate(false);
+            setNewFileName('');
+            toast.current?.show({ severity: 'success', summary: 'הצלחה', detail: 'קובץ עודכן', life: 3000 });
+        } catch (err) {
+            console.error(err);
+            toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'בעיה בעדכון קובץ', life: 3000 });
+        }
+    };
+    const [filePreview, setFilePreview] = useState(''); // תצוגה מקדימה של שם הקובץ הנבחר
 
     return (
         <div className="card flex justify-content-center">
             <PanelMenu model={items} className="w-full md:w-30rem" />
-            <Dialog header="העלאת קובץ חדש" visible={visibleUpload} onHide={() => setVisibleUpload(false)}>
-                <InputText placeholder="שם קובץ" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} />
-                <FileUpload mode="basic" auto customUpload uploadHandler={handleUpload} chooseLabel="בחר קובץ" />
+            <Dialog
+                header="Upload new file"
+                visible={visibleUpload}
+                onHide={() => {
+                    setVisibleUpload(false);
+                    setSelectedFile(null); // איפוס הקובץ הנבחר אם החלון נסגר
+                    setFilePreview(''); // איפוס תצוגת שם הקובץ
+                }}
+                style={{ width: '30rem', borderRadius: '8px', textAlign: 'center' }}
+                className="custom-upload-dialog"
+            >
+                <div className="flex flex-column gap-4" style={{ padding: '1.5rem' }}>
+                    <label htmlFor="fileName" className="font-medium" style={{ textAlign: 'left' }}>
+                        שם קובץ
+                    </label>
+                    <InputText
+                        id="fileName"
+                        placeholder="הכנס שם קובץ"
+                        value={newFileName}
+                        onChange={(e) => setNewFileName(e.target.value)}
+                        className="p-inputtext-lg"
+                        style={{ borderRadius: '6px', width: '100%' }}
+                    />
+                    <FileUpload
+                        mode="basic"
+                        auto={false} // ביטול העלאה אוטומטית
+                        customUpload
+                        chooseLabel="בחר קובץ"
+                        uploadHandler={({ files }) => {
+                            setSelectedFile(files[0]); // שמירת הקובץ הנבחר ב-state זמני
+                            setFilePreview(files[0]?.name || ''); // הצגת שם הקובץ הנבחר
+                        }}
+                        className="p-button-primary"
+                        style={{ width: '100%' }}
+                    />
+                    {filePreview && (
+                        <div style={{ textAlign: 'left', fontSize: '0.9rem', color: '#555' }}>
+                            <strong>קובץ נבחר:</strong> {filePreview}
+                        </div>
+                    )}
+                    <div className="flex justify-content-center gap-3">
+                        <Button
+                            label="Upload"
+                            onClick={() => {
+                                if (selectedFile) {
+                                    handleUpload({ files: [selectedFile] }); // קריאה ל-handleUpload עם הקובץ הנבחר
+                                } else {
+                                    toast.current?.show({ severity: 'warn', summary: 'שגיאה', detail: 'יש לבחור קובץ לפני העלאה', life: 3000 });
+                                }
+                            }}
+                            className="p-button-primary"
+                            style={{ width: '40%' }}
+                        />
+                        <Button
+                            label="Cancel"
+                            onClick={() => {
+                                setVisibleUpload(false);
+                                setSelectedFile(null); // איפוס הקובץ הנבחר
+                                setFilePreview(''); // איפוס שם הקובץ
+                            }}
+                            className="p-button-secondary"
+                            style={{ width: '40%' }}
+                        />
+                    </div>
+                </div>
             </Dialog>
 
             <Dialog header="עריכת קובץ" visible={visibleUpdate} style={{ width: '30vw' }} onHide={() => setVisibleUpdate(false)}>

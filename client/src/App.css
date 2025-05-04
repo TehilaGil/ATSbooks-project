@@ -117,3 +117,6 @@ margin-top: -8px;
 .link-custom:active {
   color: inherit; /* שומר על הצבע המקורי גם בעת ריחוף או לחיצה */
 }
+.jjj{
+  text-align: right;
+}
