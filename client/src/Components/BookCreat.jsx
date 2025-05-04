@@ -5,6 +5,8 @@ import { InputText } from 'primereact/inputtext';
 import { MultiSelect } from 'primereact/multiselect';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { FileUpload } from 'primereact/fileupload';
+
 
 const BookCreate = (props) => {
     const { createBook, visibleCreatBook, setVisibleCreatBook } = props;
@@ -143,6 +145,7 @@ const BookCreate = (props) => {
                     />
                 </div>
             </div>
+            
         </Dialog>
     );
 };

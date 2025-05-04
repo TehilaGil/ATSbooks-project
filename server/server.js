@@ -1,6 +1,7 @@
 require("dotenv").config()
 const express=require("express")
 const cors=require("cors")
+// const path = require("path");
 const corsOptions=require("./config/corsOptions")
 const connectDB=require("./config/dbConn.js")
 const { default: mongoose } = require("mongoose")
@@ -11,6 +12,7 @@ connectDB()
 
 app.use(cors(corsOptions))
 app.use(express.json())
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.static("public"))
 
 app.use("/api/user",require("./routes/user.js"))

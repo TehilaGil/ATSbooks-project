@@ -23,6 +23,9 @@ const BookUpdate = (props) => {
     // ];
 
     const [grades, setGrades] = useState([]);
+    const { updateBook } = props
+    const { visible } = props
+    const { book } = props
 
     const AvailablGrade = async () => {
         try {
@@ -46,12 +49,21 @@ const BookUpdate = (props) => {
         AvailablGrade();
     }, []);
 
+
+    useEffect(() => {
+        if (book?.grades && grades.length > 0) {
+            // מצא את הכיתות מתוך רשימת האפשרויות ב-MultiSelect
+            const initialGrades = book.grades.map((grade) => {
+                const matchingGrade = grades.find((g) => g.value === grade);
+                return matchingGrade || { label: grade, value: grade }; // שמור על התאמה אם הכיתה קיימת
+            });
+
+            setSelectedGrades(initialGrades);
+        }
+    }, [book, grades]);
     const [filteredItems, setFilteredItems] = useState(null);
     const [selectedGrades, setSelectedGrades] = useState([]);
 
-    const { updateBook } = props
-    const { visible } = props
-    const { book } = props
 
 
     const nameRef = useRef("")
@@ -72,78 +84,84 @@ const BookUpdate = (props) => {
 
 
         <Dialog
-        visible={visible}
-        modal
-        header="Update Book" // הוספת כותרת לדיאלוג
-        style={{ width: '400px', borderRadius: '8px' }} // התאמת הגודל והעיגול
-        onHide={() => { if (!visible) return; props.setVisible(false); }}
-        onClick={(e) => e.stopPropagation()}
-    >
-        <div className="flex flex-column gap-4" style={{ padding: '1rem' }}>
-            {/* Name Field */}
-            <div className="flex flex-column gap-2">
-                <label htmlFor="Postname" className="font-medium">Name</label>
-                <InputText
-                    id="name"
-                    placeholder="Enter book name"
-                    className="p-inputtext-sm"
-                    type="name"
-                    ref={nameRef}
-                    defaultValue={book.name}
-                />
+            visible={visible}
+            modal
+            header="Update Book" // הוספת כותרת לדיאלוג
+            style={{ width: '400px', borderRadius: '8px' }} // התאמת הגודל והעיגול
+            onHide={() => { if (!visible) return; props.setVisible(false); }}
+            onClick={(e) => e.stopPropagation()}
+        >
+            <div className="flex flex-column gap-4" style={{ padding: '1rem' }}>
+                {/* Name Field */}
+                <div className="flex flex-column gap-2">
+                    <label htmlFor="Postname" className="font-medium">Name</label>
+                    <InputText
+                        id="name"
+                        placeholder="Enter book name"
+                        className="p-inputtext-sm"
+                        type="name"
+                        ref={nameRef}
+                        defaultValue={book?.name || ""}
+                    />
+                </div>
+
+                {/* Grades Field */}
+                <div className="flex flex-column gap-2">
+                    <label htmlFor="Bookname" className="font-medium">Grades</label>
+                    <MultiSelect
+                        id="grades"
+                        value={selectedGrades.map((g) => g.value)} // הוצא רק את הערכים (value) מהאובייקט
+                        options={grades}
+                        onChange={(e) => {
+                            const selected = e.value.map((value) => {
+                                const matchingGrade = grades.find((g) => g.value === value);
+                                return matchingGrade || { label: value, value: value };
+                            });
+                            setSelectedGrades(selected);
+                        }}
+                        optionLabel="label"
+                        placeholder="Select Grades"
+                        display="chip"
+                        className="w-full md:w-20rem custom-multiselect"
+                        virtualScrollerOptions={{ itemSize: 38 }}
+                    />
+                </div>
+
+                {/* Image Field */}
+                <div className="flex flex-column gap-2">
+                    <label htmlFor="Postname" className="font-medium">Image</label>
+                    <InputText
+                        id="name"
+                        placeholder="Enter image URL"
+                        className="p-inputtext-sm"
+                        type="name"
+                        ref={imageRef}
+                        defaultValue={book?.image || ""}
+                    />
+                </div>
+
+                {/* Buttons Section */}
+                <div className="flex justify-content-center gap-2">
+                    <Button
+                        label="Update"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            updateBook(nameRef, selectedGrades, imageRef, book);
+                            props.setVisible(false); // סגירת הדיאלוג
+                        }}
+                        className="p-button p-button-primary"
+                    />
+                    <Button
+                        label="Cancel"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            props.setVisible(false); // סגירת הדיאלוג
+                        }}
+                        className="p-button p-button-secondary"
+                    />
+                </div>
             </div>
-    
-            {/* Grades Field */}
-            <div className="flex flex-column gap-2">
-                <label htmlFor="Bookname" className="font-medium">Grades</label>
-                <MultiSelect
-                    id="grades"
-                    value={selectedGrades}
-                    options={grades}
-                    onChange={(e) => setSelectedGrades(e.value)}
-                    optionLabel="label"
-                    placeholder="Select Grades"
-                    display="chip"
-                    className="w-full md:w-20rem custom-multiselect"
-                    virtualScrollerOptions={{ itemSize: 38 }}
-                />
-            </div>
-    
-            {/* Image Field */}
-            <div className="flex flex-column gap-2">
-                <label htmlFor="Postname" className="font-medium">Image</label>
-                <InputText
-                    id="name"
-                    placeholder="Enter image URL"
-                    className="p-inputtext-sm"
-                    type="name"
-                    ref={imageRef}
-                    defaultValue={book.image}
-                />
-            </div>
-    
-            {/* Buttons Section */}
-            <div className="flex justify-content-center gap-2">
-                <Button
-                    label="Update"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        updateBook(nameRef, selectedGrades, imageRef, book);
-                        props.setVisible(false); // סגירת הדיאלוג
-                    }}
-                    className="p-button p-button-primary"
-                />
-                <Button
-                    label="Cancel"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        props.setVisible(false); // סגירת הדיאלוג
-                    }}
-                    className="p-button p-button-secondary"
-                />
-            </div>
-        </div>
-    </Dialog>
+        </Dialog>
 
     )
 }

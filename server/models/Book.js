@@ -6,7 +6,9 @@ const bookSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        maxlength: [20, 'Name cannot exceed 100 characters'] // הגבלת אורך ל-100 תווים
+
     },
     grades: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -20,6 +22,7 @@ const bookSchema = new mongoose.Schema({
         type: String,
         required: true//?
         // default: 'Book'
+        
     }
 
 }, {
