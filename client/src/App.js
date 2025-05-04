@@ -36,7 +36,11 @@ const LazyFileView = React.lazy(() => import('./Components/FileView'));
 
 
 function App() {
-  const [user, setUser] = useState({ name: "UserName" });
+  // const [user, setUser] = useState({ name: "UserName" });
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('loggedInUser');
+    return storedUser ? JSON.parse(storedUser) : { name: "UserName" };
+  });
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
   const [menuVisible, setMenuVisible] = useState(false); // מצב הצגת התפריט

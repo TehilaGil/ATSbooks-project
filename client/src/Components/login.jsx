@@ -121,6 +121,7 @@ const login = async () => {
             console.log(password);
             if (res && res.status === 200) {
                 console.log(res.data);
+                localStorage.setItem('loggedInUser', JSON.stringify(res.data.user));
                 setUserCon(res.data.user);
             }
         } catch (err) {

@@ -13,29 +13,36 @@ import { Toast } from 'primereact/toast';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { useNavigate } from 'react-router-dom';
+import { useGetUsersQuery } from '../store/api/api'; // נתיב לפי מיקומך
+
 
 const Users = () => {
     const navigate = useNavigate();
+    const { data: users, error, isLoading } = useGetUsersQuery();
+
     const [source, setSource] = useState([]);
     const [target, setTarget] = useState([]);
+    // const source = users ? users.filter(user => !user.confirm) : [];
+    // const target = users ? users.filter(user => user.confirm) : [];
+
     const toast = useRef(null);
 
     const [sourceSelection, setSourceSelection] = useState([]);
     const [targetSelection, setTargetSelection] = useState([]);
 
-    const getUsers = async () => {
-        try {
-            const res = await axios.get('http://localhost:7000/api/user');
-            if (res.status === 200) {
-                const confirmedUsers = res.data.filter(user => user.confirm === true);
-                const notConfirmedUsers = res.data.filter(user => !user.confirm);
-                setSource(notConfirmedUsers);
-                setTarget(confirmedUsers);
-            }
-        } catch (e) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error loading users', life: 3000 });
-        }
-    };
+    // const getUsers = async () => {
+    //     try {
+    //         const res = await axios.get('http://localhost:7000/api/user');
+    //         if (res.status === 200) {
+    //             const confirmedUsers = res.data.filter(user => user.confirm === true);
+    //             const notConfirmedUsers = res.data.filter(user => !user.confirm);
+    //             setSource(notConfirmedUsers);
+    //             setTarget(confirmedUsers);
+    //         }
+    //     } catch (e) {
+    //         toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error loading users', life: 3000 });
+    //     }
+    // };
 
     const createUser = async (nameRef, emailRef, phoneRef, passwordRef) => {
         const newUser = {
@@ -130,9 +137,15 @@ const Users = () => {
     };
 
     useEffect(() => {
-        getUsers();
-    }, []);
-
+        // getUsers();
+        if (users) {
+            setSource(users.filter(user => !user.confirm));
+            setTarget(users.filter(user => user.confirm));
+        }
+    }, [users]);
+    if (isLoading) return <p>טוען משתמשים...</p>;
+    if (error) return <p>שגיאה בטעינת נתונים</p>;
+    
     return (
         <div className="card">
             <Toast ref={toast} />
