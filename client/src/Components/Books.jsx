@@ -96,28 +96,31 @@ export default function BooksDataView() {
     }
 
     const createBook = async (nameRef, selectedItem, imageRef) => {
+        console.log(selectedItem)
+
         const newBook = {
-            name: nameRef.current.value ? nameRef.current.value : " ",
-            grades: selectedItem ? selectedItem : " ",
-            image: imageRef.current.value ? imageRef.current.value : " "
+            name: nameRef.current.value ? nameRef.current.value : "",
+            grades: selectedItem ? selectedItem : "",// ? selectedItem.split(',') : "" ,
+            image: imageRef.current.value ? imageRef.current.value : ""
         };
+        console.log(newBook.grades)
         try {
-            const res = await axios.post('http://localhost:7000/api/book', newBook);
-    
+            const res = await axios.post('http://localhost:7000/api/book', newBook)
+
             if (res.status === 200 || res.status === 201) {
+                console.log("ספר נוצר:", res.data);
                 // if (gradeId) {
-                //     getBooksByGrade(gradeId); // רענון לפי כיתה
+                //     getBooksByGrade(gradeId); 
                 // } else {
-                //     getBooks();
-                // }
-                // setBooks(res.data);
+                //     getBooks(); 
+                // } // אם יש לך פונקציה כזו לרענון
                 setBooks((prevBooks) => [...prevBooks, res.data]);
             }
         } catch (e) {
             console.error("שגיאה ביצירת ספר:", e);
         }
+
     };
-    
     
 
     const listItem = (book, index) => (

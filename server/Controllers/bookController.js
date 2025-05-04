@@ -11,7 +11,10 @@ const createNewBook = async (req, res) => {
     const { name, grades, image } = req.body
     let gradesArr = [];
     gradesArr = grades
-    if (!name) {
+    if (!name ) {
+        return res.status(400).send("name is required")
+    }
+    if (!image) {
         return res.status(400).send("name is required")
     }
     const existBook = await Book.findOne({ name: name }).populate("grades");
