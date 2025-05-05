@@ -10,9 +10,11 @@ const { default: mongoose } = require("mongoose")
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-
+const path = require('path');
 
 const app=express()
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 const PORT=process.env.PORT||4000
 connectDB()
 

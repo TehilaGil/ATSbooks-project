@@ -6,29 +6,34 @@ const verifyJWT=require("../middleware/verifyJWT")
 const admirMiddleware=require("../middleware/admirMiddleware")
 // const { upload } = require("../Controllers/bookController");
 
-const multer = require("multer");
-const path = require("path");
-
+const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 
 // Configure multer storage
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, 'uploads/'); // Save files in "uploads" folder
-//     },
-//     filename: (req, file, cb) => {
-//         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-//         cb(null, `${uniqueSuffix}-${file.originalname}`);
-//     }
-// });
-// const upload = multer({ storage });
-// router.post("/", upload.single("file"), createNewBook);
-//router.post('/api/books', upload.single('image'), bookController.createNewBook);
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/bookImages');
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        const baseName = req.body.name ? req.body.name.replace(/\s+/g, '_') : 'file';
+        const uniqueName = baseName + '-' + Date.now() + ext;
+        cb(null, uniqueName);
+    }
+});
+ const upload = multer({ storage });
+
+
+router.post('/', verifyJWT ,admirMiddleware,upload.single('image'), bookController.createNewBook);
 
 router.get('/',bookController.getAllBooks)
 
 router.get('/:id',bookController.getBookById)
 
-router.put('/',verifyJWT ,admirMiddleware,bookController.updateBook)
+//router.put('/',verifyJWT ,admirMiddleware,bookController.updateBook)
+router.put(    '/', verifyJWT, admirMiddleware, upload.single('image'),bookController.updateBook
+);
 
 router.delete('/:id',verifyJWT ,admirMiddleware,bookController.deleteBook)
 

@@ -3,31 +3,66 @@ const Grade = require("../models/Grade")
 const Title = require("../models/Title")
 const { deleteTitle } = require('./titleController');
 
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, '../uploads/bookImages');
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath);
+        }
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + ext;
+        cb(null, uniqueName);
+    }
+});
+
+const upload = multer({ storage });
 
 const createNewBook = async (req, res) => {
 
-    const { name, grades, image } = req.body
+    const { name, grades } = req.body
+    const image = req.file ? '/uploads/bookImages/' + req.file.filename : null;
+
     let gradesArr = [];
     gradesArr = grades
-    if (!name ) {
+    console.log(image)
+    if (!name) {
         return res.status(400).send("name is required")
     }
     if (!image) {
-        return res.status(400).send("name is required")
+        return res.status(400).send("image is required")
     }
     const existBook = await Book.findOne({ name: name }).populate("grades");
     if (existBook) {
         return res.status(400).send("invalid name")
     }
-   
-    //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
 
+    //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
+    
+
+    if (typeof gradesArr === "string") {
+        try {
+            gradesArr = JSON.parse(gradesArr);
+        } catch (error) {
+            console.error("Failed to parse gradesArr:", error);
+            return res.status(400).send("Invalid grades format");
+        }
+    }
+
+    if (!Array.isArray(gradesArr)) {
+        return res.status(400).send("grades must be an array");
+    }
     const gradeDocs = await Promise.all(
         gradesArr.map(grade => Grade.findOne({ name: grade }))
+
     );
-    console.log("111")
     console.log("gradeDocs", gradeDocs)
     // סינון רק כיתות שנמצאו בפועל
     const validGrades = gradeDocs.filter(doc => doc);
@@ -65,7 +100,7 @@ const createNewBook = async (req, res) => {
         console.error('Error creating titles:', error);
         return res.status(500).json({ message: 'Failed to create titles', error: error.message });
     }
-    
+
 
 }
 
@@ -91,7 +126,7 @@ const getBooksForGrade = async (req, res) => {
 
     // חפש את כל הספרים שהכיתה עם ה-ID הזה נמצאת במערך grades
     const books = await Book.find({ grades: Id }).lean().populate("grades")
-console.log(books);
+    console.log(books);
 
     if (!books?.length) {
         return res.status(400).json({ message: 'No books found for this grade' })
@@ -99,53 +134,112 @@ console.log(books);
 
     res.json(books)
 }
+// const updateBook = async (req, res) => {
+//     try {
+//         const { _id, name, grades } = req.body;
+//         const newImage = req.file ? '/uploads/bookImages/' + req.file.filename : null;
+
+//         const book = await Book.findById(_id).populate("grades").exec();
+//         if (!book) {
+//             return res.status(400).json({ message: 'Book not found' });
+//         }
+
+//         // Update grades
+//         let gradesArray = grades;
+//         if (!Array.isArray(grades)) {
+//             if (typeof grades === 'string') {
+//                 gradesArray = grades.split(',').map(g => g.trim());
+//             } else {
+//                 return res.status(400).json({ message: 'Grades must be an array or comma-separated string' });
+//             }
+//         }
+
+//         const gradeDocs = await Promise.all(
+//             gradesArray.map(name => Grade.findOne({ name }))
+//         );
+
+//         const validGrades = gradeDocs.filter(doc => doc);
+//         const gradeIds = validGrades.map(doc => doc._id);
+
+//         // מחיקת התמונה הקודמת אם יש תמונה חדשה
+//         if (newImage && book.image) {
+//             const oldImagePath = path.join(__dirname, '../', book.image);
+//             fs.unlink(oldImagePath, (err) => {
+//                 if (err) {
+//                     console.error(`Failed to delete old image: ${oldImagePath}`, err);
+//                 } else {
+//                     console.log(`Successfully deleted old image: ${oldImagePath}`);
+//                 }
+//             });
+//         }
+
+//         // עדכון הספר
+//         book.name = name;
+//         book.grades = gradeIds;
+//         if (newImage) {
+//             book.image = newImage;
+//         }
+
+//         const updatedBook = await book.save();
+//         res.json(updatedBook);
+//     } catch (error) {
+//         console.error("Error updating book:", error.message);
+//         res.status(500).json({ message: "Failed to update book", error: error.message });
+//     }
+// };
 const updateBook = async (req, res) => {
-    const { _id, name, grades, image } = req.body
-    // Confirm data
-    const book = await Book.findById(_id).populate("grades").exec()
-    if (!book) {
-        return res.status(400).json({ message: 'Book not found' })
-    }
+    try {
+        const { _id, name, grades } = req.body;
+        const newImage = req.file ? '/uploads/bookImages/' + req.file.filename : null;
 
-    // const titlesArr = titles ? titles.split(',') : ""  
-
-    //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
-    let gradesArray = grades;
-    if (!Array.isArray(grades)) {
-        if (typeof grades === 'string') {
-            gradesArray = grades.split(',').map(g => g.trim());
-        } else {
-            return res.status(400).json({ message: 'Grades must be an array or comma-separated string' });
+        const book = await Book.findById(_id).populate("grades").exec();
+        if (!book) {
+            return res.status(400).json({ message: 'Book not found' });
         }
+
+        // Update grades
+        let gradesArray = grades;
+        if (!Array.isArray(grades)) {
+            if (typeof grades === 'string') {
+                gradesArray = grades.split(',').map(g => g.trim());
+            } else {
+                return res.status(400).json({ message: 'Grades must be an array or comma-separated string' });
+            }
+        }
+
+        const gradeDocs = await Promise.all(
+            gradesArray.map(name => Grade.findOne({ name }))
+        );
+
+        const validGrades = gradeDocs.filter(doc => doc);
+        const gradeIds = validGrades.map(doc => doc._id);
+
+        // מחיקת התמונה הקודמת אם יש תמונה חדשה
+        if (newImage && book.image) {
+            const oldImagePath = path.join(__dirname, '../', book.image);
+            fs.unlink(oldImagePath, (err) => {
+                if (err) {
+                    console.error(`Failed to delete old image: ${oldImagePath}`, err);
+                } else {
+                    console.log(`Successfully deleted old image: ${oldImagePath}`);
+                }
+            });
+        }
+
+        // עדכון הספר
+        book.name = name;
+        book.grades = gradeIds;
+        if (newImage) {
+            book.image = newImage;
+        }
+
+        const updatedBook = await book.save();
+        res.json(updatedBook);
+    } catch (error) {
+        console.error("Error updating book:", error.message);
+        res.status(500).json({ message: "Failed to update book", error: error.message });
     }
-
-
-
-    // book.titles = titlesArr
-    const gradeDocs = await Promise.all(
-        gradesArray.map(name => Grade.findOne({ name }))
-    );
-    console.log("FOUND GRADE DOCS:", gradeDocs);
-    // סינון רק כיתות שנמצאו בפועל
-    const validGrades = gradeDocs.filter(doc => doc);
-    const gradeIds = validGrades.map(doc => doc._id);
-
-    book.name = name
-    book.image = image
-    book.grades = gradeIds
-
-    console.log(name)
-    console.log(gradesArray)
-
-
-    const updatebook = await book.save()
-    const books = await Book.find().lean().populate("grades")
-    if (!books?.length) {
-        return res.status(400).json({ message: 'No books found' })
-    }
-    res.json(books)
-}
-
+};
 // const deleteBook = async (req, res) => {
 //     const { id } = req.params
 //     const book = await Book.findById(id).exec()
@@ -173,29 +267,41 @@ const updateBook = async (req, res) => {
 
 const deleteBook = async (req, res) => {
     try {
-      const { id } = req.params;
-      const book = await Book.findById(id).exec();
-      if (!book) {
-        return res.status(400).json({ message: 'book not found' });
-      }
-  
-      const titles = await Title.find({ book: id }).exec();
-      if (Array.isArray(titles)) {
-        for (let title of titles) {
-          await deleteTitle(title._id); // שים לב - אין שימוש ב-res
+        const { id } = req.params;
+        const book = await Book.findById(id).exec();
+        if (!book) {
+            return res.status(400).json({ message: 'book not found' });
         }
-      }
-  
-      await Book.deleteOne({ _id: id });
-  
-      const books = await Book.find().lean().populate("grades");
-      res.json(books?.length ? books : []);
+
+        if (book.image) {
+            const imagePath = path.join(__dirname, '../', book.image); 
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    console.error(`Failed to delete image file: ${imagePath}`, err);
+                } else {
+                    console.log(`Successfully deleted image file: ${imagePath}`);
+                }
+            });
+        }
+
+
+        const titles = await Title.find({ book: id }).exec();
+        if (Array.isArray(titles)) {
+            for (let title of titles) {
+                await deleteTitle(title._id); // שים לב - אין שימוש ב-res
+            }
+        }
+
+        await Book.deleteOne({ _id: id });
+
+        const books = await Book.find().lean().populate("grades");
+        res.json(books?.length ? books : []);
     } catch (error) {
-      console.error("Error deleting book:", error.message);
-      res.status(500).json({ message: "Failed to delete book", error: error.message });
+        console.error("Error deleting book:", error.message);
+        res.status(500).json({ message: "Failed to delete book", error: error.message });
     }
-  };
-  
+};
+
 
 // const getAllBooksByGrade = async (req, res) => {
 //     const { id } = req.params
