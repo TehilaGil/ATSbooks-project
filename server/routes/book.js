@@ -32,7 +32,7 @@ router.put('/',verifyJWT ,admirMiddleware,bookController.updateBook)
 
 router.delete('/:id',verifyJWT ,admirMiddleware,bookController.deleteBook)
 
-router.get('/grade/:Id',verifyJWT,bookController.getBooksForGrade)
+router.get('/grade/:Id',bookController.getBooksForGrade)
 
 // router.post('/',verifyJWT ,admirMiddleware,bookController.createNewBook)
 

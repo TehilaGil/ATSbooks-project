@@ -91,6 +91,7 @@ const getBooksForGrade = async (req, res) => {
 
     // חפש את כל הספרים שהכיתה עם ה-ID הזה נמצאת במערך grades
     const books = await Book.find({ grades: Id }).lean().populate("grades")
+console.log(books);
 
     if (!books?.length) {
         return res.status(400).json({ message: 'No books found for this grade' })

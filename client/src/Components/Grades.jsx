@@ -49,7 +49,8 @@ const { user } = useSelector((state) => state.token);
             image: imageRef.current.value ? imageRef.current.value : " "
         }
         try {
-            const res = await axios.post('http://localhost:7000/api/grade', newGrade)
+            const res = await axios.post('http://localhost:7000/api/grade', newGrade,{ headers : {'Authorization': `Bearer ${token}`}
+            })
             if (res.status === 201) {
 
                 console.log("res.data", res.data);

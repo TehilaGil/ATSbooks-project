@@ -37,6 +37,8 @@ const createUser = async (name, email, phone, password) => {
 
         try {
             const res = await axios.post('http://localhost:7000/api/user/register', newUser);
+            if(res.status===409)
+                alert("email exits")
             if (res.status === 200 || res.status === 201) {
                 console.log("res.data", res.data);
                 navigate('/login')

@@ -13,12 +13,14 @@ import 'primeicons/primeicons.css';
 import axios from 'axios'
 import '../Grade.css';
 import { Link } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 
 const Grade = (props) => {
     const [visible, setVisible] = useState(false);
     const toast = useRef(null);
-
+    const {token} = useSelector((state) => state.token);
+    const {user} = useSelector((state) => state.token);
     const navigate = useNavigate();
     //**********updateGrade
     const updateGrade = async (selectedItem, imageRef) => {
@@ -26,10 +28,11 @@ const Grade = (props) => {
         const updatedGrade = {
             ...props.grade,
             name: selectedItem,
-            image: imageRef.current.value ? imageRef.current.value : props.grade.body,
+            // image: imageRef.current.value ? imageRef.current.value : props.grade.body,
         };
         try {
-            const res = await axios.put('http://localhost:7000/api/grade', updatedGrade)
+            const res = await axios.put('http://localhost:7000/api/grade', updatedGrade,{ headers : {'Authorization': `Bearer ${token}`}
+            })
             if (res.status === 200) {
 
                 console.log("res.data", res.data);
@@ -49,6 +52,7 @@ const Grade = (props) => {
         }
     }
 
+    const [isLoading, setIsLoading] = useState(false);
 
     const deleteGrade = async (id) => {
         console.log("Deleting grade with ID:", id);
@@ -59,14 +63,19 @@ const Grade = (props) => {
             acceptLabel: 'כן',
             rejectLabel: 'לא',
             accept: async () => {
+                if (isLoading) return; // למנוע קריאה כפולה
+                setIsLoading(true); // להגדיר שהפעולה התחילה
+            
                 try {
                     console.log("Accept function triggered");
-                    const res = await axios.delete(`http://localhost:7000/api/grade/${id}`);
+                    const res = await axios.delete(`http://localhost:7000/api/grade/${id}`,{ headers : {'Authorization': `Bearer ${token}`}
+                    });
                     if (Array.isArray(res.data)) {
                         props.setGradesData(res.data);
                         if (toast.current) {
                             toast.current.show({ severity: 'success', summary: 'נמחק בהצלחה', life: 3000 });
                         }
+
                     }
                 } catch (e) {
                     toast.current.show({
@@ -75,8 +84,11 @@ const Grade = (props) => {
                         detail: e.response?.data?.message || e.message,
                         life: 4000
                     });
-                }
 
+                }
+                finally {
+                    setIsLoading(false); // להחזיר את המצב לאחר סיום הפעולה
+                }
             },
             reject: () => {
                 toast.current?.show({ severity: 'info', summary: 'המחיקה בוטלה', life: 2000 });
@@ -105,7 +117,8 @@ const Grade = (props) => {
 
     const footer = (
         <div className="card flex flex-wrap gap-2 justify-content-center">
-
+  {user?.roles === "Admin" && (
+                        <>
             <Button icon="pi pi-times" label="Delete" onClick={(e) => {
                 e.stopPropagation()
                 deleteGrade(props.grade._id)
@@ -114,7 +127,7 @@ const Grade = (props) => {
             <Button label="Update" icon="pi pi-pencil" onClick={(e) => {
                 e.stopPropagation()
                 setVisible(true)
-            }} />
+            }} /></>)}
             <UpdateGrade updateGrade={updateGrade} setVisible={setVisible} visible={visible} grade={props.grade} />
         </div>
     );

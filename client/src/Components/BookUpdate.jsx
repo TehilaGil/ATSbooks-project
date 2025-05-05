@@ -43,26 +43,37 @@ const BookUpdate = (props) => {
             console.error('Error fetching grades:', error);
             setGrades([]);
         }
+       
+
     };
 
     useEffect(() => {
         AvailablGrade();
     }, []);
 
+// useEffect(() => {
+//     if(book.grades.length>0)
+//         {
+//         const updateGrade=book.grades
+
+//         }
+//     }, []);
+const [filteredItems, setFilteredItems] = useState(null);
+const [selectedGrades, setSelectedGrades] = useState([]);
 
     useEffect(() => {
-        if (book?.grades && grades.length > 0) {
-            // מצא את הכיתות מתוך רשימת האפשרויות ב-MultiSelect
-            const initialGrades = book.grades.map((grade) => {
-                const matchingGrade = grades.find((g) => g.value === grade);
-                return matchingGrade || { label: grade, value: grade }; // שמור על התאמה אם הכיתה קיימת
-            });
+        if (book?.grades && book.grades.length > 0) {
+            
+            const initialGrades = book.grades.map(grade => grade.name);
 
             setSelectedGrades(initialGrades);
         }
-    }, [book, grades]);
-    const [filteredItems, setFilteredItems] = useState(null);
-    const [selectedGrades, setSelectedGrades] = useState([]);
+    }, [book,grades]);
+
+
+
+
+ 
 
 
 
@@ -110,7 +121,7 @@ const BookUpdate = (props) => {
                     <label htmlFor="Bookname" className="font-medium">Grades</label>
                     <MultiSelect
                         id="grades"
-                        value={selectedGrades.map((g) => g.value)} // הוצא רק את הערכים (value) מהאובייקט
+                        value={selectedGrades} // הוצא רק את הערכים (value) מהאובייקט
                         options={grades}
                         onChange={(e) => {
                             const selected = e.value.map((value) => {

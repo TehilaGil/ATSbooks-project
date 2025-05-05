@@ -6,11 +6,13 @@ import { MultiSelect } from 'primereact/multiselect';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { FileUpload } from 'primereact/fileupload';
+import { useSelector } from "react-redux";
 
 
 const BookCreate = (props) => {
     const { createBook, visibleCreatBook, setVisibleCreatBook } = props;
-
+    const {token} = useSelector((state) => state.token);
+    const {user} = useSelector((state) => state.token);
     const nameRef = useRef("");
     const imageRef = useRef("");
 
@@ -22,8 +24,12 @@ const BookCreate = (props) => {
     const { gradeId } = useParams(); // קבלת gradeId מה-URL
 
     const AvailablGrade = async () => {
+
         try {
-            const res = await axios.get('http://localhost:7000/api/grade');
+            const res = await axios.get('http://localhost:7000/api/grade',
+            { headers : {'Authorization': `Bearer ${token}`}
+            }
+           );
             if (res.status === 204) {
                 setGrades([]);
             } else {

@@ -13,11 +13,20 @@ const verifyJWT = (req, res, next) => {
         token,
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
+             console.log("✔✔✔🐱‍🚀🐱‍🚀🐱‍🚀🐱‍👓🐱‍👓🐱‍🐉🐱‍🐉🐱‍💻");
+             console.log(err);
+             
             if (err) return res.status(403).json({ message: 'Forbidden' })
+               
+            console.log(decoded);
+            console.log("💋💋👏"+req.user);  
             req.user = decoded
 
-            if (!decoded.confirm )
-                return res.status(403).json({ message: 'Forbidden' })
+            console.log("💋💋👏"+req.user.roles);
+
+            
+            // if (!decoded.confirm )
+            //     return res.status(403).json({ message: 'Forbidden' })
 
             next()
         }

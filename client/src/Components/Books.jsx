@@ -15,6 +15,8 @@ import { useNavigate } from 'react-router-dom';
 export default function BooksDataView() {
     const [books, setBooks] = useState([]);
     const [layout, setLayout] = useState('grid');
+    const [selectedBook, setSelectedBook] = useState({});
+
     const [visibleCreatBook, setVisibleCreatBook] = useState(false);
     const [visible, setVisible] = useState(false);
     const { gradeId } = useParams(); // Get gradeId from URL
@@ -43,19 +45,25 @@ export default function BooksDataView() {
 
     const getBooksByGrade = async (Id) => {
         try {
-            const res = await axios.get(`http://localhost:7000/api/book/grade/${Id}`);
+            const res = await axios.get(`http://localhost:7000/api/book/grade/${Id}`
+            );
+            
             if (res.status === 200) {
                 console.log(res.data);
                 setBooks(res.data);
             }
         } catch (e) {
+            if(e.status===400){
+            alert("there are no book for this grade")
+            navigate('/Grades')}
             console.log(e);
         }
     };
 
     const deleteBook = async (bookId) => {
         try {
-            const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`);
+            const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`,{ headers : {'Authorization': `Bearer ${token}`}
+            });
             setBooks(res.data);
         } catch (err) {
             console.error('Error deleting book:', err);
@@ -70,7 +78,8 @@ export default function BooksDataView() {
             image: imageRef.current.value ? imageRef.current.value : book.image,
         };
         try {
-            const res = await axios.put('http://localhost:7000/api/book', updatebook);
+            const res = await axios.put('http://localhost:7000/api/book', updatebook,{ headers : {'Authorization': `Bearer ${token}`}
+            });
             if (res.status === 200) {
                 console.log("res.data", res.data);
                 setBooks(res.data);
@@ -87,7 +96,8 @@ export default function BooksDataView() {
             image: imageRef.current.value ? imageRef.current.value : ""
         };
         try {
-            const res = await axios.post('http://localhost:7000/api/book', newBook);
+            const res = await axios.post('http://localhost:7000/api/book', newBook,{ headers : {'Authorization': `Bearer ${token}`}
+            });
             if (res.status === 200 || res.status === 201) {
                 if (gradeId) {
                     getBooksByGrade(gradeId);
@@ -100,51 +110,51 @@ export default function BooksDataView() {
         }
     };
 
-    const listItem = (book, index) => (
-        <div
-            className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}
-            onClick={() => navigate(`/Titles/${book._id}`)}
-            style={{ cursor: 'pointer' }}
-        >
-            <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={book.image} alt={book.name} />
-            <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4 w-full">
-                <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                    <div className="text-2xl font-bold text-900">{book.name}</div>
-                    {book.grades && book.grades.length > 0 && (
-                        <>
-                            <strong>Suitable for:</strong>
-                            <ul className="m-0 pl-3 list-disc text-xs">
-                                {book.grades.map((grade, idx) => (
-                                    <li key={idx}>{grade.name}</li>
-                                ))}
-                            </ul>
-                        </>
-                    )}
-                </div>
-                <div className="flex align-items-center justify-content-end gap-2 w-full sm:w-auto">
-                    <Button
-                        icon="pi pi-pencil"
-                        className="p-button-rounded p-button-warning"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setVisible(true);
-                        }}
-                        tooltip="Edit"
-                    />
-                    <Button
-                        icon="pi pi-trash"
-                        className="p-button-rounded p-button-danger"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            deleteBook(book._id);
-                        }}
-                        tooltip="Delete"
-                    />
-                    <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
-                </div>
-            </div>
-        </div>
-    );
+    // const listItem = (book, index) => (
+    //     <div
+    //         className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}
+    //         onClick={() => navigate(`/Titles/${book._id}`)}
+    //         style={{ cursor: 'pointer' }}
+    //     >
+    //         <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={book.image} alt={book.name} />
+    //         <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4 w-full">
+    //             <div className="flex flex-column align-items-center sm:align-items-start gap-3">
+    //                 <div className="text-2xl font-bold text-900">{book.name}</div>
+    //                 {book.grades && book.grades.length > 0 && (
+    //                     <>
+    //                         <strong>Suitable for:</strong>
+    //                         <ul className="m-0 pl-3 list-disc text-xs">
+    //                             {book.grades.map((grade, idx) => (
+    //                                 <li key={idx}>{grade.name}</li>
+    //                             ))}
+    //                         </ul>
+    //                     </>
+    //                 )}
+    //             </div>
+    //             <div className="flex align-items-center justify-content-end gap-2 w-full sm:w-auto">
+    //                 <Button
+    //                     icon="pi pi-pencil"
+    //                     className="p-button-rounded p-button-warning"
+    //                     onClick={(e) => {
+    //                         e.stopPropagation();
+    //                         setVisible(true);
+    //                     }}
+    //                     tooltip="Edit"
+    //                 />
+    //                 <Button
+    //                     icon="pi pi-trash"
+    //                     className="p-button-rounded p-button-danger"
+    //                     onClick={(e) => {
+    //                         e.stopPropagation();
+    //                         deleteBook(book._id);
+    //                     }}
+    //                     tooltip="Delete"
+    //                 />
+    //                 <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
+    //             </div>
+    //         </div>
+    //     </div>
+    // );
 
     const navigate = useNavigate();
 
@@ -178,6 +188,7 @@ export default function BooksDataView() {
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setVisible(true);
+                                    setSelectedBook(book);
                                 }}
                                 tooltip="Edit"
                             />
@@ -192,7 +203,6 @@ export default function BooksDataView() {
                             />
                         </>
                     )}
-                    <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
                 </div>
             </div>
         </div>
@@ -200,7 +210,7 @@ export default function BooksDataView() {
 
     const itemTemplate = (book, layout, index) => {
         if (!book) return;
-        return layout === 'list' ? listItem(book, index) : gridItem(book);
+        return layout === 'list' ? gridItem(book) : gridItem(book);
     };
 
     const listTemplate = (books, layout) => (
@@ -209,11 +219,11 @@ export default function BooksDataView() {
         </div>
     );
 
-    const header = () => (
-        <div className="flex justify-content-end">
-            <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
-        </div>
-    );
+    // const header = () => (
+    //     <div className="flex justify-content-end">
+    //         <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
+    //     </div>
+    // );
 
     return (
         <div>
@@ -221,8 +231,10 @@ export default function BooksDataView() {
             <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} className="add-button" />)}
             <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
             <div className="card">
-                <DataView value={books} listTemplate={listTemplate} layout={layout} header={header()} />
+                <DataView value={books} listTemplate={listTemplate} layout={layout} />
             </div>
+            {selectedBook?  <BookUpdate   updateBook={updateBook} setVisible={setVisible} visible={visible} book={selectedBook} />:<></>}  
+
         </div>
     );
 }
