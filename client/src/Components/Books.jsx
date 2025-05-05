@@ -89,15 +89,20 @@ export default function BooksDataView() {
             console.error(e);
         }
     };
-
-    const createBook = async (nameRef, selectedItem, imageRef) => {
-        const newBook = {
-            name: nameRef.current.value ? nameRef.current.value : "",
-            grades: selectedItem ? selectedItem : "",
-            image: imageRef.current.value ? imageRef.current.value : ""
-        };
+    const createBook = async (name, selectedItem, image) => {
+        console.log("🤣🤣😂😂");
+    
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('grades', JSON.stringify(selectedItem));
+        formData.append('image', image); // הוספת הקובץ ל-FormData
+    
         try {
-            const res = await axios.post('http://localhost:7000/api/book', newBook,{ headers : {'Authorization': `Bearer ${token}`}
+            const res = await axios.post('http://localhost:7000/api/book', formData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data' // הגדרת התוכן כ-multipart
+                },
             });
             if (res.status === 200 || res.status === 201) {
                 if (gradeId) {
@@ -167,7 +172,14 @@ export default function BooksDataView() {
                 style={{ cursor: 'pointer' }}
             >
                 <div className="flex flex-column align-items-center gap-3 py-5">
-                    <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} />
+               
+                    {/* <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} /> */}
+                    <img
+                            className="object-cover w-full h-full"
+                           src={`http://localhost:7000${book.image}`} 
+                            alt={book.name}
+                            style={{ objectFit: 'cover', width: '80%', height: '80%' }} // תמונה בגודל קטן יותר
+                        />
                     <div className="text-2xl font-bold">{book.name}</div>
                     {book.grades && book.grades.length > 0 && (
                         <>

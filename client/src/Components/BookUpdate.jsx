@@ -4,29 +4,19 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { MultiSelect } from 'primereact/multiselect';
 import axios from 'axios';
-import { AutoComplete } from "primereact/autocomplete";
-
-
-
+import { FileUpload } from "primereact/fileupload";
 
 const BookUpdate = (props) => {
-    const [selectedItem, setSelectedItem] = useState(null);
-    // const grades = [
-    //     { label: 'First Grade', value: 'first grade' },
-    //     { label: 'Second Grade', value: 'second grade' },
-    //     { label: 'Third Grade', value: 'third grade' },
-    //     { label: 'Fourth Grade', value: 'fourth grade' },
-    //     { label: 'Fifth Grade', value: 'fifth grade' },
-    //     { label: 'Sixth Grade', value: 'sixth grade' },
-    //     { label: 'Seventh Grade', value: 'seventh grade' },
-    //     { label: 'Eighth Grade', value: 'eighth grade' }
-    // ];
+    const { updateBook, visible, book = {}, setVisible } = props; // ברירת מחדל ל-book
+    const [selectedImage, setSelectedImage] = useState(null); // תמונה שנבחרה
+    
+    const [preview, setPreview] = useState(book?.image ? `http://localhost:7000${book.image}` : "");
 
     const [grades, setGrades] = useState([]);
-    const { updateBook } = props
-    const { visible } = props
-    const { book } = props
+    const [selectedGrades, setSelectedGrades] = useState([]);
+    const nameRef = useRef("");
 
+    // הבאת כיתות זמינות
     const AvailablGrade = async () => {
         try {
             const res = await axios.get('http://localhost:7000/api/grade');
@@ -43,137 +33,113 @@ const BookUpdate = (props) => {
             console.error('Error fetching grades:', error);
             setGrades([]);
         }
-       
-
     };
 
     useEffect(() => {
         AvailablGrade();
     }, []);
 
-// useEffect(() => {
-//     if(book.grades.length>0)
-//         {
-//         const updateGrade=book.grades
-
-//         }
-//     }, []);
-const [filteredItems, setFilteredItems] = useState(null);
-const [selectedGrades, setSelectedGrades] = useState([]);
-
+    // הגדרת כיתות ראשוניות
     useEffect(() => {
         if (book?.grades && book.grades.length > 0) {
-            
-            const initialGrades = book.grades.map(grade => grade.name);
-
+            const initialGrades = book.grades.map((grade) => grade.name);
             setSelectedGrades(initialGrades);
         }
-    }, [book,grades]);
+    }, [book, grades]);
 
-
-
-
- 
-
-
-
-    const nameRef = useRef("")
-    const imageRef = useRef("")
-
-
-    const searchItems = (event) => {
-        //in a real application, make a request to a remote url with the query and return filtered results, for demo purposes we filter at client side
-        // let query = event.query;
-        // let _filteredItems = [];
-
-        setFilteredItems(grades);
-    }
-
-
+    useEffect(() => {
+        if (book?.image) {
+            setPreview(`http://localhost:7000${book.image}`);
+        }
+    }, [book.image]);
+    // העלאת תמונה חדשה
+    const handleImageUpload = (e) => {
+        const file = e.files[0];
+        if (file) {
+            setSelectedImage(file);
+            setPreview(URL.createObjectURL(file)); // עדכון תצוגה מקדימה
+        }
+    };
 
     return (
-
-
         <Dialog
             visible={visible}
             modal
-            header="Update Book" // הוספת כותרת לדיאלוג
-            style={{ width: '400px', borderRadius: '8px' }} // התאמת הגודל והעיגול
-            onHide={() => { if (!visible) return; props.setVisible(false); }}
-            onClick={(e) => e.stopPropagation()}
+            header="Update Book"
+            style={{ width: '400px', borderRadius: '8px' }}
+            onHide={() => {
+                setSelectedImage(null);
+                setPreview(book.image || "");
+                setVisible(false);
+            }}
         >
             <div className="flex flex-column gap-4" style={{ padding: '1rem' }}>
-                {/* Name Field */}
+                {/* שם הספר */}
                 <div className="flex flex-column gap-2">
-                    <label htmlFor="Postname" className="font-medium">Name</label>
+                    <label htmlFor="name" className="font-medium">Name</label>
                     <InputText
                         id="name"
                         placeholder="Enter book name"
                         className="p-inputtext-sm"
-                        type="name"
                         ref={nameRef}
                         defaultValue={book?.name || ""}
                     />
                 </div>
 
-                {/* Grades Field */}
+                {/* כיתות */}
                 <div className="flex flex-column gap-2">
-                    <label htmlFor="Bookname" className="font-medium">Grades</label>
+                    <label htmlFor="grades" className="font-medium">Grades</label>
                     <MultiSelect
                         id="grades"
-                        value={selectedGrades} // הוצא רק את הערכים (value) מהאובייקט
+                        value={selectedGrades}
                         options={grades}
-                        onChange={(e) => {
-                            const selected = e.value.map((value) => {
-                                const matchingGrade = grades.find((g) => g.value === value);
-                                return matchingGrade || { label: value, value: value };
-                            });
-                            setSelectedGrades(selected);
-                        }}
+                        onChange={(e) => setSelectedGrades(e.value)}
                         optionLabel="label"
                         placeholder="Select Grades"
                         display="chip"
                         className="w-full md:w-20rem custom-multiselect"
-                        virtualScrollerOptions={{ itemSize: 38 }}
                     />
                 </div>
 
-                {/* Image Field */}
+                {/* העלאת תמונה */}
                 <div className="flex flex-column gap-2">
-                    <label htmlFor="Postname" className="font-medium">Image</label>
-                    <InputText
-                        id="name"
-                        placeholder="Enter image URL"
-                        className="p-inputtext-sm"
-                        type="name"
-                        ref={imageRef}
-                        defaultValue={book?.image || ""}
+                    <label htmlFor="image" className="font-medium">Upload New Image</label>
+                    <FileUpload
+                        name="image"
+                        customUpload
+                        accept="image/*"
+                        maxFileSize={5 * 1024 * 1024}
+                        uploadHandler={handleImageUpload}
+                        emptyTemplate={<p>Drag an image file or click to select.</p>}
                     />
+                    {preview && <img src={preview} alt="Preview" style={{ width: 150, marginTop: 10 }} />}
                 </div>
 
-                {/* Buttons Section */}
+                {/* כפתורים */}
                 <div className="flex justify-content-center gap-2">
                     <Button
                         label="Update"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            updateBook(nameRef, selectedGrades, imageRef, book);
-                            props.setVisible(false); // סגירת הדיאלוג
+                        onClick={() => {
+                            const nameToSend = nameRef.current.value || book.name;
+                            const imageToSend = selectedImage || book.image; // אם אין תמונה חדשה, שולחים את הקיימת
+                            updateBook(nameToSend, selectedGrades, imageToSend, book);
+                            setVisible(false);
                         }}
                         className="p-button p-button-primary"
                     />
                     <Button
                         label="Cancel"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            props.setVisible(false); // סגירת הדיאלוג
+                        onClick={() => {
+                            setSelectedImage(null);
+                            setPreview(book.image || "");
+                            setVisible(false);
                         }}
                         className="p-button p-button-secondary"
                     />
                 </div>
             </div>
         </Dialog>
+    );
+};
 
-    )
-}
-export default BookUpdate
+export default BookUpdate;
