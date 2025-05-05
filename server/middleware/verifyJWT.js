@@ -6,6 +6,7 @@ const verifyJWT = (req, res, next) => {
     console.log(res)
     const userHeader = req.headers.authorization || req.headers.Authorization
     if (!userHeader?.startsWith('Bearer ')) {
+        console.log("✔✔✔🐱‍🚀🐱‍🚀🐱‍🚀🐱‍👓🐱‍👓🐱‍🐉🐱‍🐉🐱‍💻");
         return res.status(401).json({ message: 'Unauthorized' })
     }
     const token = userHeader.split(' ')[1]
@@ -13,7 +14,7 @@ const verifyJWT = (req, res, next) => {
         token,
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
-             console.log("✔✔✔🐱‍🚀🐱‍🚀🐱‍🚀🐱‍👓🐱‍👓🐱‍🐉🐱‍🐉🐱‍💻");
+             
              console.log(err);
              
             if (err) return res.status(403).json({ message: 'Forbidden' })

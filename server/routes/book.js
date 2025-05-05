@@ -26,7 +26,7 @@ const path = require("path");
 
 router.get('/',bookController.getAllBooks)
 
-router.get('/:id',bookController.getBookById)
+router.get('/:id',verifyJWT,bookController.getBookById)
 
 router.put('/',verifyJWT ,admirMiddleware,bookController.updateBook)
 

@@ -62,6 +62,9 @@ const Grade = (props) => {
             icon: 'pi pi-exclamation-triangle',
             acceptLabel: 'כן',
             rejectLabel: 'לא',
+            onHide: () => {
+                setIsLoading(false); // עדכון המצב כשהדיאלוג נסגר
+            },
             accept: async () => {
                 if (isLoading) return; // למנוע קריאה כפולה
                 setIsLoading(true); // להגדיר שהפעולה התחילה

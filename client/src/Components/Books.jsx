@@ -55,7 +55,8 @@ export default function BooksDataView() {
         } catch (e) {
             if(e.status===400){
             alert("there are no book for this grade")
-            navigate('/Grades')}
+            // navigate('/Grades')
+        }
             console.log(e);
         }
     };
