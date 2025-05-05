@@ -22,12 +22,11 @@ const path = require("path");
 // });
 // const upload = multer({ storage });
 // router.post("/", upload.single("file"), createNewBook);
-router.post('/',verifyJWT ,admirMiddleware,bookController.createNewBook)
 //router.post('/api/books', upload.single('image'), bookController.createNewBook);
 
 router.get('/',bookController.getAllBooks)
 
-router.get('/:id',verifyJWT,bookController.getBookById)
+router.get('/:id',bookController.getBookById)
 
 router.put('/',verifyJWT ,admirMiddleware,bookController.updateBook)
 
@@ -35,7 +34,9 @@ router.delete('/:id',verifyJWT ,admirMiddleware,bookController.deleteBook)
 
 router.get('/grade/:Id',verifyJWT,bookController.getBooksForGrade)
 
+// router.post('/',verifyJWT ,admirMiddleware,bookController.createNewBook)
 
+router.post('/',bookController.createNewBook)
 
 
 

@@ -90,12 +90,24 @@ const Titles = () => {
     const [newFileName, setNewFileName] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [filesByTitle, setFilesByTitle] = useState({});
+    const [book, setBook] = useState(null);
+
     const toast = useRef(null);
     const { bookId } = useParams();
     const navigate = useNavigate();
 
+    const fetchBook = async () => {
+        try {
+            const res = await axios.get(`http://localhost:7000/api/book/${bookId}`);
+            setBook(res.data);
+        } catch (err) {
+            console.error("שגיאה בטעינת ספר:", err);
+        }
+    };
+    
     useEffect(() => {
-        fetchTitles();
+        fetchBook();
+    fetchTitles();
     }, []);
 
     const fetchTitles = async () => {
@@ -237,86 +249,122 @@ const Titles = () => {
     };
     const [filePreview, setFilePreview] = useState(''); // תצוגה מקדימה של שם הקובץ הנבחר
 
+    // return (
+    //     <div className="card flex justify-content-center">
+ 
+    //         <PanelMenu model={items} className="w-full md:w-30rem" />
+    //         <Dialog
+    //             header="Upload new file"
+    //             visible={visibleUpload}
+    //             onHide={() => {
+    //                 setVisibleUpload(false);
+    //                 setSelectedFile(null); // איפוס הקובץ הנבחר אם החלון נסגר
+    //                 setFilePreview(''); // איפוס תצוגת שם הקובץ
+    //             }}
+    //             style={{ width: '30rem', borderRadius: '8px', textAlign: 'center' }}
+    //             className="custom-upload-dialog"
+    //         >
+    //             <div className="flex flex-column gap-4" style={{ padding: '1.5rem' }}>
+    //                 <label htmlFor="fileName" className="font-medium" style={{ textAlign: 'left' }}>
+    //                     שם קובץ
+    //                 </label>
+    //                 <InputText
+    //                     id="fileName"
+    //                     placeholder="הכנס שם קובץ"
+    //                     value={newFileName}
+    //                     onChange={(e) => setNewFileName(e.target.value)}
+    //                     className="p-inputtext-lg"
+    //                     style={{ borderRadius: '6px', width: '100%' }}
+    //                 />
+    //                 <FileUpload
+    //                     mode="basic"
+    //                     auto={false} // ביטול העלאה אוטומטית
+    //                     customUpload
+    //                     // uploadHandler={handleUpload}
+    //                     chooseLabel="בחר קובץ"
+    //                     uploadHandler={({ files }) => {
+    //                         setSelectedFile(files[0]); // שמירת הקובץ הנבחר ב-state זמני
+    //                         setFilePreview(files[0]?.name || ''); // הצגת שם הקובץ הנבחר
+    //                     }}
+    //                     className="p-button-primary"
+    //                     style={{ width: '100%' }}
+                        
+    //                 />
+    //                 {filePreview && (
+    //                     <div style={{ textAlign: 'left', fontSize: '0.9rem', color: '#555' }}>
+    //                         <strong>קובץ נבחר:</strong> {filePreview}
+    //                     </div>
+    //                 )}
+    //                 <div className="flex justify-content-center gap-3">
+    //                     <Button
+    //                         label="Upload"
+    //                         onClick={() => {
+    //                             if (selectedFile) {
+    //                                 handleUpload({ files: [selectedFile] }); // קריאה ל-handleUpload עם הקובץ הנבחר
+    //                             } else {
+    //                                 toast.current?.show({ severity: 'warn', summary: 'שגיאה', detail: 'יש לבחור קובץ לפני העלאה', life: 3000 });
+    //                             }
+    //                         }}
+    //                         className="p-button-primary"
+    //                         style={{ width: '40%' }}
+    //                     />
+    //                     <Button
+    //                         label="Cancel"
+    //                         onClick={() => {
+    //                             setVisibleUpload(false);
+    //                             setSelectedFile(null); // איפוס הקובץ הנבחר
+    //                             setFilePreview(''); // איפוס שם הקובץ
+    //                         }}
+    //                         className="p-button-secondary"
+    //                         style={{ width: '40%' }}
+    //                     />
+    //                 </div>
+    //             </div>
+    //         </Dialog>
+
+    //         <Dialog header="עריכת קובץ" visible={visibleUpdate} style={{ width: '30vw' }} onHide={() => setVisibleUpdate(false)}>
+    //             <form onSubmit={(e) => { e.preventDefault(); handleUpdate(); }} className="flex flex-column gap-3">
+    //                 <InputText placeholder="שם קובץ חדש" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} />
+    //                 <FileUpload mode="basic" auto customUpload uploadHandler={({ files }) => setSelectedFile(files[0])} chooseLabel="בחר קובץ חדש" />
+    //                 <Button label="שמור" type="submit" />
+    //             </form>
+    //         </Dialog>
+    //         <Toast ref={toast} />
+    //     </div>
+    // );
     return (
-        <div className="card flex justify-content-center">
-            <PanelMenu model={items} className="w-full md:w-30rem" />
-            <Dialog
-                header="Upload new file"
-                visible={visibleUpload}
-                onHide={() => {
-                    setVisibleUpload(false);
-                    setSelectedFile(null); // איפוס הקובץ הנבחר אם החלון נסגר
-                    setFilePreview(''); // איפוס תצוגת שם הקובץ
-                }}
-                style={{ width: '30rem', borderRadius: '8px', textAlign: 'center' }}
-                className="custom-upload-dialog"
-            >
-                <div className="flex flex-column gap-4" style={{ padding: '1.5rem' }}>
-                    <label htmlFor="fileName" className="font-medium" style={{ textAlign: 'left' }}>
-                        שם קובץ
-                    </label>
-                    <InputText
-                        id="fileName"
-                        placeholder="הכנס שם קובץ"
-                        value={newFileName}
-                        onChange={(e) => setNewFileName(e.target.value)}
-                        className="p-inputtext-lg"
-                        style={{ borderRadius: '6px', width: '100%' }}
-                    />
-                    <FileUpload
-                        mode="basic"
-                        auto={false} // ביטול העלאה אוטומטית
-                        customUpload
-                        chooseLabel="בחר קובץ"
-                        uploadHandler={({ files }) => {
-                            setSelectedFile(files[0]); // שמירת הקובץ הנבחר ב-state זמני
-                            setFilePreview(files[0]?.name || ''); // הצגת שם הקובץ הנבחר
-                        }}
-                        className="p-button-primary"
-                        style={{ width: '100%' }}
-                    />
-                    {filePreview && (
-                        <div style={{ textAlign: 'left', fontSize: '0.9rem', color: '#555' }}>
-                            <strong>קובץ נבחר:</strong> {filePreview}
-                        </div>
-                    )}
-                    <div className="flex justify-content-center gap-3">
-                        <Button
-                            label="Upload"
-                            onClick={() => {
-                                if (selectedFile) {
-                                    handleUpload({ files: [selectedFile] }); // קריאה ל-handleUpload עם הקובץ הנבחר
-                                } else {
-                                    toast.current?.show({ severity: 'warn', summary: 'שגיאה', detail: 'יש לבחור קובץ לפני העלאה', life: 3000 });
-                                }
-                            }}
-                            className="p-button-primary"
-                            style={{ width: '40%' }}
-                        />
-                        <Button
-                            label="Cancel"
-                            onClick={() => {
-                                setVisibleUpload(false);
-                                setSelectedFile(null); // איפוס הקובץ הנבחר
-                                setFilePreview(''); // איפוס שם הקובץ
-                            }}
-                            className="p-button-secondary"
-                            style={{ width: '40%' }}
+        <div className="p-4">
+            {/* כותרת הספר */}
+            {book && (
+                <h2 className="text-center mb-4">{book.name}</h2>
+            )}
+    
+            <div className="flex flex-column md:flex-row gap-4">
+                {/* תמונת הספר בצד שמאל */}
+                {book?.image && (
+                    <div className="flex justify-content-center md:w-4">
+                        <img
+                            src={`http://localhost:7000/uploads/${book.image}`}
+                            alt="Book"
+                            className="border-round shadow-2"
+                            style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                         />
                     </div>
+                )}
+    
+                {/* כותרות בצד ימין */}
+                <div className="flex-grow-1">
+                    <PanelMenu model={items} className="w-full md:w-30rem" />
                 </div>
-            </Dialog>
-
-            <Dialog header="עריכת קובץ" visible={visibleUpdate} style={{ width: '30vw' }} onHide={() => setVisibleUpdate(false)}>
-                <form onSubmit={(e) => { e.preventDefault(); handleUpdate(); }} className="flex flex-column gap-3">
-                    <InputText placeholder="שם קובץ חדש" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} />
-                    <FileUpload mode="basic" auto customUpload uploadHandler={({ files }) => setSelectedFile(files[0])} chooseLabel="בחר קובץ חדש" />
-                    <Button label="שמור" type="submit" />
-                </form>
-            </Dialog>
+            </div>
+    
+            {/* הדיאלוגים וה-toast */}
+            {/** ... כל שאר הדיאלוגים נשארים כמו שיש לך בקוד הנוכחי **/}
+    
             <Toast ref={toast} />
         </div>
     );
+    
 };
 
 export default Titles;

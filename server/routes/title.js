@@ -6,15 +6,22 @@ const verifyJWT=require("../middleware/verifyJWT")
 const admirMiddleware=require("../middleware/admirMiddleware")
 
 
-router.post('/',verifyJWT,admirMiddleware,titleController.createNewTitle)
+router.post('/',titleController.createNewTitle)
 
-router.get('/getTitlesByBook/:id',verifyJWT,titleController.getTitlesByBook)
+// router.get('/getTitlesByBook/:id',titleController.getTitlesByBook)
 
-router.get('/:id',verifyJWT,titleController.getTitleById)
+// router.get('/:id',verifyJWT,titleController.getTitleById)
+
+// // router.delete('/:id',verifyJWT,admirMiddleware,titleController.deleteTitle)
+
+// router.delete('/:id',verifyJWT,admirMiddleware,titleController.deleteTitle)
+router.get('/getTitlesByBook/:id',titleController.getTitlesByBook)
+
+router.get('/:id',titleController.getTitleById)
 
 // router.delete('/:id',verifyJWT,admirMiddleware,titleController.deleteTitle)
 
-router.delete('/:id',verifyJWT,admirMiddleware,titleController.deleteTitle)
+router.delete('/:id',titleController.deleteTitle)
 
 
 module.exports=router
