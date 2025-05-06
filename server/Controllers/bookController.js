@@ -190,26 +190,41 @@ const getBooksForGrade = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         const { _id, name, grades } = req.body;
+        console.log(name, grades)
+
         const newImage = req.file ? '/uploads/bookImages/' + req.file.filename : null;
 
         const book = await Book.findById(_id).populate("grades").exec();
         if (!book) {
             return res.status(400).json({ message: 'Book not found' });
         }
+        
+        console.log(typeof grades, grades)
 
         // Update grades
         let gradesArray = grades;
-        if (!Array.isArray(grades)) {
-            if (typeof grades === 'string') {
-                gradesArray = grades.split(',').map(g => g.trim());
-            } else {
-                return res.status(400).json({ message: 'Grades must be an array or comma-separated string' });
-            }
+        
+
+        console.log(typeof gradesArray, gradesArray)
+
+        if (typeof gradesArray === "object" && !Array.isArray(gradesArray)) {
+            gradesArray = Object.values(gradesArray);
+        }
+        
+
+        console.log(typeof gradesArray, gradesArray)
+        // Ensure gradesArray is an array
+        if (!Array.isArray(gradesArray)) {
+            return res.status(400).send("Grades must be an array or an object convertible to an array");
         }
 
+        console.log("Final gradesArray:", gradesArray);
+
+   
         const gradeDocs = await Promise.all(
             gradesArray.map(name => Grade.findOne({ name }))
         );
+        
 
         const validGrades = gradeDocs.filter(doc => doc);
         const gradeIds = validGrades.map(doc => doc._id);
@@ -225,6 +240,7 @@ const updateBook = async (req, res) => {
                 }
             });
         }
+        
 
         // עדכון הספר
         book.name = name;
@@ -232,9 +248,14 @@ const updateBook = async (req, res) => {
         if (newImage) {
             book.image = newImage;
         }
+        
+
 
         const updatedBook = await book.save();
-        res.json(updatedBook);
+       
+
+       return  res.json(updatedBook);
+
     } catch (error) {
         console.error("Error updating book:", error.message);
         res.status(500).json({ message: "Failed to update book", error: error.message });
