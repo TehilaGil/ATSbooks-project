@@ -17,7 +17,8 @@ router.delete('/:id',verifyJWT,admirMiddleware,userController.deleteUser)
 
 router.put('/confirm',verifyJWT,admirMiddleware,userController.confirmUser)
 
-
+router.post('/send-verification-code', userController.sendVerificationCode);
+router.post('/reset-password-with-code', userController.resetPasswordWithCode);
 // router.post('/register',userController.register)
 
 // router.post('/login',userController.login)
