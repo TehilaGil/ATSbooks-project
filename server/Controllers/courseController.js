@@ -11,26 +11,34 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+const ffmpeg = require("fluent-ffmpeg");
+console.log("❤❤🤣🤣 ",ffmpeg)
 async function transcribeAudio(filePath) {
-  const wavPath = filePath + ".wav";
+    const wavPath = filePath + ".wav";
 
     return new Promise((resolve, reject) => {
-        exec(`ffmpeg -i ${filePath} -ar 16000 -ac 1 -c:a pcm_s16le ${wavPath}`, (err) => {
-            if (err) {
+        // המרת הקובץ ל-wav באמצעות fluent-ffmpeg
+        ffmpeg(filePath)
+            .audioFrequency(16000)
+            .audioChannels(1)
+            .audioCodec('pcm_s16le')
+            .output(wavPath)
+            .on('end', () => {
+                // הפעלת whisper אחרי ההמרה
+                exec(`whisper ${wavPath} --language English --model small --fp16 False`, (error, stdout, stderr) => {
+                    if (error) {
+                        console.error("Error running whisper:", error);
+                        reject("Error during transcription");
+                        return;
+                    }
+                    resolve(stdout);
+                });
+            })
+            .on('error', (err) => {
                 console.error("Error converting file:", err);
                 reject("Error converting audio");
-                return;
-            }
-
-            exec(`whisper ${wavPath} --language English --model small --fp16 False`, (error, stdout, stderr) => {
-                if (error) {
-                    console.error("Error running whisper:", error);
-                    reject("Error during transcription");
-                    return;
-                }
-                resolve(stdout);
-            });
-        });
+            })
+            .run();
     });
 }
 

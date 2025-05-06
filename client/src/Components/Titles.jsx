@@ -433,7 +433,7 @@ const Titles = () => {
     // );
     return (
         <div className="p-4">
-            {/* כותרת הספר */}
+           
             {book && (
                 <h2 className="text-center mb-4">{book.name}</h2>
             )}
@@ -443,16 +443,17 @@ const Titles = () => {
                 {book?.image && (
                     <div className="flex justify-content-center md:w-4">
                         <img
-                            src={`http://localhost:7000/uploads/bookImages${book.image}`}
+                            src={`http://localhost:7000${book.image}`} 
                             alt="Book"
                             className="border-round shadow-2"
-                            style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
+                            style={{ maxWidth: '100%', maxHeight: '500px', objectFit: 'contain' }}
                         />
                     </div>
                 )}
     
                 {/* כותרות בצד ימין */}
                 <div className="flex-grow-1">
+
                     <PanelMenu model={items} className="w-full md:w-30rem" />
                 </div>
             </div>
