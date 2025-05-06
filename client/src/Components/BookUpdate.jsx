@@ -9,7 +9,7 @@ import { FileUpload } from "primereact/fileupload";
 const BookUpdate = (props) => {
     const { updateBook, visible, book = {}, setVisible } = props; // ברירת מחדל ל-book
     const [selectedImage, setSelectedImage] = useState(null); // תמונה שנבחרה
-    
+
     const [preview, setPreview] = useState(book?.image ? `http://localhost:7000${book.image}` : "");
 
     const [grades, setGrades] = useState([]);
@@ -82,7 +82,7 @@ const BookUpdate = (props) => {
                         id="name"
                         placeholder="Enter book name"
                         className="p-inputtext-sm"
-                        ref={nameRef}
+                        onChange={(e) => {setName(e.target.value)  }} 
                         defaultValue={book?.name || ""}
                     />
                 </div>
@@ -121,8 +121,8 @@ const BookUpdate = (props) => {
                     <Button
                         label="Update"
                         onClick={() => {
-                             setName(nameRef.current.value || book.name)
-                            
+                            setName(nameRef.current.value || book.name)
+
                             const imageToSend = selectedImage || book.image; // אם אין תמונה חדשה, שולחים את הקיימת
                             updateBook(name, selectedGrades, imageToSend, book);
                             setVisible(false);

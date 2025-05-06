@@ -47,23 +47,24 @@ export default function BooksDataView() {
         try {
             const res = await axios.get(`http://localhost:7000/api/book/grade/${Id}`
             );
-            
+
             if (res.status === 200) {
                 console.log(res.data);
                 setBooks(res.data);
             }
         } catch (e) {
-            if(e.status===400){
-            alert("there are no book for this grade")
-            // navigate('/Grades')
-        }
+            if (e.status === 400) {
+                alert("there are no book for this grade")
+                // navigate('/Grades')
+            }
             console.log(e);
         }
     };
 
     const deleteBook = async (bookId) => {
         try {
-            const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`,{ headers : {'Authorization': `Bearer ${token}`}
+            const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             setBooks(res.data);
         } catch (err) {
@@ -71,20 +72,26 @@ export default function BooksDataView() {
         }
     };
 
-    const updateBook = async (nameRef, selectedItem, imageRef, book) => {
+    const updateBook = async (name, selectedItem, image, book) => {
+        console.log(selectedItem, name, image, book);
+
         const updatebook = {
             ...book,
 
-            name: nameRef?.current?.value ? nameRef.current.value : book.name,
+            name: name ? name : book.name,
             grades: selectedItem,
-            image: imageRef?.current?.value ? imageRef.current.value : book.image,
+            image: image ? image : book.image,
         };
         try {
-            const res = await axios.put('http://localhost:7000/api/book', updatebook,{ headers : {'Authorization': `Bearer ${token}`}
+            const res = await axios.put('http://localhost:7000/api/book', updatebook, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             if (res.status === 200) {
                 console.log("res.data", res.data);
-                setBooks(res.data);
+                getBooks()
             }
         } catch (e) {
             console.error(e);
@@ -92,12 +99,12 @@ export default function BooksDataView() {
     };
     const createBook = async (name, selectedItem, image) => {
         console.log("🤣🤣😂😂");
-    
+
         const formData = new FormData();
         formData.append('name', name);
         formData.append('grades', JSON.stringify(selectedItem));
         formData.append('image', image); // הוספת הקובץ ל-FormData
-    
+
         try {
             const res = await axios.post('http://localhost:7000/api/book', formData, {
                 headers: {
@@ -173,14 +180,14 @@ export default function BooksDataView() {
                 style={{ cursor: 'pointer' }}
             >
                 <div className="flex flex-column align-items-center gap-3 py-5">
-               
+
                     {/* <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} /> */}
                     <img
-                            className="object-cover w-full h-full"
-                           src={`http://localhost:7000${book.image}`} 
-                            alt={book.name}
-                            style={{ objectFit: 'cover', width: '80%', height: '80%' }} // תמונה בגודל קטן יותר
-                        />
+                        className="object-cover w-full h-full"
+                        src={`http://localhost:7000${book.image}`}
+                        alt={book.name}
+                        style={{ objectFit: 'cover', width: '80%', height: '80%' }} // תמונה בגודל קטן יותר
+                    />
                     <div className="text-2xl font-bold">{book.name}</div>
                     {book.grades && book.grades.length > 0 && (
                         <>
@@ -242,12 +249,12 @@ export default function BooksDataView() {
     return (
         <div>
             {user?.roles === "Admin" && (
-            <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} className="add-button" />)}
+                <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} className="add-button" />)}
             <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
             <div className="card">
-            <DataView value={Array.isArray(books) ? books : []} listTemplate={listTemplate} layout={layout} />
+                <DataView value={Array.isArray(books) ? books : []} listTemplate={listTemplate} layout={layout} />
             </div>
-            {selectedBook?  <BookUpdate   updateBook={updateBook} setVisible={setVisible} visible={visible} book={selectedBook} />:<></>}  
+            {selectedBook ? <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={selectedBook} /> : <></>}
 
         </div>
     );
