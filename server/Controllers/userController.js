@@ -6,25 +6,29 @@ require('dotenv').config();
 
 //פונקצית שליחת מייל
 const sendEmail = async (to, subject, html) => {
-
-
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.office365.com',
+        port: 587,
+        secure: false,
         auth: {
-            user: process.env.EMAIL_USER, // כתובת הג'ימייל שלך
-            pass: process.env.EMAIL_PASS, // סיסמת האפליקציה שיצרת
+            user: process.env.OUTLOOK_USER,
+            pass: process.env.OUTLOOK_PASS,
         },
     });
-
     const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: process.env.OUTLOOK_USER,
         to: to,
         subject: subject,
         html: html,
+        replyTo: '',
     };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', info.response);
+    console.log(to)
+    try {
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: 'Email sent successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error sending email', error: error.message });
+    }
 };
 
 
@@ -63,40 +67,56 @@ const updateUser = async (req, res) => {
 
 const register = async (req, res) => {
     console.log("jjj");
-    const {  password, name, email, phone } = req.body
-    if (!name || !password||!email) {
+    const { password, name, email, phone } = req.body
+    if (!name || !password || !email) {
         return res.status(400).json({ message: 'All fields are required' })
     }
-    console.log("ppp");
+    
     const duplicate = await User.findOne({ email: email }).lean()
     if (duplicate) {
-         console.log("lll");
+        console.log("lll");
         return res.status(409).json({ message: "Duplicate email" })
     }
-   
+
     const hashedpwd = await bcrypt.hash(password, 10)
-    const userobject = { name, email, phone,confirm:false,roles:"User", password: hashedpwd }
+    const userobject = { name, email, phone, confirm: false, roles: "User", password: hashedpwd }
     const user = await User.create(userobject)
 
-    if (user) {
-        const projectLink = 'http://localhost:3000'; // שימי כאן את הקישור לפרויקט
-        try {
-            await sendEmail(
-                't0583271152@gmail.com',
-                'New Registration on Final Project 🎉',
-                `<p>User <strong>${name}</strong> has just registered.</p>
-                 <p>You can view the project here: <a href="${projectLink}">${projectLink}</a></p>`
-            );
-        } catch (err) {
-            console.error('Failed to send email:', err);
-        }
-        return res.status(201).json({
-            
-            message: `New user ${user.email} created` })
-    } else {
+    if (!user) {
         return res.status(400).json({ message: 'Invalid user received' })
     }
-}
+    const projectLink = 'http://localhost:3000'; // שימי כאן את הקישור לפרויקט
+
+
+    const emailHtml = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color:rgb(23, 86, 221);">New Registration Pending Approval</h2>
+        <p>
+            A new user has registered: <strong>${name}</strong> (<a href="mailto:${email}" style="color:rgb(23, 86, 221);">${email}</a>).
+        </p>
+        <p>
+            The user is waiting for approval. You can access the system through the button below:
+        </p>
+        <p>
+            <a href="${projectLink}" style="display: inline-block; text-decoration: none; background-color: rgb(23, 86, 221); color: white; padding: 10px 20px; border-radius: 5px; font-size: 16px;">
+                Go to the Website to confirm her
+            </a>
+        </p>
+        <hr style="border: none; border-top: 1px solid #ddd;" />
+        <p style="font-size: 0.9em; color: #888;">This is an automated email. Please do not reply to it.</p>
+    </div>
+`;
+
+    sendEmail(process.env.OUTLOOK_Admin, 'New Registration on Final Project 🎉', emailHtml)
+
+    return res.status(201).json({
+
+        message: `New user ${user.email} created`
+    })
+
+
+};
+
 
 
 
@@ -125,9 +145,10 @@ const login = async (req, res) => {
     if (!Match) return res.status(401).json({ message: 'Cant connect' })
 
 
-    if (!foundUser.confirm&&foundUser.roles!="Admin") {
+    if (!foundUser.confirm && foundUser.roles != "Admin") {
         return res.status(403).json({ message: 'You are not confirmed to login yet.' });
     }
+
 
     const NewUser = {
         _id: foundUser._id,
@@ -154,16 +175,66 @@ const confirmUser = async (req, res) => {
     // user.roles="User"
     const updateUser = await user.save()
     const users = await User.find().lean()
-    const projectLink = 'http://localhost:3000';
+    const projectLink = 'http://localhost:3000//login';
     //sent email:
+
     if (user.confirm) {
         try {
+            const emailHtml = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color: #1756DD;">hi! "${user.name}" Welcome to the Final Project 🎉</h2>
+        <p>
+            Your registration has been successfully completed! You can now log in and start exploring the project.
+        </p>
+        <p>
+            Click the button below to access the project:
+        </p>
+        <p>
+            <a href="${projectLink}" style="display: inline-block; text-decoration: none; background-color: #1756DD; color: white; padding: 10px 20px; border-radius: 5px; font-size: 16px;">
+                Go to the Project
+            </a>
+        </p>
+        <hr style="border: none; border-top: 1px solid #ddd;" />
+        <p style="font-size: 0.9em; color: #888;">If you have any questions, feel free to contact us.</p>
+    </div>
+`;
             await sendEmail(
                 user.email,
                 'New Registration on Final Project 🎉',
-                `<p>You are avalable to go in</p>
-                <p>You avalable to log in.</p>
-                 <p>You can view the project here: <a href="${projectLink}">${projectLink}</a></p>`
+                emailHtml
+            );
+        }
+        catch (err) {
+            console.error('Failed to send email:', err);
+        }
+    }
+    else {
+        try {
+            const emailHtml = `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <h2 style="color: #D9534F;">Access to Final Project Website Blocked 🚫</h2>
+                <p>
+                    Hello,"${user.name}"
+                </p>
+                <p>
+                    We regret to inform you that your access to the Final Project website has been blocked.
+                </p>
+                <p>
+                    If you believe this is a mistake or you would like to appeal, please contact our support team for further assistance.
+                </p>
+                <p>
+                    <a href="mailto:support@finalproject.com" style="display: inline-block; text-decoration: none; background-color: #D9534F; color: white; padding: 10px 20px; border-radius: 5px; font-size: 16px;">
+                        Contact Support
+                    </a>
+                </p>
+                <hr style="border: none; border-top: 1px solid #ddd;" />
+                <p style="font-size: 0.9em; color: #888;">This is an automated email. Please do not reply to this email.</p>
+            </div>
+        `;
+            await sendEmail(
+                user.email,
+                'Access to Final Project Website Blocked 🚫',
+                emailHtml
             );
         }
         catch (err) {
@@ -172,6 +243,8 @@ const confirmUser = async (req, res) => {
     }
     res.json(users)
 }
+
+
 
 const deleteUser = async (req, res) => {
     const { id } = req.params

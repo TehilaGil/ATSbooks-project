@@ -86,7 +86,7 @@ const createNewBook = async (req, res) => {
     }
 
     try {
-        console.log("ppp");
+        
 
         const titles = ['Book', 'Exams', 'Exercises', 'Disk'];
 
@@ -191,29 +191,26 @@ const getBooksForGrade = async (req, res) => {
 const updateBook = async (req, res) => {
     try {
         const { _id, name, grades } = req.body;
-        console.log(name, grades)
 
         const newImage = req.file ? '/uploads/bookImages/' + req.file.filename : null;
+console.log("jjjjj",newImage);
 
         const book = await Book.findById(_id).populate("grades").exec();
         if (!book) {
             return res.status(400).json({ message: 'Book not found' });
         }
         
-        console.log(typeof grades, grades)
 
         // Update grades
         let gradesArray = grades;
         
 
-        console.log(typeof gradesArray, gradesArray)
 
         if (typeof gradesArray === "object" && !Array.isArray(gradesArray)) {
             gradesArray = Object.values(gradesArray);
         }
         
 
-        console.log(typeof gradesArray, gradesArray)
         // Ensure gradesArray is an array
         if (!Array.isArray(gradesArray)) {
             return res.status(400).send("Grades must be an array or an object convertible to an array");

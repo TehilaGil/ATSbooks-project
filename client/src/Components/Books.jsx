@@ -16,6 +16,8 @@ export default function BooksDataView() {
     const [books, setBooks] = useState([]);
     const [layout, setLayout] = useState('grid');
     const [selectedBook, setSelectedBook] = useState({});
+    const [flagGradeId, setFlagGradeId] = useState(false);
+
 
     const [visibleCreatBook, setVisibleCreatBook] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -23,13 +25,15 @@ export default function BooksDataView() {
     const { token } = useSelector((state) => state.token);
     const { user } = useSelector((state) => state.token);
 
+
     useEffect(() => {
         if (gradeId) {
             getBooksByGrade(gradeId); // Fetch books for the specific grade
         } else {
             getBooks(); // Fetch all books if no gradeId is provided
         }
-    }, [gradeId]);
+
+    }, [gradeId, flagGradeId]);
 
     const getBooks = async () => {
         try {
@@ -47,53 +51,61 @@ export default function BooksDataView() {
         try {
             const res = await axios.get(`http://localhost:7000/api/book/grade/${Id}`
             );
-            
+
             if (res.status === 200) {
                 console.log(res.data);
                 setBooks(res.data);
             }
         } catch (e) {
-            if(e.status===400){
-            alert("there are no book for this grade")
-            // navigate('/Grades')
-        }
+            if (e.status === 400) {
+                alert("there are no book for this grade")
+                // navigate('/Grades')
+            }
             console.log(e);
         }
     };
 
     const deleteBook = async (bookId) => {
         try {
-            const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`,{ headers : {'Authorization': `Bearer ${token}`}
+            const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
-            setBooks(res.data);
+            // setBooks(res.data);
+            setFlagGradeId(!flagGradeId)
         } catch (err) {
             console.error('Error deleting book:', err);
         }
     };
 
-    const updateBook = async (nameRef, selectedItem, imageRef, book) => {
+    const updateBook = async (name, selectedItem, image, book) => {
+        console.log(selectedItem, name, image, book);
+
         const updatebook = {
             ...book,
 
-            name: nameRef?.current?.value ? nameRef.current.value : book.name,
+            name: name ? name : book.name,
             grades: selectedItem,
-            image: imageRef?.current?.value ? imageRef.current.value : book.image,
+            image: image ? image : book.image,
         };
         try {
-            const res = await axios.put('http://localhost:7000/api/book', updatebook,{ headers : {'Authorization': `Bearer ${token}`}
+            const res = await axios.put('http://localhost:7000/api/book', updatebook, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             if (res.status === 200) {
                 console.log("res.data", res.data);
-                setBooks(res.data);
+                setFlagGradeId(!flagGradeId)
             }
         } catch (e) {
-            
+
             console.error(e);
         }
     };
     const createBook = async (name, selectedItem, image) => {
         console.log("🤣🤣😂😂");
-        if(!image)
+        if (!image)
             alert("confirm the image")
 
 
@@ -101,6 +113,7 @@ export default function BooksDataView() {
         formData.append('name', name);
         formData.append('grades', JSON.stringify(selectedItem));
         formData.append('image', image); // הוספת הקובץ ל-FormData
+
         try {
             const res = await axios.post('http://localhost:7000/api/book', formData, {
                 headers: {
@@ -116,9 +129,9 @@ export default function BooksDataView() {
                 }
             }
         } catch (e) {
-           
-               
-            if(e.status===400)
+
+
+            if (e.status === 400)
                 alert("name and image are required")
             console.error("Error creating book:", e);
         }
@@ -171,23 +184,34 @@ export default function BooksDataView() {
     // );
 
     const navigate = useNavigate();
-
+    const handleNavigation = (id) => {
+        if (user?.roles != "Admin") {
+            
+            console.log(user.confirm ,"ppp",user?.roles)
+            console.log(user)
+            alert('You are not confirmed to login yet.')  
+        }
+        else {
+            navigate(`/Titles/${id}`);
+            // אם המשתמש אינו מורשה, מפעיל פונקציה להצגת דיאלוג
+            
+        }
+    };
     const gridItem = (book) => (
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={book._id}>
             <div
                 className="p-4 border-1 surface-border surface-card border-round"
-                onClick={() => navigate(`/Titles/${book._id}`)}
-                style={{ cursor: 'pointer' }}
-            >
+                onClick={() => handleNavigation(book._id)}
+                style={{ cursor: 'pointer' }}>
                 <div className="flex flex-column align-items-center gap-3 py-5">
-               
+
                     {/* <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} /> */}
                     <img
-                            className="object-cover w-full h-full"
-                           src={`http://localhost:7000${book.image}`} 
-                            alt={book.name}
-                            style={{ objectFit: 'cover', width: '80%', height: '80%' }} // תמונה בגודל קטן יותר
-                        />
+                        className="object-cover w-full h-full"
+                        src={`http://localhost:7000${book.image}`}
+                        alt={book.name}
+                        style={{ objectFit: 'cover', width: '80%', height: '80%' }} // תמונה בגודל קטן יותר
+                    />
                     <div className="text-2xl font-bold">{book.name}</div>
                     {book.grades && book.grades.length > 0 && (
                         <>
@@ -249,12 +273,12 @@ export default function BooksDataView() {
     return (
         <div>
             {user?.roles === "Admin" && (
-            <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} className="add-button" />)}
+                <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} className="add-button" />)}
             <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
             <div className="card">
-            <DataView value={Array.isArray(books) ? books : []} listTemplate={listTemplate} layout={layout} />
+                <DataView value={Array.isArray(books) ? books : []} listTemplate={listTemplate} layout={layout} />
             </div>
-            {selectedBook?  <BookUpdate   updateBook={updateBook} setVisible={setVisible} visible={visible} book={selectedBook} />:<></>}  
+            {selectedBook ? <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={selectedBook} /> : <></>}
 
         </div>
     );

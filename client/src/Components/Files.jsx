@@ -153,7 +153,7 @@ const FilesDataView = ({ titleId }) => {
         //     </Dialog>
 
         //     <Dialog header="עריכת קובץ" visible={visibleUpdate} style={{ width: '30vw' }} onHide={() => setVisibleUpdate(false)}>
-        //         <form onSubmit={handleUpdate} className="flex flex-column gap-3">
+        //         <form ={handleUpdate} className="flex flex-column gap-3">
         //             <InputText placeholder="שם קובץ חדש" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} />
         //             <Button label="שמור" type="submit" />
         //         </form>

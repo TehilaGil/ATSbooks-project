@@ -280,6 +280,11 @@ const Titles = () => {
     //     }
     // };
     const handleUpdate = async (event) => {
+        console.log(selectedFile);
+        
+        const formData = new FormData();
+console.log(formData);
+
         const files = event?.files;
         if (!files || files.length === 0) {
             toast.current?.show({ severity: 'error', summary: 'שגיאה', detail: 'לא נבחר קובץ לעדכון', life: 3000 });
@@ -487,6 +492,8 @@ const Titles = () => {
                         // uploadHandler={handleUpload}
                         chooseLabel="בחר קובץ"
                         uploadHandler={({ files }) => {
+                            console.log("jjj",files);
+                            
                             setSelectedFile(files[0]); // שמירת הקובץ הנבחר ב-state זמני
                             setFilePreview(files[0]?.name || ''); // הצגת שם הקובץ הנבחר
                         }}

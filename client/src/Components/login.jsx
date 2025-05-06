@@ -126,9 +126,11 @@ const login = async () => {
             console.log(password);
             if (res && res.status === 200) {
                 dispatch(setToken({token:res.data.accessToken,user:res.data.user}))
+
+                console.log("❤❤❤❤❤❤❤❤❤"+token)
+                console.log("🥼🎨🖼🖼🖼🖼👔🧵🧵"+res);
         navigate('../home'); // ניווט אחרי השינוי
 
-                console.log(res.data);
             }
         } catch (err) {
             if (err.response && err.response.status === 401) {

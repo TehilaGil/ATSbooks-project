@@ -12,7 +12,7 @@ const openai = new OpenAI({
 });
 
 const ffmpeg = require("fluent-ffmpeg");
-console.log("❤❤🤣🤣 ",ffmpeg)
+// console.log("❤❤🤣🤣 ",ffmpeg)
 async function transcribeAudio(filePath) {
     const wavPath = filePath + ".wav";
 
@@ -56,7 +56,7 @@ const handleCourseSubmission = async (req, res) => {
   console.log("333");
 
   try {
-    const transcript = await transcribeAudio(filePath);
+    const transcript ="hi helo" //await transcribeAudio(filePath);
     const prompt = `This is a transcript in English. Please rate the English level from 1 to 10 and provide a short feedback. Text: "${transcript}"`;
     console.log("444");
 
