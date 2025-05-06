@@ -1,1 +1,0 @@
-https://aws.plainenglish.io/how-to-host-your-react-application-in-aws-s3-c0940cd4377b

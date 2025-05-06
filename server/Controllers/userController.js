@@ -151,6 +151,7 @@ const confirmUser = async (req, res) => {
         return res.status(400).json({ message: 'No user found' })
 
     user.confirm = !user.confirm
+    // user.roles="User"
     const updateUser = await user.save()
     const users = await User.find().lean()
     const projectLink = 'http://localhost:3000';

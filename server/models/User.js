@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     roles: {
         type: String,
         enum: ["User", "Admin"],
-        defult: "user"
+        defult: "User"
     },
 
     confirm: {
