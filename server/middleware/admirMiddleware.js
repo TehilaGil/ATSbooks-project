@@ -1,9 +1,7 @@
 const User=require("../models/User")
 const admirMiddleware=(req,res,next)=>
     {
-        console.log("gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg");
-        console.log("❤😍😍❤"+req.user.roles)
-        
+               
         
         // req.user = decoded
         // console.log(decoded);

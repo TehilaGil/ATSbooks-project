@@ -15,6 +15,7 @@ const BookUpdate = (props) => {
     const [grades, setGrades] = useState([]);
     const [selectedGrades, setSelectedGrades] = useState([]);
     const nameRef = useRef("");
+    const [name, setName] = useState(book?.name || "");
 
     // הבאת כיתות זמינות
     const AvailablGrade = async () => {
@@ -120,9 +121,10 @@ const BookUpdate = (props) => {
                     <Button
                         label="Update"
                         onClick={() => {
-                            const nameToSend = nameRef.current.value || book.name;
+                             setName(nameRef.current.value || book.name)
+                            
                             const imageToSend = selectedImage || book.image; // אם אין תמונה חדשה, שולחים את הקיימת
-                            updateBook(nameToSend, selectedGrades, imageToSend, book);
+                            updateBook(name, selectedGrades, imageToSend, book);
                             setVisible(false);
                         }}
                         className="p-button p-button-primary"

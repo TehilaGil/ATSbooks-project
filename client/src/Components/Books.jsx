@@ -74,9 +74,10 @@ export default function BooksDataView() {
     const updateBook = async (nameRef, selectedItem, imageRef, book) => {
         const updatebook = {
             ...book,
-            name: nameRef.current.value ? nameRef.current.value : book.name,
+
+            name: nameRef?.current?.value ? nameRef.current.value : book.name,
             grades: selectedItem,
-            image: imageRef.current.value ? imageRef.current.value : book.image,
+            image: imageRef?.current?.value ? imageRef.current.value : book.image,
         };
         try {
             const res = await axios.put('http://localhost:7000/api/book', updatebook,{ headers : {'Authorization': `Bearer ${token}`}
@@ -244,7 +245,7 @@ export default function BooksDataView() {
             <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} className="add-button" />)}
             <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
             <div className="card">
-                <DataView value={books} listTemplate={listTemplate} layout={layout} />
+            <DataView value={Array.isArray(books) ? books : []} listTemplate={listTemplate} layout={layout} />
             </div>
             {selectedBook?  <BookUpdate   updateBook={updateBook} setVisible={setVisible} visible={visible} book={selectedBook} />:<></>}  
 

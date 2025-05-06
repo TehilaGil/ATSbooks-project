@@ -32,8 +32,7 @@ router.get('/',bookController.getAllBooks)
 router.get('/:id',verifyJWT,bookController.getBookById)
 
 //router.put('/',verifyJWT ,admirMiddleware,bookController.updateBook)
-router.put(    '/', verifyJWT, admirMiddleware, upload.single('image'),bookController.updateBook
-);
+router.put(    '/', verifyJWT, admirMiddleware, upload.single('image'),bookController.updateBook);
 
 router.delete('/:id',verifyJWT ,admirMiddleware,bookController.deleteBook)
 

@@ -51,6 +51,43 @@ const CreateGrade = (props) => {
         visible={visibleCreatGrade}
         modal
         onHide={() => props.setVisibleCreatGrade(false)}
+
+//         content={({ hide }) => (
+//             <div className="flex flex-column px-8 py-5 gap-4">
+//                 <div className="inline-flex flex-column gap-2">
+//                 <label className="text-gray-700 font-medium">Name</label>
+//                     <AutoComplete
+//                         value={selectedItem}
+//                         suggestions={filteredItems}
+//                         completeMethod={searchItems}
+//                         virtualScrollerOptions={{ itemSize: 38 }}
+//                         dropdown
+//                         onChange={(e) => setSelectedItem(e.value)}
+//                         className="p-inputtext p-3 border border-gray-300 rounded-md w-64"
+//                     />
+//                 </div>
+
+//                 <div className="inline-flex flex-column gap-2">
+//                     <label className="text-gray-700 font-medium">Image</label>
+//                     <InputText
+//                         className="p-3 border border-gray-300 rounded-md w-64"
+//                         ref={imageRef}
+//                     />
+//                 </div>
+
+//                 <div className="flex justify-content-center gap-2">
+//                     <Button
+//                         label="Create"
+//                         onClick={(e) => { createGrade(selectedItem, imageRef); hide(e); }}
+//                         className="p-button p-button-primary"
+//                     />
+//                     <Button
+//                         label="Cancel"
+//                         onClick={(e) => hide(e)}
+//                         className="p-button p-button-secondary"
+//                     />
+//                 </div>
+
         style={{ width: '25rem', borderRadius: '8px' }} // התאמת רוחב הדיאלוג
         className="custom-dialog"
     >
@@ -67,6 +104,7 @@ const CreateGrade = (props) => {
                     onChange={(e) => setSelectedItem(e.value)}
                     className="p-inputtext p-3 border border-gray-300 rounded-md w-full"
                 />
+
             </div>
 
             {/* Buttons */}

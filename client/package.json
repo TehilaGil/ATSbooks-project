@@ -10,12 +10,14 @@
     "primeicons": "^7.0.0",
     "primereact": "^10.9.5",
     "react": "^18.3.1",
+    "react-audio-voice-recorder": "^2.2.0",
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.3.0",
     "react-scripts": "5.0.1",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "use-audio-recorder": "^0.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
