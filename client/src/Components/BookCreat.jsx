@@ -18,7 +18,7 @@ const BookCreate = (props) => {
     const [nameError, setNameError] = useState(false);
     const [imageError, setImageError] = useState(false);
 
-    const [selectedmage, setselectedImage] = useState(null);
+    const [selectedimage, setselectedImage] = useState(null);
     const [preview, setPreview] = useState(null);
 
     const { gradeId } = useParams();
@@ -58,30 +58,32 @@ const BookCreate = (props) => {
 
     const handleCreateClick = () => {
         
-        const nameValue = name.trim(); // שימוש ב-State במקום Ref
-        const imageValue = selectedmage;
+        // const nameValue = name.trim(); // שימוש ב-State במקום Ref
+        // const imageValue = selectedimage;
 
-        let hasError = false;
+        // let hasError = false;
 
-        if (!nameValue) {
-            setNameError(true);
-            hasError = true;
-        } else {
-            setNameError(false);
-        }
+        // if (!nameValue) {
+        //     alert("name is require")
+        //     setNameError(true);
+        //     hasError = true;
+        // } else {
+        //     setNameError(false);
+        // }
 
-        if (!imageValue) {
-            setImageError(true);
-            hasError = true;
-        } else {
-            setImageError(false);
-        }
+        // if (!imageValue) {
+        //     alert("please confirm the image")
+        //     setImageError(true);
+        //     hasError = true;
+        // } else {
+        //     setImageError(false);
+        // }
 
-        if (hasError) {
-            return;
-        }
+        // if (hasError) {
+        //     return;
+        // }
 
-        createBook(nameValue, selectedGrades, selectedmage);
+        createBook(name, selectedGrades, selectedimage);
         setVisibleCreatBook(false);
     };
 

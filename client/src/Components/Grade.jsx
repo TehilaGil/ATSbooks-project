@@ -43,6 +43,8 @@ const Grade = (props) => {
             }
         } catch (e) {
             console.error(e)
+            if(e.status===409)
+                alert("Duplicate grade name");
             props.toast?.current.show({
                 severity: 'error',
                 summary: 'Error updating',

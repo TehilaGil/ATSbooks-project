@@ -2,15 +2,15 @@
     position: fixed; /* מקבע את הכפתור במסך */
     left: 20px; /* מרחק מהצד הימני */
     bottom: 20px; /* מרחק מהתחתית */
-    background-color: #4f4f5d; /* צבע רקע */
+    background-color: #a2a2a5; /* צבע רקע */
     color: white; /* צבע טקסט */
     font-size: 1.2rem; /* גודל טקסט */
-    padding: 2rem 4rem; /* ריווח פנימי */
+    padding: 2rem 3rem; /* ריווח פנימי */
     border-radius: 50px; /* עיגול הפינות */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* צל */
+    /* box-shadow: 0 4px 6px rgba(151, 149, 149, 0.1); צל */
 }
 
 .add-button:hover {
-    background-color: #38373c; /* צבע רקע בעת ריחוף */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* צל מוגבר */
+    background-color: #8f8e92; /* צבע רקע בעת ריחוף */
+    box-shadow: 0 6px 8px rgba(155, 153, 153, 0.2); /* צל מוגבר */
 }

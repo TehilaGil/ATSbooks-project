@@ -28,6 +28,7 @@ const upload = multer({ storage });
 const createNewBook = async (req, res) => {
 
     const { name, grades } = req.body
+    // if(!name)
     const image = req.file ? '/uploads/bookImages/' + req.file.filename : null;
 
     let gradesArr = [];

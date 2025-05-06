@@ -69,6 +69,24 @@ const updateGrade = async (req, res) => {
     if (duplicate && duplicate._id.toString() !== _id) {
         return res.status(409).json({ message: "Duplicate grade name" });
     }
+//change the books of this grade
+
+const books = await Book.find({ grades: _id }).exec();
+if (books.length > 0) {
+    await Promise.all(
+        books.map(async (book) => {
+            // עדכון הספר
+            book.grades = book.grades.filter((gradeId) => gradeId.toString() !== _id); // הסרת הכיתה הישנה
+            book.grades.push(_id); // הוספת הכיתה החדשה
+            await book.save();
+        })
+    );
+}
+
+
+
+
+
 
     grade.name = name;
     grade.image = image;

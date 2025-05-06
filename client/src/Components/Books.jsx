@@ -87,17 +87,20 @@ export default function BooksDataView() {
                 setBooks(res.data);
             }
         } catch (e) {
+            
             console.error(e);
         }
     };
     const createBook = async (name, selectedItem, image) => {
         console.log("🤣🤣😂😂");
-    
+        if(!image)
+            alert("confirm the image")
+
+
         const formData = new FormData();
         formData.append('name', name);
         formData.append('grades', JSON.stringify(selectedItem));
         formData.append('image', image); // הוספת הקובץ ל-FormData
-    
         try {
             const res = await axios.post('http://localhost:7000/api/book', formData, {
                 headers: {
@@ -113,6 +116,10 @@ export default function BooksDataView() {
                 }
             }
         } catch (e) {
+           
+               
+            if(e.status===400)
+                alert("name and image are required")
             console.error("Error creating book:", e);
         }
     };
