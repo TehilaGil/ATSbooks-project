@@ -41,6 +41,7 @@ const createUser = async (name, email, phone, password) => {
                 alert("email exits")
             if (res.status === 200 || res.status === 201) {
                 console.log("res.data", res.data);
+                alert("Your request to join has been sent to the site administrator. You will receive an email notification when your request is approved.")
                 navigate('/login')
                 // getUsers()
                 // setSource(prevSource => prevSource.filter(user => user._id !== res._id)); 

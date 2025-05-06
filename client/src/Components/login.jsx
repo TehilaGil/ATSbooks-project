@@ -1,94 +1,48 @@
 
-// import React, { useState ,useEffect} from 'react'; 
+
+// import React, { useState, useEffect } from 'react'; 
 // import { Divider } from 'primereact/divider';
 // import { InputText } from 'primereact/inputtext';
 // import { Button } from 'primereact/button';
 // import axios from 'axios';
 // import { useNavigate } from 'react-router-dom';
+// import { useDispatch, useSelector } from 'react-redux';
+
+// import { setToken, logOut } from '../redux/tokenSlice'
 
 
-// const Login =({setUser}) =>{
-//     const [userCon, setUserCon] =useState();
+
+
+// const Login = () => {
+//     const [userCon, setUserCon] = useState(null); // Initializing userCon with null
 //     const [error, setError] = useState('');
-//     const [email, setEmail] = useState();
-//     const [password, setPassword] = useState();
+//     const [email, setEmail] = useState('');
+//     const [password, setPassword] = useState('');
 //     const navigate = useNavigate();
-
-   
-// const  login=async()=>{
-//     if(email && password){
-//         console.log(setUser);
-//      try{  
-//         const res = await axios.post('http://localhost:7000/api/user/login',{email,password})
-//         if(res&& res.status === 200){
-//             console.log(res);
-//             setUserCon(res.data)
-//         }} 
-//         catch (err) {
-//             if (err.response && err.response.status === 401) {
-//                 setError('You are not authorized.');
-//             } else {
-//                 setError('An error occurred, please try again.');
-            
-//          } 
-//         // if(res.status==401)
-//         //     return(<h2>you are not in</h2>)
-        
-// }
-    
-//     useEffect(() => {
-//         if (userCon) {
-//         // const navigate = useNavigate();
-//           setUser(userCon);
-//           navigate('/home');
-//         }
-//       }, [userCon, setUser, navigate]);
-//     return (
-//         <div className="card">
-//             <div className="flex flex-column md:flex-row">
-//                 <div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
-//                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-//                         <label className="w-6rem">Email</label>
-//                         <InputText  onChange={(e)=>{setEmail(e.target.value)}} id="username" type="text" className="w-12rem" />
-//                     </div>
-//                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-//                         <label className="w-6rem">Password</label>
-//                         <InputText  onChange={(e)=>{setPassword(e.target.value)}} id="password" type="password" className="w-12rem" />
-//                     </div>
-//                     <Button  onClick={()=>{login()}} label="Login" icon="pi pi-user" className="w-10rem mx-auto"></Button>
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
-        
-// }
-// }
-// export default Login
-
-
-import React, { useState, useEffect } from 'react'; 
-import { Divider } from 'primereact/divider';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { setToken, logOut } from '../redux/tokenSlice'
+//     const dispatch = useDispatch();
+//     const {token} = useSelector((state) => state.token);
+//     const {user} = useSelector((state) => state.token);
 
 
 // const login = async () => {
 //     if (email && password) {
 //         try {
+//             console.log(email);
+//             console.log(password);
 //             const res = await axios.post('http://localhost:7000/api/user/login', { email, password });
+//             console.log(email);
+//             console.log(password);
 //             if (res && res.status === 200) {
+//                 dispatch(setToken({token:res.data.accessToken,user:res.data.user}))
+//         navigate('../home'); // ניווט אחרי השינוי
+
 //                 console.log(res.data);
-//                 setUserCon(res.data); // עדכון userCon עם הנתונים מהשרת
 //             }
 //         } catch (err) {
 //             if (err.response && err.response.status === 401) {
 //                 setError('You are not authorized.');
+//             } else if (err.response && err.response.status === 403) {
+//                 setError('Your account has not been confirmed yet.');
 //             } else {
 //                 setError('An error occurred, please try again.');
 //             }
@@ -97,33 +51,117 @@ import { setToken, logOut } from '../redux/tokenSlice'
 //         setError('Please fill in both email and password.');
 //     }
 // };
-// // עיכוב הניווט עד שהמשתמש נשמר
-// useEffect(() => {
-//     if (userCon) {
-//         setUserFunc(userCon); // עדכון המשתמש בקונטקסט
-//         navigate('/home'); // ניווט אחרי השינוי
-//     }
-// }, [userCon, setUserFunc, navigate]);
+
+
+//     return (
+//         <div className="card">
+//             <div className="flex flex-column md:flex-row">
+//                 <div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
+//                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
+//                         <label className="w-6rem">Email</label>
+//                         <InputText
+//                             onChange={(e) => setEmail(e.target.value)}
+//                             id="username"
+//                             type="text"
+//                             className="w-12rem"
+//                         />
+//                     </div>
+//                     <div className="flex flex-wrap justify-content-center align-items-center gap-2">
+//                         <label className="w-6rem">Password</label>
+//                         <InputText
+//                             onChange={(e) => setPassword(e.target.value)}
+//                             id="password"
+//                             type="password"
+//                             className="w-12rem"
+//                         />
+//                     </div>
+//                     <div className="form-group">
+//                     {/* <label htmlFor="password">Password</label> */}
+//                     <a href="#" className="forgot-password">Forgot password?</a>
+
+//             </div>
+//                     {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error if exists */}
+//                     <Button
+//                         onClick={login} 
+//                         label="Login" 
+//                         icon="pi pi-user" 
+//                         className="w-10rem mx-auto"
+//                     />
+
+//                 </div>
+
+//             </div>
+
+//         </div>
+//     );
+// };
+
+// export default Login;
+
+// import React, { useState } from 'react';
+
+// import axios from 'axios';
+
+// import { Password } from 'primereact/password'; // Correct import for Password
+// import { InputText } from 'primereact/inputtext'; // Correct import for InputText
+// import { Button } from 'primereact/button'; // Correct import for Button
+// import { useDispatch, useSelector } from 'react-redux';
+// import { useNavigate } from 'react-router-dom';
+
+
+import React, { useState, useEffect } from 'react';
+import { Divider } from 'primereact/divider';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Password } from 'primereact/password'; // Correct import for Password
+import { setToken, logOut } from '../redux/tokenSlice'
+
+
 
 const Login = () => {
-    const [userCon, setUserCon] = useState(null); // Initializing userCon with null
-    const [error, setError] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [forgotPassword, setForgotPassword] = useState(false); // Toggle for "Forgot Password"
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const [validationError, setValidationError] = useState(''); // For password validation errors
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {token} = useSelector((state) => state.token);
-    const {user} = useSelector((state) => state.token);
+    const { token } = useSelector((state) => state.token);
+    const { user } = useSelector((state) => state.token);
 
 
-const login = async () => {
-    if (email && password) {
+
+    // const [email, setEmail] = useState('');
+    // const [password, setPassword] = useState('');
+    // const [forgotPassword, setForgotPassword] = useState(false);
+    const [verificationStep, setVerificationStep] = useState(false);
+    const [verificationCode, setVerificationCode] = useState('');
+    // const [newPassword, setNewPassword] = useState('');
+    // const [confirmPassword, setConfirmPassword] = useState('');
+    // const [error, setError] = useState('');
+    // const [successMessage, setSuccessMessage] = useState('');
+
+
+
+    const handlePasswordReset = async () => {
+        if (newPassword !== confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
+
         try {
-            console.log(email);
-            console.log(password);
-            const res = await axios.post('http://localhost:7000/api/user/login', { email, password });
-            console.log(email);
-            console.log(password);
+            const res = await axios.post('http://localhost:7000/api/user/reset-password-with-code', {
+                email,
+                verificationCode,
+                newPassword
+            });
             if (res && res.status === 200) {
                 dispatch(setToken({token:res.data.accessToken,user:res.data.user}))
 
@@ -131,62 +169,163 @@ const login = async () => {
                 console.log("🥼🎨🖼🖼🖼🖼👔🧵🧵"+res);
         navigate('../home'); // ניווט אחרי השינוי
 
+                setSuccessMessage('Password has been reset successfully. You can now log in.');
+                setForgotPassword(false);
+                setVerificationStep(false);
             }
         } catch (err) {
-            if (err.response && err.response.status === 401) {
-                setError('You are not authorized.');
-            } else if (err.response && err.response.status === 403) {
-                setError('Your account has not been confirmed yet.');
-            } else {
-                setError('An error occurred, please try again.');
-            }
+            setError('Failed to reset password. Please check the verification code and try again.');
         }
-    } else {
-        setError('Please fill in both email and password.');
-    }
-};
-// עיכוב הניווט עד שהמשתמש נשמר
-// useEffect(() => {
-//     if (user) {
-//         console.log("Setting user:", user);
-       
-//         navigate('/home'); // ניווט אחרי השינוי
-//     }
-// }, [user]);
+    };
 
-    return (
-        <div className="card">
-            <div className="flex flex-column md:flex-row">
-                <div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
-                    <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-                        <label className="w-6rem">Email</label>
-                        <InputText
-                            onChange={(e) => setEmail(e.target.value)}
-                            id="username"
-                            type="text"
-                            className="w-12rem"
-                        />
-                    </div>
-                    <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-                        <label className="w-6rem">Password</label>
-                        <InputText
-                            onChange={(e) => setPassword(e.target.value)}
-                            id="password"
-                            type="password"
-                            className="w-12rem"
-                        />
-                    </div>
-                    {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error if exists */}
-                    <Button
-                        onClick={login} 
-                        label="Login" 
-                        icon="pi pi-user" 
-                        className="w-10rem mx-auto"
-                    />
-                </div>
+    const sendVerificationCode = async () => {
+        try {
+            const res = await axios.post('http://localhost:7000/api/user/send-verification-code', { email });
+            if (res && res.status === 200) {
+                setVerificationStep(true);
+                setSuccessMessage('Verification code sent to your email.');
+            }
+        } catch (err) {
+            setError('Failed to send verification code. Please try again.');
+        }
+    };
+
+    const login = async () => {
+        if (email && password) {
+            try {
+                console.log(email);
+                console.log(password);
+                const res = await axios.post('http://localhost:7000/api/user/login', { email, password });
+                console.log(email);
+                console.log(password);
+                if (res && res.status === 200) {
+                    dispatch(setToken({ token: res.data.accessToken, user: res.data.user }))
+                    navigate('../home'); // ניווט אחרי השינוי
+
+                    console.log(res.data);
+                }
+            } catch (err) {
+                if (err.response && err.response.status === 401) {
+                    setError('You are not authorized.');
+                } else if (err.response && err.response.status === 403) {
+                    setError('Your account has not been confirmed yet.');
+                } else {
+                    setError('An error occurred, please try again.');
+                }
+            }
+        } else {
+            setError('Please fill in both email and password.');
+        }
+    };
+
+
+
+    const validatePassword = (value) => {
+        if (!value) {
+            setValidationError('Password is required.');
+        } else if (value.length < 6) {
+            setValidationError('Password must be at least 6 characters long.');
+        } else if (!/[A-Z]/.test(value)) {
+            setValidationError('Password must contain at least one uppercase letter.');
+        } else if (!/[a-z]/.test(value)) {
+            setValidationError('Password must contain at least one lowercase letter.');
+        } else if (!/[0-9]/.test(value)) {
+            setValidationError('Password must contain at least one digit.');
+        } else {
+            setValidationError(''); // Clear validation error
+        }
+    };
+
+
+//     validatePassword(newPassword);
+//     if (validationError) {
+//         return;
+//     }
+
+
+return (<div className="login-container">
+    <h2>Sign in to ATSbooks</h2>
+    {!forgotPassword ? (
+        <>
+            <div className="form-group">
+                <label htmlFor="email">Email address</label>
+                <InputText
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="text"
+                    className="input-field"
+                />
             </div>
-        </div>
-    );
+            <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <InputText
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    type="password"
+                    className="input-field"
+                />
+            </div>
+            {/* <Button label="Forgot Password?" onClick={() => setForgotPassword(true)} className="btn-secondary" /> */}
+            <a href="#" onClick={(e) => { e.preventDefault(); setForgotPassword(true); }} className="btn-secondary">
+    Forgot Password?
+</a>
+            <Button label="Login" onClick={login} className="btn-secondary" />
+        </>
+    ) : verificationStep ? (
+        <>
+            <div className="form-group">
+                <label htmlFor="verification-code">Verification Code</label>
+                <InputText
+                    id="verification-code"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                    type="text"
+                    className="input-field"
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="new-password">New Password</label>
+                <Password
+                    inputId="new-password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    toggleMask
+                    className="input-field"
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="confirm-password">Confirm Password</label>
+                <Password
+                    inputId="confirm-password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    toggleMask
+                    className="input-field"
+                />
+            </div>
+            <Button label="Reset Password" onClick={handlePasswordReset} className="btn-primary" />
+        </>
+    ) : (
+        <>
+            <div className="form-group">
+                <label htmlFor="email">Email address</label>
+                <InputText
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="text"
+                    className="input-field"
+                />
+            </div>
+            <Button label="Send Verification Code" onClick={sendVerificationCode} className="btn-primary" />
+        </>
+    )}
+    {error && <div className="error-message">{error}</div>}
+    {successMessage && <div className="success-message">{successMessage}</div>}
+</div>
+);
 };
 
 export default Login;
