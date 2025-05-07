@@ -14,11 +14,31 @@ const persistedTokenReducer = persistReducer(persistConfig, tokenSlice);
 
 const store = configureStore({
   reducer: {
-    token: persistedTokenReducer, // Persisted token reducer
-   
-  },
+        token: persistedTokenReducer, // Persisted token reducer
+       
+      },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST'],
+      },
+    }),
 });
+
+
+
+
+
+// const store = configureStore({
+//   reducer: {
+//     token: persistedTokenReducer, // Persisted token reducer
+   
+//   },
+// });
 
 const persistor = persistStore(store);
 
 export { store, persistor };
+
+
+

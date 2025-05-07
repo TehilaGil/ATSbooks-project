@@ -8,7 +8,7 @@ const admirMiddleware=require("../middleware/admirMiddleware")
 
  router.post('/',verifyJWT,admirMiddleware,gradeController.creatNewGrade)
 
-// // router.get('/:id',gradeController.getGradeById)
+router.get('/:id',gradeController.getGradeById)
 
  router.get('/',gradeController.getAllGrade)
 

@@ -324,13 +324,13 @@ console.log(formData);
     chooseLabel="בחר קובץ..."
     className="p-button-sm"
 />
-<Button
+{/* <Button
     label="העלה"
     icon="pi pi-upload"
     onClick={handleUpdate}
     // onClick={() => toast.current?.show({ severity: 'warn', summary: 'הערה', detail: 'אנא בחר קובץ ולחץ העלה מתוך הקומפוננטה' })}
     className="p-button-outlined"
-/>
+/> */}
                 </form>
             </Dialog>
             <Toast ref={toast} />

@@ -18,7 +18,7 @@ export default function BooksDataView() {
     const [layout, setLayout] = useState('grid');
     const [selectedBook, setSelectedBook] = useState({});
     const [flagGradeId, setFlagGradeId] = useState(false);
-
+    const [gradeName, setGradeName] = useState('');
 
     const [visibleCreatBook, setVisibleCreatBook] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -26,16 +26,32 @@ export default function BooksDataView() {
     const { token } = useSelector((state) => state.token);
     const { user } = useSelector((state) => state.token);
 
+   
 
     useEffect(() => {
         console.log("🎉🎉🎉🎉🎉")
         if (gradeId) {
+            getGradeName(gradeId);
             getBooksByGrade(gradeId); // Fetch books for the specific grade
         } else {
-            getBooks(); // Fetch all books if no gradeId is provided
+            getBooks();
+            setGradeName(''); // Fetch all books if no gradeId is provided
         }
 
     }, [gradeId, flagGradeId]);
+
+    const getGradeName = async (Id) => {
+        try {
+            const res = await axios.get(`http://localhost:7000/api/grade/${Id}`); // נתיב לשרת לקבלת שם כיתה
+            if (res.status === 200) {
+                setGradeName(res.data.name); // עדכון שם הכיתה ב-state
+            }
+        } catch (e) {
+            console.log("🐱‍🚀🐱‍👓🐱‍🚀🐱‍🚀🐱‍👓🐱‍🚀🐱‍👓");
+            console.error('Error fetching grade name:', e);
+            setGradeName(''); // במידה ויש שגיאה, איפוס שם הכיתה
+        }
+    };
 
     const getBooks = async () => {
         try {
@@ -136,9 +152,9 @@ export default function BooksDataView() {
             }
         } catch (e) {
 
-
+alert(e.res.data.mes)
             if (e.status === 400)
-                alert("name and image are required")
+                
             console.error("Error creating book:", e);
         
         if(e.status===402)
@@ -185,12 +201,12 @@ export default function BooksDataView() {
                         </>
                     )}
                 </div>
-                <div className="flex align-items-center justify-content-center mt-3">
+                <div className="card flex flex-wrap gap-2 justify-content-center">
                     {user?.roles === "Admin" && (
                         <>
                             <Button
                                 icon="pi pi-pencil"
-                                className="p-button-rounded p-button-warning"
+                                // className="p-button-rounded p-button-warning"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setVisible(true);
@@ -200,7 +216,7 @@ export default function BooksDataView() {
                             />
                             <Button
                                 icon="pi pi-trash"
-                                className="p-button-rounded p-button-danger"
+                                // className="p-button-rounded p-button-danger"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     deleteBook(book._id);
@@ -227,6 +243,11 @@ export default function BooksDataView() {
 
     return (
         <div>
+             <div>
+        {gradeName && (
+            <h1 className="grade-header">{gradeName}</h1> // שם הכיתה בראש
+        )}
+         </div>
             {user?.roles === "Admin" && (
                 <Button icon="pi pi-plus" rounded aria-label="Filter" onClick={() => setVisibleCreatBook(true)} className="add-button" />)}
             <BookCreate createBook={createBook} setVisibleCreatBook={setVisibleCreatBook} visibleCreatBook={visibleCreatBook} />
