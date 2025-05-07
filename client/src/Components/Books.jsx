@@ -5,12 +5,13 @@ import { classNames } from 'primereact/utils';
 import axios from 'axios';
 import BookCreate from "./BookCreat";
 import BookUpdate from './BookUpdate';
-import './Grades.css';
 import { useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
 import Tittles from './Titles';
 import { Route } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import '../Styles/Grades.css';
+
 
 export default function BooksDataView() {
     const [books, setBooks] = useState([]);

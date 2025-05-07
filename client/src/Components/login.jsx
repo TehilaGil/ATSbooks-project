@@ -118,6 +118,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Password } from 'primereact/password'; // Correct import for Password
 import { setToken, logOut } from '../redux/tokenSlice'
+import '../Styles/login.css'
 
 
 
@@ -246,88 +247,104 @@ const Login = () => {
 //     }
 
 
-return (<div className="login-container">
-    <h2>Sign in to ATSbooks</h2>
-    {!forgotPassword ? (
-        <>
-            <div className="form-group">
-                <label htmlFor="email">Email address</label>
-                <InputText
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    type="text"
-                    className="input-field"
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <InputText
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                    className="input-field"
-                />
-            </div>
-            {/* <Button label="Forgot Password?" onClick={() => setForgotPassword(true)} className="btn-secondary" /> */}
-            <a href="#" onClick={(e) => { e.preventDefault(); setForgotPassword(true); }} className="btn-secondary">
-    Forgot Password?
-</a>
-            <Button label="Login" onClick={login} className="btn-secondary" />
-        </>
-    ) : verificationStep ? (
-        <>
-            <div className="form-group">
-                <label htmlFor="verification-code">Verification Code</label>
-                <InputText
-                    id="verification-code"
-                    value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value)}
-                    type="text"
-                    className="input-field"
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="new-password">New Password</label>
-                <Password
-                    inputId="new-password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    toggleMask
-                    className="input-field"
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="confirm-password">Confirm Password</label>
-                <Password
-                    inputId="confirm-password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    toggleMask
-                    className="input-field"
-                />
-            </div>
-            <Button label="Reset Password" onClick={handlePasswordReset} className="btn-primary" />
-        </>
-    ) : (
-        <>
-            <div className="form-group">
-                <label htmlFor="email">Email address</label>
-                <InputText
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    type="text"
-                    className="input-field"
-                />
-            </div>
-            <Button label="Send Verification Code" onClick={sendVerificationCode} className="btn-primary" />
-        </>
-    )}
-    {error && <div className="error-message">{error}</div>}
-    {successMessage && <div className="success-message">{successMessage}</div>}
-</div>
+return (
+    <div className="login-page-container">
+        <h2 className="login-title">Sign in to ATS-books</h2>
+        {!forgotPassword ? (
+            <>
+                <div className="login-input-wrapper">
+                    <label htmlFor="email" className="login-label">Email address</label>
+                    <InputText
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        type="text"
+                        className="login-input"
+                    />
+                </div>
+                <div className="login-input-wrapper">
+                    <label htmlFor="password" className="login-label">Password</label>
+                    <InputText
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        type="password"
+                        className="login-input"
+                    />
+                </div>
+                <a
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); setForgotPassword(true); }}
+                    className="btn-secondary forgot-password-link"
+                >
+                    Forgot Password?
+                </a>
+                <button onClick={login} className="login-button">
+                    Login
+                </button>
+            </>
+        ) : verificationStep ? (
+            <>
+                <div className="login-input-wrapper">
+                    <label htmlFor="verification-code" className="login-label">Verification Code</label>
+                    <InputText
+                        id="verification-code"
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value)}
+                        type="text"
+                        className="login-input"
+                    />
+                </div>
+                <div className="login-input-wrapper">
+                    <label htmlFor="new-password" className="login-label">New Password</label>
+                    <Password
+                        inputId="new-password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        toggleMask
+                        className="login-input"
+                    />
+                </div>
+                <div className="login-input-wrapper">
+                    <label htmlFor="confirm-password" className="login-label">Confirm Password</label>
+                    <Password
+                        inputId="confirm-password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        toggleMask
+                        className="login-input"
+                    />
+                </div>
+                <button
+                    onClick={handlePasswordReset}
+                    className="login-button"
+                >
+                    Reset Password
+                </button>
+            </>
+        ) : (
+            <>
+                <div className="login-input-wrapper">
+                    <label htmlFor="email" className="login-label">Email address</label>
+                    <InputText
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        type="text"
+                        className="login-input"
+                    />
+                </div>
+                <button
+                    onClick={sendVerificationCode}
+                    className="login-button"
+                >
+                    Send Verification Code
+                </button>
+            </>
+        )}
+        {error && <div className="error-message">{error}</div>}
+        {successMessage && <div className="success-message">{successMessage}</div>}
+    </div>
 );
 };
 

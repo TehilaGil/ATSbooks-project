@@ -6,10 +6,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 // import { register } from '../../../Server/Controllers/userController';
 import { Password } from 'primereact/password';
-import  {FloatLabel}  from 'primereact/floatlabel';
+import { FloatLabel } from 'primereact/floatlabel';
 
 import { useContext } from 'react';
-import '../Styles/from.css'
+import '../Styles/register.css'
 
 
 const Register = () => {
@@ -26,10 +26,10 @@ const Register = () => {
         phone: "",
     });
     const navigate = useNavigate();
-    
-    
-  
-const createUser = async (name, email, phone, password) => {
+
+
+
+    const createUser = async (name, email, phone, password) => {
         const newUser = {
             name,
             email,
@@ -39,7 +39,7 @@ const createUser = async (name, email, phone, password) => {
 
         try {
             const res = await axios.post('http://localhost:7000/api/user/register', newUser);
-            if(res.status===409)
+            if (res.status === 409)
                 alert("email exits")
             if (res.status === 200 || res.status === 201) {
                 console.log("res.data", res.data);
@@ -102,9 +102,9 @@ const createUser = async (name, email, phone, password) => {
 
     const validatePhone = (value) => {
         if (!/^\d*$/.test(value)) {
-            setErrors((prev) => ({ ...prev, phone:"The phone number can only contain digits."}));
+            setErrors((prev) => ({ ...prev, phone: "The phone number can only contain digits." }));
         } else if (value.length > 10) {
-            setErrors((prev) => ({ ...prev, phone:"The phone number can contain up to 10 digits only."}));
+            setErrors((prev) => ({ ...prev, phone: "The phone number can contain up to 10 digits only." }));
         } else {
             setErrors((prev) => ({ ...prev, phone: "" }));
         }
@@ -116,61 +116,75 @@ const createUser = async (name, email, phone, password) => {
 
 
 
+    return (
+        <div className="register-page-container">
+            <div className="register-form-container">
+                <h2 className="register-title">Create an Account</h2>
+                <form className="register-form">
+                    <div className="register-input-wrapper">
+                        <label className="register-label">Full Name</label>
+                        <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => validateName(e.target.value)}
+                            className="register-input"
+                            placeholder="Enter your full name"
+                        />
+                        {errors.name && <small className="register-error">{errors.name}</small>}
+                    </div>
 
-        return (
-         <div className="min-h-screen flex items-center justify-center bg-white">
-  <form className="space-y-4 p-6 border rounded-md shadow bg-white">
-                    <h2 className="text-2xl font-semibold text-center">Create an account</h2>
-        
-                    <input
-                        type="text"
-                        placeholder="Full name"
-                        value={name}
-                        onChange={(e) => validateName(e.target.value)}
-                        className={`w-full h-10 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 ${errors.name ? "border-red-500" : "border-gray-300"}`}
-                    />
-                    {errors.name && <small className="text-red-500">{errors.name}</small>}
-        
-                    <input
-                        type="email"
-                        placeholder="Email address"
-                        value={email}
-                        onChange={(e) => validateEmail(e.target.value)}
-                        className={`w-full h-10 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 ${errors.email ? "border-red-500" : "border-gray-300"}`}
-                    />
-                    {errors.email && <small className="text-red-500">{errors.email}</small>}
-        
-                    <Password
-                        value={password}
-                        onChange={(e) => validatePassword(e.target.value)}
-                        placeholder="Password"
-                        toggleMask
-                        className={`w-full ${errors.password ? "p-invalid" : ""}`}
-                        inputClassName="w-full h-10 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
-                    />
-                    {errors.password && <small className="text-red-500">{errors.password}</small>}
-        
-                    <input
-                        type="text"
-                        placeholder="Phone number"
-                        value={phone}
-                        onChange={(e) => validatePhone(e.target.value)}
-                        className={`w-full h-10 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 ${errors.phone ? "border-red-500" : "border-gray-300"}`}
-                    />
-                    {errors.phone && <small className="text-red-500">{errors.phone}</small>}
-        <br/>
-                    <Button
+                    <div className="register-input-wrapper">
+                        <label className="register-label">Email</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => validateEmail(e.target.value)}
+                            className="register-input"
+                            placeholder="Enter your email address"
+                        />
+                        {errors.email && <small className="register-error">{errors.email}</small>}
+                    </div>
+
+                    <div className="register-input-wrapper">
+                        <label className="register-label">Password</label>
+                        <Password
+                            value={password}
+                            onChange={(e) => validatePassword(e.target.value)}
+                            placeholder="Enter your password"
+                        // inputClassName="register-input"
+                        />
+                        {errors.password && <small className="register-error">{errors.password}</small>}
+                    </div>
+
+                    <div className="register-input-wrapper">
+                        <label className="register-label">Phone Number</label>
+                        <input
+                            type="text"
+                            value={phone}
+                            onChange={(e) => validatePhone(e.target.value)}
+                            className="register-input"
+                            placeholder="Enter your phone number"
+                        />
+                        {errors.phone && <small className="register-error">{errors.phone}</small>}
+                    </div>
+
+                    <button
                         onClick={() => createUser(name, email, phone, password)}
-                        label="register"
-                        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md disabled:opacity-50"
+                        className="register-button"
                         disabled={!isFormValid}
-                    />
-                    </form>
-                </div>
-         
-        );
-        
-        
+                    >
+                        Register
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+
+
+
+   
+
+
 };
 
 export default Register;

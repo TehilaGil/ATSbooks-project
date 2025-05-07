@@ -3,10 +3,15 @@ import home from '../Styles/home.jpg'
 const Home =() =>{
 
     return(
-        <h2>
-      <img src={home} alt="home" className="app-home" />
-        </h2>
+      <div class="center-image-container">
+      <img src={home} alt="Centered Image"/>
+    </div>
     )
 }
 
 export default Home
+
+
+{/* <h2>
+<img src={home} alt="home" className="app-home" />
+  </h2> */}

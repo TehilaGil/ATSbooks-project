@@ -9,7 +9,7 @@ import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { useSelector } from "react-redux";
 
 
-import './Grades.css';
+import '../Styles/Grades.css';
 const Grades = () => {
     const { token } = useSelector((state) => state.token);
 const { user } = useSelector((state) => state.token);
