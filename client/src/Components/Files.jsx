@@ -119,51 +119,6 @@ const FilesDataView = ({ titleId }) => {
     };
 
     if (loading) return <div>טוען קבצים...</div>;
-
-    // return (
-        // <div className="card">
-        //     <Button label="הוסף קובץ" icon="pi pi-plus" onClick={() => setVisibleCreate(true)} className="mb-3" />
-
-        //     <div className="grid">
-        //         {
-        //         Array.isArray(files) && 
-        //         files.map(file => (
-        //             <div key={file._id} className="col-12 md:col-6 lg:col-4">
-        //                 <div className="p-3 border-1 surface-border surface-card border-round flex flex-column gap-2">
-        //                     <div className="text-xl">{file.name}</div>
-        //                     <div className="text-sm text-color-secondary">{file.size}</div>
-
-        //                     <div className="flex gap-2 mt-2">
-        //                         {/* <Button icon="pi pi-eye" className="p-button-sm p-button-info" onClick={() => handleView(file._id)} tooltip="צפה" /> */}
-        //                         <Button icon="pi pi-eye" rounded text size="small" onClick={(e) => {
-        //                              e.stopPropagation();
-        //                              navigate(`/FileView/${file._id}`);
-        //                        }} />
-        //                         <Button icon="pi pi-download" className="p-button-sm p-button-success" onClick={() => handleDownload(file._id)} tooltip="הורד" />
-        //                         <Button icon="pi pi-pencil" className="p-button-sm p-button-warning" onClick={() => { setSelectedFile(file); setVisibleUpdate(true); }} tooltip="ערוך" />
-        //                         <Button icon="pi pi-trash" className="p-button-sm p-button-danger" onClick={() => handleDelete(file._id)} tooltip="מחק" />
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         ))}
-        //     </div>
-
-        //     <Dialog header="העלאת קובץ חדש" visible={visibleCreate} style={{ width: '30vw' }} onHide={() => setVisibleCreate(false)}>
-        //         <FileUpload mode="basic" auto customUpload uploadHandler={handleUpload} chooseLabel="בחר קובץ" />
-        //     </Dialog>
-
-        //     <Dialog header="עריכת קובץ" visible={visibleUpdate} style={{ width: '30vw' }} onHide={() => setVisibleUpdate(false)}>
-        //         <form ={handleUpdate} className="flex flex-column gap-3">
-        //             <InputText placeholder="שם קובץ חדש" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} />
-        //             <Button label="שמור" type="submit" />
-        //         </form>
-        //     </Dialog>
-
-        //     <Toast ref={toast} />
-        // </div>
-
-
-
         return (
             <div className="p-4">
                 {/* כותרת ראשית עם שם הספר */}

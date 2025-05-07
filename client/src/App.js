@@ -40,7 +40,8 @@ function App() {
 
   return (
     <div className="App">
-<img src={logo} alt="logo" className="app-logo" />
+       <div className="content">
+      <img src={logo} alt="logo" className="app-logo" />
 
       <MenuBar>
       </MenuBar>
@@ -63,6 +64,7 @@ function App() {
       </Routes>
 
       {/*  */}
+      </div>
 
     </div>
 

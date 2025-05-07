@@ -117,11 +117,39 @@ margin-top: -8px;
 .link-custom:active {
   color: inherit; /* שומר על הצבע המקורי גם בעת ריחוף או לחיצה */
 }
-.jjj{
-  text-align: right;
+
+
+  .card-menuBar {
+  position: fixed; /* הופך את התפריט לקבוע */
+  top: 0; /* ממקם אותו בחלק העליון של הדף */
+  left: 0; /* מתחיל בצד שמאל */
+  width: 100%; /* מבטיח שהתפריט יתפרס על כל רוחב המסך */
+  z-index: 1000; /* מבטיח שהתפריט יהיה מעל כל שאר האלמנטים */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* מוסיף צל קל */
+  background: 
+var(--surface-card);
+    padding: 
+2rem;
+    border-radius: 
+10px;
+    margin-bottom: 1rem;
+}
+.content
+{
+  margin-top: 60px; /* מוסיף מרווח בגובה התפריט */
+  padding: 20px; /* ריווח פנימי לתוכן */
 }
 
 
+.card .p-menubar .p-menubar-root-list > li > a {
+  color: #fff; /* צבע טקסט */
+}
+
+.user-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 
 
 
@@ -200,21 +228,29 @@ margin-top: -8px;
 
 .app-logo {
   position: fixed;
-  /* bottom: 30px; */
-  right: 40px;
+   bottom: 30px; 
+  left: 30px;
   width: 80px;
   height: auto;
   z-index: 999; /* כדי שיהיה מעל כל דבר */
 }
 
-.app-home {
-  position: fixed;
-  top: 140px;
-  right: 50px;
-  left: 50px;
-  width: 1500px;
-  height: 680px; /* Fixed, shorter height */
-  object-fit: contain; /* Optional: keep image ratio */
+
+.center-image-container {
+  display: flex;
+  justify-content: center; /* מרכז אופקית */
+  align-items: center; /* מרכז אנכית */
+  height: 100vh; /* הגדר את גובה המיכל לגובה כל המסך */
+  width: 100%; /* הגדר את הרוחב לרוחב מלא */
+  background-color: #f7f7f7; /* אופציונלי: רקע ניטרלי */
+}
+
+.center-image-container img {
+  max-width: 100%; /* ודא שהתמונה לא תחרוג מרוחב המסך */
+  max-height: 100%; /* ודא שהתמונה לא תחרוג מגובה המסך */
+  object-fit: contain; /* שמור על יחס הגובה-רוחב של התמונה */
+  border-radius: 8px; /* אופציונלי: פינות מעוגלות */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* אופציונלי: הוספת צל */
 }
 
 @media (max-width: 600px) {

@@ -5,12 +5,13 @@ import { classNames } from 'primereact/utils';
 import axios from 'axios';
 import BookCreate from "./BookCreat";
 import BookUpdate from './BookUpdate';
-import './Grades.css';
 import { useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
 import Tittles from './Titles';
 import { Route } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import '../Styles/Grades.css';
+
 
 export default function BooksDataView() {
     const [books, setBooks] = useState([]);
@@ -140,52 +141,6 @@ export default function BooksDataView() {
 }
     };
 
-    // const listItem = (book, index) => (
-    //     <div
-    //         className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}
-    //         onClick={() => navigate(`/Titles/${book._id}`)}
-    //         style={{ cursor: 'pointer' }}
-    //     >
-    //         <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={book.image} alt={book.name} />
-    //         <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4 w-full">
-    //             <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-    //                 <div className="text-2xl font-bold text-900">{book.name}</div>
-    //                 {book.grades && book.grades.length > 0 && (
-    //                     <>
-    //                         <strong>Suitable for:</strong>
-    //                         <ul className="m-0 pl-3 list-disc text-xs">
-    //                             {book.grades.map((grade, idx) => (
-    //                                 <li key={idx}>{grade.name}</li>
-    //                             ))}
-    //                         </ul>
-    //                     </>
-    //                 )}
-    //             </div>
-    //             <div className="flex align-items-center justify-content-end gap-2 w-full sm:w-auto">
-    //                 <Button
-    //                     icon="pi pi-pencil"
-    //                     className="p-button-rounded p-button-warning"
-    //                     onClick={(e) => {
-    //                         e.stopPropagation();
-    //                         setVisible(true);
-    //                     }}
-    //                     tooltip="Edit"
-    //                 />
-    //                 <Button
-    //                     icon="pi pi-trash"
-    //                     className="p-button-rounded p-button-danger"
-    //                     onClick={(e) => {
-    //                         e.stopPropagation();
-    //                         deleteBook(book._id);
-    //                     }}
-    //                     tooltip="Delete"
-    //                 />
-    //                 <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
-    //             </div>
-    //         </div>
-    //     </div>
-    // );
-
     const navigate = useNavigate();
     const handleNavigation = (id) => {
         if (!token) {
@@ -207,8 +162,6 @@ export default function BooksDataView() {
                 onClick={() => handleNavigation(book._id)}
                 style={{ cursor: 'pointer' }}>
                 <div className="flex flex-column align-items-center gap-3 py-5">
-
-                    {/* <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} /> */}
                     <img
                         className="object-cover w-full h-full"
                         src={`http://localhost:7000${book.image}`}
@@ -266,12 +219,6 @@ export default function BooksDataView() {
             {books.map((book, index) => itemTemplate(book, layout, index))}
         </div>
     );
-
-    // const header = () => (
-    //     <div className="flex justify-content-end">
-    //         <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
-    //     </div>
-    // );
 
     return (
         <div>

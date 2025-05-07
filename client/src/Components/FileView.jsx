@@ -52,8 +52,7 @@ const FileView = () => {
 
   const fetchFile = async () => {
     try {
-      console.log("hghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-
+      
       // קריאת שרת עם headers
       const response = await axios.get(`http://localhost:7000/api/file/view/${fileId}`, {
         headers: { 'Authorization': `Bearer ${token}` }, // הוספת הטוקן ב-Headers
@@ -64,7 +63,6 @@ const FileView = () => {
       const url = URL.createObjectURL(response.data);
       setFileUrl(url);
       setLoading(false);
-      // קביעת סוג הקובץ על פי הסיומת
       const extension = fileId.split('.').pop().toLowerCase();
       if (['mp4', 'webm'].includes(extension)) setFileType('video');
       else if (['mp3', 'wav', 'ogg'].includes(extension)) setFileType('audio');
@@ -79,8 +77,6 @@ const FileView = () => {
       setLoading(false);
     }
   }
-
-
 
 const renderFile = () => {
   switch (fileType) {

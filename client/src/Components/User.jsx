@@ -12,32 +12,12 @@ import { useState } from "react"
      const [visible, setVisible] = useState(false);
  
  
-     //**********updateUser
      
-     //************delete
-     // const deleteUser = async (id) => {
-     //     const res = await axios.delete(`http://localhost:7000/api/user/${id}`)
-     //     props.setUsersData(res.data)
-     // }
- 
- 
-     //***********return
  
      return (
          <>
  
-             {/* <Card name={props.user.name}>
-                 <p className="m-0">
-                 <div className="card flex flex-wrap gap-2 justify-content-center">
-                     
-                     <Button icon="pi pi-pencil" onClick={() => setVisible(true)} />
-                     </div>
-                     <UpdateUser updateUser={updateUser} setVisible={setVisible}  visible={visible} user={props.user}/>
-                 </p>
-             </Card> */}
- 
-        {/* <UpdateUser updateUser={updateUser} setVisible={setVisible}  visible={visible} user={props.user}/> */}
- 
+          
  
          </>
      )

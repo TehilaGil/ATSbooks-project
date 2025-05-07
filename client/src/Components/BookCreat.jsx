@@ -57,31 +57,6 @@ const BookCreate = (props) => {
     }, [gradeId]);
 
     const handleCreateClick = () => {
-        
-        // const nameValue = name.trim(); // שימוש ב-State במקום Ref
-        // const imageValue = selectedimage;
-
-        // let hasError = false;
-
-        // if (!nameValue) {
-        //     alert("name is require")
-        //     setNameError(true);
-        //     hasError = true;
-        // } else {
-        //     setNameError(false);
-        // }
-
-        // if (!imageValue) {
-        //     alert("please confirm the image")
-        //     setImageError(true);
-        //     hasError = true;
-        // } else {
-        //     setImageError(false);
-        // }
-
-        // if (hasError) {
-        //     return;
-        // }
 
         createBook(name, selectedGrades, selectedimage);
         setVisibleCreatBook(false);
