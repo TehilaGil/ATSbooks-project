@@ -189,7 +189,7 @@ export default function BooksDataView() {
             
             console.log(user.confirm ,"ppp",user?.roles)
             console.log(user)
-            alert('You are not confirmed to login yet.')  
+            alert('You are not allowed to view the book files.')  
         }
         else {
             navigate(`/Titles/${id}`);

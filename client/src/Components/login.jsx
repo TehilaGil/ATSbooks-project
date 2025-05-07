@@ -151,6 +151,9 @@ const Login = () => {
 
 
     const handlePasswordReset = async () => {
+
+        validatePassword(newPassword);
+        
         if (newPassword !== confirmPassword) {
             setError('Passwords do not match.');
             return;
@@ -206,7 +209,7 @@ const Login = () => {
                 }
             } catch (err) {
                 if (err.response && err.response.status === 401) {
-                    setError('You are not authorized.');
+                    setError('You are not connect- There is a problem with the data you entered.');
                 } else if (err.response && err.response.status === 403) {
                     setError('Your account has not been confirmed yet.');
                 } else {
