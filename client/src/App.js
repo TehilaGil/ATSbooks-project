@@ -16,6 +16,11 @@ import { useNavigate } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { CascadeSelect } from 'primereact/cascadeselect';
+
+
+import logo from './Styles/logo.jpg';
+
+
 import MenuBar from './Components/menuBar';
 const LazyGrade = React.lazy(() => import('./Components/Grades'));
 const LazyHome = React.lazy(() => import('./Components/Home'));
@@ -31,12 +36,12 @@ const LazyFileView = React.lazy(() => import('./Components/FileView'));
 const LazyEnglishCourseSignUp = React.lazy(() => import('./Components/EnglishCourseSignUp'));
 
 
-
-
 function App() {
 
   return (
     <div className="App">
+       <div className="content">
+      <img src={logo} alt="logo" className="app-logo" />
 
       <MenuBar>
       </MenuBar>
@@ -59,6 +64,7 @@ function App() {
       </Routes>
 
       {/*  */}
+      </div>
 
     </div>
 

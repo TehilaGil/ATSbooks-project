@@ -28,6 +28,7 @@ const upload = multer({ storage });
 const createNewBook = async (req, res) => {
 
     const { name, grades } = req.body
+    // if(!name)
     const image = req.file ? '/uploads/bookImages/' + req.file.filename : null;
 
     let gradesArr = [];
@@ -37,42 +38,54 @@ const createNewBook = async (req, res) => {
         return res.status(400).send("name is required")
     }
     if (!image) {
+    console.log("🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️"+gradesArr);
+
         return res.status(400).send("image is required")
     }
     const existBook = await Book.findOne({ name: name }).populate("grades");
     if (existBook) {
-        return res.status(400).send("invalid name")
+
+
+        return res.status(402).send("invalid name")
     }
 
     //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
+    // console.log("👌👌👌👌👌👌👌👌👌👌👌👌👌"+gradesArr);
     
+    let gradeDocs=[]
 
-    if (typeof gradesArr === "string") {
+    if (typeof gradesArr === "string"&&gradesArr!="[]") {
         try {
+            console.log("🎂🎂🎂🎂🎂🎂🎂"+typeof gradesArr)
+            
             gradesArr = JSON.parse(gradesArr);
+            console.log("✔✔✔✔✔✔✔✔✔✔"+gradesArr)
+if (!Array.isArray(gradesArr)) {
+        return res.status(400).send("grades must be an array");
+    }
+             gradeDocs = await Promise.all(
+                gradesArr.map(grade => Grade.findOne({ name: grade }))
+               
+            );
+            console.log("👌👌👌👌👌👌👌👌👌👌👌👌👌"+gradesArr);
         } catch (error) {
             console.error("Failed to parse gradesArr:", error);
             return res.status(400).send("Invalid grades format");
         }
     }
 
-    if (!Array.isArray(gradesArr)) {
-        return res.status(400).send("grades must be an array");
-    }
-    const gradeDocs = await Promise.all(
-        gradesArr.map(grade => Grade.findOne({ name: grade }))
-
-    );
+    
+   
     console.log("gradeDocs", gradeDocs)
     // סינון רק כיתות שנמצאו בפועל
     const validGrades = gradeDocs.filter(doc => doc);
     const gradeIds = validGrades.map(doc => doc._id);
 
-    if (validGrades.length === 0) {
-        return res.status(400).send("No valid grades found for the book");
-    }
+    // if (validGrades.length === 0) {
+    //     return res.status(400).send("No valid grades found for the book");
+    // }
 
-    console.log("222")
+    console.log("222",name,  gradeIds, image)
 
     const book = await Book.create({ name, grades: gradeIds, image });
     console.log("@@@@@@@");
@@ -85,7 +98,7 @@ const createNewBook = async (req, res) => {
     }
 
     try {
-        console.log("ppp");
+        
 
         const titles = ['Book', 'Exams', 'Exercises', 'Disk'];
 
@@ -105,11 +118,14 @@ const createNewBook = async (req, res) => {
 }
 
 const getAllBooks = async (req, res) => {
+    try{
     const books = await Book.find().lean().populate("grades")
-    if (!books?.length) {
-        return res.status(400).json({ message: 'No books found' })
-    }
-    res.json(books)
+   res.json(books)
+}
+catch{
+        return res.status(400).json({ message: 'there is a bloblem louding the books' })
+}
+    
 }
 
 const getBookById = async (req, res) => {
@@ -125,68 +141,18 @@ const getBooksForGrade = async (req, res) => {
     const { Id } = req.params
 
     // חפש את כל הספרים שהכיתה עם ה-ID הזה נמצאת במערך grades
+    try{
     const books = await Book.find({ grades: Id }).lean().populate("grades")
     console.log(books);
-
-    if (!books?.length) {
-        return res.status(400).json({ message: 'No books found for this grade' })
+        res.json(books)
+}
+    catch {
+        return res.status(400).json({ message: 'there is a bloblem louding the books' })
     }
 
-    res.json(books)
+
 }
-// const updateBook = async (req, res) => {
-//     try {
-//         const { _id, name, grades } = req.body;
-//         const newImage = req.file ? '/uploads/bookImages/' + req.file.filename : null;
 
-//         const book = await Book.findById(_id).populate("grades").exec();
-//         if (!book) {
-//             return res.status(400).json({ message: 'Book not found' });
-//         }
-
-//         // Update grades
-//         let gradesArray = grades;
-//         if (!Array.isArray(grades)) {
-//             if (typeof grades === 'string') {
-//                 gradesArray = grades.split(',').map(g => g.trim());
-//             } else {
-//                 return res.status(400).json({ message: 'Grades must be an array or comma-separated string' });
-//             }
-//         }
-
-//         const gradeDocs = await Promise.all(
-//             gradesArray.map(name => Grade.findOne({ name }))
-//         );
-
-//         const validGrades = gradeDocs.filter(doc => doc);
-//         const gradeIds = validGrades.map(doc => doc._id);
-
-//         // מחיקת התמונה הקודמת אם יש תמונה חדשה
-//         if (newImage && book.image) {
-//             const oldImagePath = path.join(__dirname, '../', book.image);
-//             fs.unlink(oldImagePath, (err) => {
-//                 if (err) {
-//                     console.error(`Failed to delete old image: ${oldImagePath}`, err);
-//                 } else {
-//                     console.log(`Successfully deleted old image: ${oldImagePath}`);
-//                 }
-//             });
-//         }
-
-//         // עדכון הספר
-//         book.name = name;
-//         book.grades = gradeIds;
-//         if (newImage) {
-//             book.image = newImage;
-//         }
-
-//         const updatedBook = await book.save();
-//         res.json(updatedBook);
-//     } catch (error) {
-//         console.error("Error updating book:", error.message);
-//         res.status(500).json({ message: "Failed to update book", error: error.message });
-//     }
-// };
 const updateBook = async (req, res) => {
     try {
         const { _id, name, grades } = req.body;
@@ -238,19 +204,15 @@ console.log("jjjjj",newImage);
             });
         }
         
-
         // עדכון הספר
         book.name = name;
         book.grades = gradeIds;
         if (newImage) {
             book.image = newImage;
         }
-        
-
-
+    
         const updatedBook = await book.save();
-       
-
+    
        return  res.json(updatedBook);
 
     } catch (error) {
@@ -258,36 +220,13 @@ console.log("jjjjj",newImage);
         res.status(500).json({ message: "Failed to update book", error: error.message });
     }
 };
-// const deleteBook = async (req, res) => {
-//     const { id } = req.params
-//     const book = await Book.findById(id).exec()
-//     if (!book) {
-//         return res.status(400).json({ message: 'book not found' })
-//     }
-//     const titles = await Title.find({ book: id }).exec();
-//     if (titles.length > 0 && Array.isArray(titles)) {
-//         await Promise.all(titles.map(async (title) => {
-
-//            await deleteTitle({ params: { id: title._id } }, res);
-
-//         }));
-//     }
-
-//     const result = await Book.deleteOne({ _id: id })
-//     const books = await Book.find().lean().populate("grades")
-//     if (!books?.length) {
-//         return res.json([]); // החזר מערך ריק במקום הודעת שגיאה
-//     }
-//     res.json(books)
-// }
-
-
 
 const deleteBook = async (req, res) => {
     try {
         const { id } = req.params;
         const book = await Book.findById(id).exec();
         if (!book) {
+            console.log("🎉🎉🎉🎉🎉🎉🎉🎉");
             return res.status(400).json({ message: 'book not found' });
         }
 
@@ -311,9 +250,7 @@ const deleteBook = async (req, res) => {
         }
 
         await Book.deleteOne({ _id: id });
-
-        const books = await Book.find().lean().populate("grades");
-        res.json(books?.length ? books : []);
+        res.status(200).json();
     } catch (error) {
         console.error("Error deleting book:", error.message);
         res.status(500).json({ message: "Failed to delete book", error: error.message });

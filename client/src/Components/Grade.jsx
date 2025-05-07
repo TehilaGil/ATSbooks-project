@@ -24,7 +24,7 @@ const Grade = (props) => {
     const navigate = useNavigate();
     //**********updateGrade
     const updateGrade = async (selectedItem, imageRef) => {
-        console.log(selectedItem)
+        console.log(user)
         const updatedGrade = {
             ...props.grade,
             name: selectedItem,
@@ -43,13 +43,17 @@ const Grade = (props) => {
                 }
             }
         } catch (e) {
-            console.error(e)
-            props.toast?.current.show({
-                severity: 'error',
-                summary: 'Error updating',
-                detail: e.response?.data?.message || e.message,
-                life: 4000
-            });
+            if(e.status===409)
+                {
+                
+                    if (toast?.current) {
+                        toast.current.show({ severity: 'error', summary: 'This grade alredy exits', life: 4000 });
+                }}
+                if(e.status===400)
+                    if (toast?.current) {
+                        toast.current.show({ severity: 'error', summary: 'Grade name is required', life: 4000 });
+                }
+                            console.error(e)
         }
     }
 
@@ -156,7 +160,7 @@ return (
                 style={{ cursor: 'pointer' }}>
 
                 <div className="flex flex-column align-items-center gap-3 py-5">
-                    <img className="w-9 shadow-2 border-round" src={`/pictures/${props.grade.name}.png `} alt={props.grade.name} footer={footer} />
+                    <img className="course-image" src={`/pictures/${props.grade.name}.png `} alt={props.grade.name} footer={footer} />
                     {/* ${grade.image} */}
                     <div className="text-2xl font-bold">{props.grade.name} {footer}</div>
                 </div>

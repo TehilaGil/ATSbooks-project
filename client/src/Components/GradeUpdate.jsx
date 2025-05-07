@@ -48,18 +48,6 @@ const UpdateGrade = (props) => {
                         className="p-inputtext-sm"
                     />
                 </div>
-
-                {/* <div className="flex flex-column gap-2">
-                    <label htmlFor="image" className="font-medium">Image</label>
-                    <InputText
-                        id="image"
-                        ref={imageRef}
-                        defaultValue={grade?.image}
-                        placeholder="Enter image URL"
-                        className="p-inputtext-sm"
-                    />
-                </div> */}
-
                 <div className="flex justify-content-center gap-2">
                     <Button
                         label="Update"

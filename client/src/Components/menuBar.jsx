@@ -62,9 +62,6 @@ const MenuBar = () => {
   const end = (
     <div className="user-container">
          {user?.name || 'User Name'}
-      <div className="user-name">{token && user.confirm === false && (
-        <p className="avalable"><br />You are not confirmed</p>
-      )}</div>
       <Button
         icon="pi pi-caret-down"
         className="user-dropdown"
@@ -149,7 +146,7 @@ const MenuBar = () => {
   return (
     <>
 
-      <div className="card">
+      <div className="card-menuBar">
       { 
       user?
       <UpdateUser

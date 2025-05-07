@@ -5,17 +5,20 @@ import { classNames } from 'primereact/utils';
 import axios from 'axios';
 import BookCreate from "./BookCreat";
 import BookUpdate from './BookUpdate';
-import './Grades.css';
 import { useSelector } from "react-redux";
 import { Link, useParams } from 'react-router-dom';
 import Tittles from './Titles';
 import { Route } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import '../Styles/Grades.css';
+
 
 export default function BooksDataView() {
     const [books, setBooks] = useState([]);
     const [layout, setLayout] = useState('grid');
     const [selectedBook, setSelectedBook] = useState({});
+    const [flagGradeId, setFlagGradeId] = useState(false);
+
 
     const [visibleCreatBook, setVisibleCreatBook] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -23,22 +26,29 @@ export default function BooksDataView() {
     const { token } = useSelector((state) => state.token);
     const { user } = useSelector((state) => state.token);
 
+
     useEffect(() => {
+        console.log("🎉🎉🎉🎉🎉")
         if (gradeId) {
             getBooksByGrade(gradeId); // Fetch books for the specific grade
         } else {
             getBooks(); // Fetch all books if no gradeId is provided
         }
-    }, [gradeId]);
+
+    }, [gradeId, flagGradeId]);
 
     const getBooks = async () => {
         try {
             const res = await axios.get('http://localhost:7000/api/book');
             if (res.status === 200) {
+        console.log("✔✔✔✔✔✔✔")
+
                 console.log(res.data);
                 setBooks(res.data);
             }
         } catch (e) {
+        console.log("🤷‍♂️🤷‍♂️🤷‍♂️🤷‍♂️🤷‍♂️🤷‍♂️")
+
             console.error(e);
         }
     };
@@ -66,7 +76,8 @@ export default function BooksDataView() {
             const res = await axios.delete(`http://localhost:7000/api/book/${bookId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            setBooks(res.data);
+            // setBooks(res.data);
+            setFlagGradeId(!flagGradeId)
         } catch (err) {
             console.error('Error deleting book:', err);
         }
@@ -91,14 +102,18 @@ export default function BooksDataView() {
             });
             if (res.status === 200) {
                 console.log("res.data", res.data);
-                getBooks()
+                setFlagGradeId(!flagGradeId)
             }
         } catch (e) {
+
             console.error(e);
         }
     };
     const createBook = async (name, selectedItem, image) => {
         console.log("🤣🤣😂😂");
+        if (!image)
+            alert("confirm the image")
+
 
         const formData = new FormData();
         formData.append('name', name);
@@ -120,68 +135,38 @@ export default function BooksDataView() {
                 }
             }
         } catch (e) {
+
+
+            if (e.status === 400)
+                alert("name and image are required")
             console.error("Error creating book:", e);
-        }
+        
+        if(e.status===402)
+            alert("this book name alrady exits")
+}
     };
 
-    // const listItem = (book, index) => (
-    //     <div
-    //         className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}
-    //         onClick={() => navigate(`/Titles/${book._id}`)}
-    //         style={{ cursor: 'pointer' }}
-    //     >
-    //         <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={book.image} alt={book.name} />
-    //         <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4 w-full">
-    //             <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-    //                 <div className="text-2xl font-bold text-900">{book.name}</div>
-    //                 {book.grades && book.grades.length > 0 && (
-    //                     <>
-    //                         <strong>Suitable for:</strong>
-    //                         <ul className="m-0 pl-3 list-disc text-xs">
-    //                             {book.grades.map((grade, idx) => (
-    //                                 <li key={idx}>{grade.name}</li>
-    //                             ))}
-    //                         </ul>
-    //                     </>
-    //                 )}
-    //             </div>
-    //             <div className="flex align-items-center justify-content-end gap-2 w-full sm:w-auto">
-    //                 <Button
-    //                     icon="pi pi-pencil"
-    //                     className="p-button-rounded p-button-warning"
-    //                     onClick={(e) => {
-    //                         e.stopPropagation();
-    //                         setVisible(true);
-    //                     }}
-    //                     tooltip="Edit"
-    //                 />
-    //                 <Button
-    //                     icon="pi pi-trash"
-    //                     className="p-button-rounded p-button-danger"
-    //                     onClick={(e) => {
-    //                         e.stopPropagation();
-    //                         deleteBook(book._id);
-    //                     }}
-    //                     tooltip="Delete"
-    //                 />
-    //                 <BookUpdate updateBook={updateBook} setVisible={setVisible} visible={visible} book={book} />
-    //             </div>
-    //         </div>
-    //     </div>
-    // );
-
     const navigate = useNavigate();
-
+    const handleNavigation = (id) => {
+        if (!token) {
+            
+            // console.log(user.confirm ,"ppp",user?.roles)
+            console.log(user)
+            alert('You are not allowed to view the book files.')  
+        }
+        else {
+            navigate(`/Titles/${id}`);
+            // אם המשתמש אינו מורשה, מפעיל פונקציה להצגת דיאלוג
+            
+        }
+    };
     const gridItem = (book) => (
         <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={book._id}>
             <div
                 className="p-4 border-1 surface-border surface-card border-round"
-                onClick={() => navigate(`/Titles/${book._id}`)}
-                style={{ cursor: 'pointer' }}
-            >
+                onClick={() => handleNavigation(book._id)}
+                style={{ cursor: 'pointer' }}>
                 <div className="flex flex-column align-items-center gap-3 py-5">
-
-                    {/* <img className="w-9 shadow-2 border-round" src={book.image} alt={book.name} /> */}
                     <img
                         className="object-cover w-full h-full"
                         src={`http://localhost:7000${book.image}`}
@@ -239,12 +224,6 @@ export default function BooksDataView() {
             {books.map((book, index) => itemTemplate(book, layout, index))}
         </div>
     );
-
-    // const header = () => (
-    //     <div className="flex justify-content-end">
-    //         <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
-    //     </div>
-    // );
 
     return (
         <div>

@@ -30,7 +30,7 @@ app.use("/api/book", require("./routes/book.js"))
 app.use("/api/grade", require("./routes/grade.js"))
 app.use("/api/title", require("./routes/title.js"))
 app.use("/api/file", require("./routes/file.js"))
-app.use("/api/course", require("./routes/course"));
+// app.use("/api/course", require("./routes/course"));
 
 
 app.get('/', (req, res) => { res.send("this is the home page") })

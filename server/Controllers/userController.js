@@ -7,8 +7,6 @@ require('dotenv').config();
 
 //פונקצית שליחת מייל
 const sendEmail = async (to, subject, html) => {
-
-
     const transporter = nodemailer.createTransport({
         host: 'smtp.office365.com',
         port: 587,
@@ -25,7 +23,7 @@ const sendEmail = async (to, subject, html) => {
         html: html,
         replyTo: '',
     };
-
+    console.log(to)
     try {
         console.log('Sending email...');
         const response = await transporter.sendMail(mailOptions);
@@ -56,8 +54,22 @@ const getAllUser = async (req, res) => {
 const updateUser = async (req, res) => {
     const { _id, name, phone, email } = req.body
     const user = await User.findById(_id)
+if(!email||!name)
+    {
+        return res.status(409).json({ message: 'email and name is required' }) 
+    }
     if (!user)
         return res.status(400).json({ message: 'No user found' })
+    const oldEmail = user.email
+    if (oldEmail != email) {
+        const foundEmail = await User.findOne({ email }).lean()
+        console.log(foundEmail)
+        if (foundEmail) {
+            console.log("*********")
+            return res.status(401).json({ message: 'Cant connect' })
+
+        }
+    }
     user.name = name
     user.email = email
     user.phone = phone
@@ -77,7 +89,7 @@ const register = async (req, res) => {
     if (!name || !password || !email) {
         return res.status(400).json({ message: 'All fields are required' })
     }
-    console.log("ppp");
+
     const duplicate = await User.findOne({ email: email }).lean()
     if (duplicate) {
         console.log("lll");
@@ -101,11 +113,11 @@ const register = async (req, res) => {
             A new user has registered: <strong>${name}</strong> (<a href="mailto:${email}" style="color:rgb(23, 86, 221);">${email}</a>).
         </p>
         <p>
-            The user is waiting for approval. You can access the system through the link below:
+            The user is waiting for approval. You can access the system through the button below:
         </p>
         <p>
             <a href="${projectLink}" style="display: inline-block; text-decoration: none; background-color: rgb(23, 86, 221); color: white; padding: 10px 20px; border-radius: 5px; font-size: 16px;">
-                Go to the Website
+                Go to the Website to confirm her
             </a>
         </p>
         <hr style="border: none; border-top: 1px solid #ddd;" />
@@ -155,6 +167,7 @@ const login = async (req, res) => {
         return res.status(403).json({ message: 'You are not confirmed to login yet.' });
     }
 
+
     const NewUser = {
         _id: foundUser._id,
         name: foundUser.name,
@@ -180,16 +193,66 @@ const confirmUser = async (req, res) => {
     // user.roles="User"
     const updateUser = await user.save()
     const users = await User.find().lean()
-    const projectLink = 'http://localhost:3000';
+    const projectLink = 'http://localhost:3000//login';
     //sent email:
+
     if (user.confirm) {
         try {
+            const emailHtml = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color: #1756DD;">hi! "${user.name}" Welcome to the Final Project 🎉</h2>
+        <p>
+            Your registration has been successfully completed! You can now log in and start exploring the project.
+        </p>
+        <p>
+            Click the button below to access the project:
+        </p>
+        <p>
+            <a href="${projectLink}" style="display: inline-block; text-decoration: none; background-color: #1756DD; color: white; padding: 10px 20px; border-radius: 5px; font-size: 16px;">
+                Go to the Project
+            </a>
+        </p>
+        <hr style="border: none; border-top: 1px solid #ddd;" />
+        <p style="font-size: 0.9em; color: #888;">If you have any questions, feel free to contact us.</p>
+    </div>
+`;
             await sendEmail(
                 user.email,
                 'New Registration on Final Project 🎉',
-                `<p>You are avalable to go in</p>
-                <p>You avalable to log in.</p>
-                 <p>You can view the project here: <a href="${projectLink}">${projectLink}</a></p>`
+                emailHtml
+            );
+        }
+        catch (err) {
+            console.error('Failed to send email:', err);
+        }
+    }
+    else {
+        try {
+            const emailHtml = `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <h2 style="color: #D9534F;">Access to Final Project Website Blocked 🚫</h2>
+                <p>
+                    Hello,"${user.name}"
+                </p>
+                <p>
+                    We regret to inform you that your access to the Final Project website has been blocked.
+                </p>
+                <p>
+                    If you believe this is a mistake or you would like to appeal, please contact our support team for further assistance.
+                </p>
+                <p>
+                    <a href="mailto:support@finalproject.com" style="display: inline-block; text-decoration: none; background-color: #D9534F; color: white; padding: 10px 20px; border-radius: 5px; font-size: 16px;">
+                        Contact Support
+                    </a>
+                </p>
+                <hr style="border: none; border-top: 1px solid #ddd;" />
+                <p style="font-size: 0.9em; color: #888;">This is an automated email. Please do not reply to this email.</p>
+            </div>
+        `;
+            await sendEmail(
+                user.email,
+                'Access to Final Project Website Blocked 🚫',
+                emailHtml
             );
         }
         catch (err) {
@@ -198,6 +261,8 @@ const confirmUser = async (req, res) => {
     }
     res.json(users)
 }
+
+
 
 const deleteUser = async (req, res) => {
     const { id } = req.params
@@ -246,7 +311,7 @@ const sendVerificationCode = async (req, res) => {
 
         await sendEmail(email, 'Password Reset Verification Code', emailHtml);
         console.log(email);
-        
+
 
         res.status(200).json({ message: 'Verification code sent to email.' });
     } catch (err) {
@@ -276,7 +341,7 @@ const resetPasswordWithCode = async (req, res) => {
             return res.status(404).json({ message: 'User not found.' });
         }
         console.log(newPassword);
-        
+
         // Hash the new password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -296,7 +361,7 @@ const resetPasswordWithCode = async (req, res) => {
 };
 
 
-module.exports = { register, login, getAllUser, updateUser, deleteUser, confirmUser,sendVerificationCode,resetPasswordWithCode }
+module.exports = { register, login, getAllUser, updateUser, deleteUser, confirmUser, sendVerificationCode, resetPasswordWithCode }
 
 
 
