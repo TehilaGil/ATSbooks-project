@@ -9,6 +9,8 @@ import { Password } from 'primereact/password';
 import  {FloatLabel}  from 'primereact/floatlabel';
 
 import { useContext } from 'react';
+import '../Styles/from.css'
+
 
 const Register = () => {
     // const [userCon, setUserCon] = useState(null); // Initializing userCon with null
@@ -115,96 +117,60 @@ const createUser = async (name, email, phone, password) => {
 
 
 
-    return (
-        <div className="card">
-            <div className="flex flex-column md:flex-row">
-                <div className="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5">
-                    <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-                        <label className="w-6rem">Name</label>
-                        <InputText
-                            onChange={(e) => { validateName(e.target.value); setName(e.target.value) }}
-                            id="username"
-                            type="text"
-
-                            className={`w-12rem ${errors.name ? "p-invalid" : ""}`}
-
-                        />
-                    </div>
-                    {errors.name && <small className="p-error">{errors.name}</small>}
-
-                    <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-                        <label className="w-6rem">Email</label>
-                        <InputText
-                            onChange={(e) => { validateEmail(e.target.value); setEmail(e.target.value) }}
-                            id="username"
-                            type="text"
-                            className={`w-12rem ${errors.email ? "p-invalid" : ""}`}
-                        />
-                    </div>
-                    {errors.email && <small className="p-error">{errors.email}</small>}
-
-                    {/* <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-                        <label className="w-6rem">Password</label>
-                        <InputText
-                            onChange={(e) => setPassword(e.target.value)}
-                            id="password"
-                            type="password"
-                            className="w-12rem"
-                        />
-                    </div> */}
-
-                    <div className="flex flex-wrap justify-content-center align-items-center gap-2" >
-                        <label className="w-6rem">Password</label>
-                        <FloatLabel >
-                            <Password
-                                inputId="password"
-                                value={password}
-                                onChange={(e) => {validatePassword(e.target.value); setPassword(e.target.value)}} toggleMask
-                                
-                                className={`w-12rem ${errors.password ? "p-invalid" : ""}`}
-                                feedback={true}
-                                promptLabel="Choose a password" weakLabel="Too simple" mediumLabel="Average complexity" strongLabel="Complex password" />
-                        </FloatLabel>
-                    </div>
-                    {errors.password && <small className="p-error">{errors.password}</small>}
-
-
-
-                    <div className="flex flex-wrap justify-content-center align-items-center gap-2">
-                        <label className="w-6rem">Phone</label>
-                        <InputText
-                            onChange={(e) => { validatePhone(e.target.value); setPhone(e.target.value) }}
-                            id="username"
-                            type="text"
-
-                            className={`w-12rem ${errors.phone ? "p-invalid" : ""}`}
-
-                        />
-                    </div>
-                    {errors.phone && <small className="p-error">{errors.phone}</small>}
-
-
-                    {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error if exists */}
-
-                    {/* <Button
-                        onClick={createUser(name,email,phone,password)}
+        return (
+         <div className="min-h-screen flex items-center justify-center bg-white">
+  <form className="space-y-4 p-6 border rounded-md shadow bg-white">
+                    <h2 className="text-2xl font-semibold text-center">Create an account</h2>
+        
+                    <input
+                        type="text"
+                        placeholder="Full name"
+                        value={name}
+                        onChange={(e) => validateName(e.target.value)}
+                        className={`w-full h-10 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 ${errors.name ? "border-red-500" : "border-gray-300"}`}
+                    />
+                    {errors.name && <small className="text-red-500">{errors.name}</small>}
+        
+                    <input
+                        type="email"
+                        placeholder="Email address"
+                        value={email}
+                        onChange={(e) => validateEmail(e.target.value)}
+                        className={`w-full h-10 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 ${errors.email ? "border-red-500" : "border-gray-300"}`}
+                    />
+                    {errors.email && <small className="text-red-500">{errors.email}</small>}
+        
+                    <Password
+                        value={password}
+                        onChange={(e) => validatePassword(e.target.value)}
+                        placeholder="Password"
+                        toggleMask
+                        className={`w-full ${errors.password ? "p-invalid" : ""}`}
+                        inputClassName="w-full h-10 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+                    />
+                    {errors.password && <small className="text-red-500">{errors.password}</small>}
+        
+                    <input
+                        type="text"
+                        placeholder="Phone number"
+                        value={phone}
+                        onChange={(e) => validatePhone(e.target.value)}
+                        className={`w-full h-10 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 ${errors.phone ? "border-red-500" : "border-gray-300"}`}
+                    />
+                    {errors.phone && <small className="text-red-500">{errors.phone}</small>}
+        <br/>
+                    <Button
+                        onClick={() => createUser(name, email, phone, password)}
                         label="register"
-                        icon="pi pi-user"
-                        className={`w-10rem mx-auto ${errors.phone ? "p-button-secondary opacity-50 cursor-not-allowed" : ""}`}
-                        //disabled={!!errorPhone && !!phone}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-md disabled:opacity-50"
                         disabled={!isFormValid}
-                    /> */}
-<Button
-    onClick={() => createUser(name, email, phone, password)}
-    label="Register"
-    icon="pi pi-user"
-    className={`w-10rem mx-auto ${errors.phone ? "p-button-secondary opacity-50 cursor-not-allowed" : ""}`}
-    disabled={!isFormValid}
-/>
+                    />
+                    </form>
                 </div>
-            </div>
-        </div>
-    );
+         
+        );
+        
+        
 };
 
 export default Register;

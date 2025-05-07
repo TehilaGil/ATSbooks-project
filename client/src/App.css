@@ -197,3 +197,28 @@ margin-top: -8px;
 .cute-button:hover {
   background-color: #45a049;
 }
+
+.app-logo {
+  position: fixed;
+  /* bottom: 30px; */
+  right: 40px;
+  width: 80px;
+  height: auto;
+  z-index: 999; /* כדי שיהיה מעל כל דבר */
+}
+
+.app-home {
+  position: fixed;
+  top: 140px;
+  right: 50px;
+  left: 50px;
+  width: 1500px;
+  height: 680px; /* Fixed, shorter height */
+  object-fit: contain; /* Optional: keep image ratio */
+}
+
+@media (max-width: 600px) {
+  .app-logo {
+    width: 50px;
+  }
+}
