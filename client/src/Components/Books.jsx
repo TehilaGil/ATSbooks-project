@@ -28,6 +28,7 @@ export default function BooksDataView() {
 
 
     useEffect(() => {
+        console.log("🎉🎉🎉🎉🎉")
         if (gradeId) {
             getBooksByGrade(gradeId); // Fetch books for the specific grade
         } else {
@@ -40,10 +41,14 @@ export default function BooksDataView() {
         try {
             const res = await axios.get('http://localhost:7000/api/book');
             if (res.status === 200) {
+        console.log("✔✔✔✔✔✔✔")
+
                 console.log(res.data);
                 setBooks(res.data);
             }
         } catch (e) {
+        console.log("🤷‍♂️🤷‍♂️🤷‍♂️🤷‍♂️🤷‍♂️🤷‍♂️")
+
             console.error(e);
         }
     };

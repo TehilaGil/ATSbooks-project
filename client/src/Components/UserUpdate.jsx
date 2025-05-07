@@ -13,10 +13,6 @@ import { setToken, logOut } from '../redux/tokenSlice'
 
 const UpdateUser = (props) => {
     const navigate = useNavigate();
-    // const [userCon, setUserCon] = useState(null);
-    // const { setUserFunc }=props
-    // const usernameRef = useRef("");
-    // const passwordRef = useRef("");
     const nameRef = useRef("");
     const emailRef = useRef("");
     const phoneRef = useRef("");
@@ -59,8 +55,10 @@ const UpdateUser = (props) => {
             }
             
         } catch (e) {
-            if(e.status===401)
+            if(e.status===401 )
                 alert("This email address is in use")
+            if(e.status===409)
+                alert("The email and name are required")
             console.error("Error updating user:", e);
         }
         

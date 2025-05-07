@@ -54,14 +54,21 @@ const getAllUser = async (req, res) => {
 const updateUser = async (req, res) => {
     const { _id, name, phone, email } = req.body
     const user = await User.findById(_id)
+if(!email||!name)
+    {
+        return res.status(409).json({ message: 'email and name is required' }) 
+    }
     if (!user)
         return res.status(400).json({ message: 'No user found' })
-    const foundEmail = await User.findOne({ email }).lean()
-    console.log(foundEmail)
-    if (foundEmail) {
-        console.log("*********")
-        return res.status(401).json({ message: 'Cant connect' })
+    const oldEmail = user.email
+    if (oldEmail != email) {
+        const foundEmail = await User.findOne({ email }).lean()
+        console.log(foundEmail)
+        if (foundEmail) {
+            console.log("*********")
+            return res.status(401).json({ message: 'Cant connect' })
 
+        }
     }
     user.name = name
     user.email = email
@@ -82,7 +89,7 @@ const register = async (req, res) => {
     if (!name || !password || !email) {
         return res.status(400).json({ message: 'All fields are required' })
     }
-    
+
     const duplicate = await User.findOne({ email: email }).lean()
     if (duplicate) {
         console.log("lll");
@@ -304,7 +311,7 @@ const sendVerificationCode = async (req, res) => {
 
         await sendEmail(email, 'Password Reset Verification Code', emailHtml);
         console.log(email);
-        
+
 
         res.status(200).json({ message: 'Verification code sent to email.' });
     } catch (err) {
@@ -334,7 +341,7 @@ const resetPasswordWithCode = async (req, res) => {
             return res.status(404).json({ message: 'User not found.' });
         }
         console.log(newPassword);
-        
+
         // Hash the new password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -354,7 +361,7 @@ const resetPasswordWithCode = async (req, res) => {
 };
 
 
-module.exports = { register, login, getAllUser, updateUser, deleteUser, confirmUser,sendVerificationCode,resetPasswordWithCode }
+module.exports = { register, login, getAllUser, updateUser, deleteUser, confirmUser, sendVerificationCode, resetPasswordWithCode }
 
 
 

@@ -160,7 +160,7 @@ return (
                 style={{ cursor: 'pointer' }}>
 
                 <div className="flex flex-column align-items-center gap-3 py-5">
-                    <img className="w-9 shadow-2 border-round" src={`/pictures/${props.grade.name}.png `} alt={props.grade.name} footer={footer} />
+                    <img className="course-image" src={`/pictures/${props.grade.name}.png `} alt={props.grade.name} footer={footer} />
                     {/* ${grade.image} */}
                     <div className="text-2xl font-bold">{props.grade.name} {footer}</div>
                 </div>
