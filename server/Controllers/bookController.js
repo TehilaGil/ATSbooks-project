@@ -85,7 +85,7 @@ if (!Array.isArray(gradesArr)) {
     //     return res.status(400).send("No valid grades found for the book");
     // }
 
-    console.log("222")
+    console.log("222",name,  gradeIds, image)
 
     const book = await Book.create({ name, grades: gradeIds, image });
     console.log("@@@@@@@");
