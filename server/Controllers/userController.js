@@ -56,6 +56,13 @@ const updateUser = async (req, res) => {
     const user = await User.findById(_id)
     if (!user)
         return res.status(400).json({ message: 'No user found' })
+    const foundEmail = await User.findOne({ email }).lean()
+    console.log(foundEmail)
+    if (foundEmail) {
+        console.log("*********")
+        return res.status(401).json({ message: 'Cant connect' })
+
+    }
     user.name = name
     user.email = email
     user.phone = phone

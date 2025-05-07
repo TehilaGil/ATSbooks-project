@@ -8,7 +8,7 @@ const admirMiddleware=require("../middleware/admirMiddleware")
 
 router.post('/',verifyJWT,admirMiddleware,titleController.createNewTitle)
 
-router.get('/getTitlesByBook/:id',titleController.getTitlesByBook)
+// router.get('/getTitlesByBook/:id',titleController.getTitlesByBook)
 
 router.get('/:id',verifyJWT,titleController.getTitleById)
 

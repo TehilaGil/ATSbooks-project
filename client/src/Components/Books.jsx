@@ -134,7 +134,10 @@ export default function BooksDataView() {
             if (e.status === 400)
                 alert("name and image are required")
             console.error("Error creating book:", e);
-        }
+        
+        if(e.status===402)
+            alert("this book name alrady exits")
+}
     };
 
     // const listItem = (book, index) => (
@@ -185,9 +188,9 @@ export default function BooksDataView() {
 
     const navigate = useNavigate();
     const handleNavigation = (id) => {
-        if (user?.roles != "Admin") {
+        if (!token) {
             
-            console.log(user.confirm ,"ppp",user?.roles)
+            // console.log(user.confirm ,"ppp",user?.roles)
             console.log(user)
             alert('You are not allowed to view the book files.')  
         }

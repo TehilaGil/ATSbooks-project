@@ -7,25 +7,29 @@ import { InputText } from 'primereact/inputtext';
 import { useNavigate } from 'react-router-dom';
 import 'primeicons/primeicons.css';
 import axios from 'axios';
+import { useDispatch,useSelector } from "react-redux";
+import { setToken, logOut } from '../redux/tokenSlice'
+
 
 const UpdateUser = (props) => {
     const navigate = useNavigate();
-    const [userCon, setUserCon] = useState(null);
-    const { setUserFunc }=props
+    // const [userCon, setUserCon] = useState(null);
+    // const { setUserFunc }=props
     // const usernameRef = useRef("");
     // const passwordRef = useRef("");
     const nameRef = useRef("");
     const emailRef = useRef("");
     const phoneRef = useRef("");
+    const {token} = useSelector((state) => state.token);
+    const {user} = useSelector((state) => state.token);
+    const dispatch = useDispatch();
 
 
     useEffect(() => {
-        if (userCon && userCon.name !== props.user.name) {
-            console.log("Setting user:", userCon);
-            setUserFunc(userCon); // עדכון המשתמש בקונטקסט
+        
             navigate('/home'); // ניווט אחרי השינוי
-        }
-    }, [userCon, setUserFunc, navigate]);
+        
+    }, [user]);
     
 
     const updateUser = async () => {
@@ -39,20 +43,24 @@ const UpdateUser = (props) => {
         };
         console.log(updatedUser.name)
         console.log(updatedUser.email)
-        // console.log(user.name)
+        console.log(user.name)
         try {
-            const res = await axios.put('http://localhost:7000/api/user', updatedUser);
+
+            const res = await axios.put('http://localhost:7000/api/user', updatedUser,{
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
             if (res.status === 200) {
                 console.log("Updated user:", res.data);
-                
-               // // props.setUserFunc(updatedUser.name); // עדכון המשתמש גם באפליקציה
-                props.onHide(); // סגירת הדיאלוג
-                setUserCon(updatedUser);
-                // setUserCon(res.data.user)//
-                // navigate('/home'); // מעבר לדף הבית
+                dispatch(setToken({token:token,user:res.data})) 
+                props.onHide();
+                navigate('/home'); // מעבר לדף הבית
+                alert("Your user information has been updated.")
+
             }
             
         } catch (e) {
+            if(e.status===401)
+                alert("This email address is in use")
             console.error("Error updating user:", e);
         }
         

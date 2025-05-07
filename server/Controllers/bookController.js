@@ -38,40 +38,47 @@ const createNewBook = async (req, res) => {
         return res.status(400).send("name is required")
     }
     if (!image) {
-        return res.status(400).send("image is required")
+    console.log("🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️"+gradesArr);
+
+        return res.status(402).send("image is required")
     }
-    const existBook = await Book.findOne({ name: name }).populate("grades");
-    if (existBook) {
-        return res.status(400).send("invalid name")
-    }
+    // const existBook = await Book.findOne({ name: name }).populate("grades");
+    // if (existBook) {
+
+
+    //     return res.status(400).send("invalid name")
+    // }
 
     //const resGrade = gradesArr.map((ele) => Grade.find({ name: ele }))
+    console.log("👌👌👌👌👌👌👌👌👌👌👌👌👌"+gradesArr);
     
-
-    if (typeof gradesArr === "string") {
+    const gradeDocs=[]
+    if (typeof gradesArr === "string"&&gradesArr!="[]") {
         try {
             gradesArr = JSON.parse(gradesArr);
+if (!Array.isArray(gradesArr)) {
+        return res.status(400).send("grades must be an array");
+    }
+             gradeDocs = await Promise.all(
+                gradesArr.map(grade => Grade.findOne({ name: grade }))
+        
+            );
         } catch (error) {
             console.error("Failed to parse gradesArr:", error);
             return res.status(400).send("Invalid grades format");
         }
     }
 
-    if (!Array.isArray(gradesArr)) {
-        return res.status(400).send("grades must be an array");
-    }
-    const gradeDocs = await Promise.all(
-        gradesArr.map(grade => Grade.findOne({ name: grade }))
-
-    );
+    
+   
     console.log("gradeDocs", gradeDocs)
     // סינון רק כיתות שנמצאו בפועל
     const validGrades = gradeDocs.filter(doc => doc);
     const gradeIds = validGrades.map(doc => doc._id);
 
-    if (validGrades.length === 0) {
-        return res.status(400).send("No valid grades found for the book");
-    }
+    // if (validGrades.length === 0) {
+    //     return res.status(400).send("No valid grades found for the book");
+    // }
 
     console.log("222")
 

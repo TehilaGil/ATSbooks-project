@@ -43,15 +43,17 @@ const Grade = (props) => {
                 }
             }
         } catch (e) {
-            console.error(e)
             if(e.status===409)
-                alert("Duplicate grade name");
-            props.toast?.current.show({
-                severity: 'error',
-                summary: 'Error updating',
-                detail: e.response?.data?.message || e.message,
-                life: 4000
-            });
+                {
+                
+                    if (toast?.current) {
+                        toast.current.show({ severity: 'error', summary: 'This grade alredy exits', life: 4000 });
+                }}
+                if(e.status===400)
+                    if (toast?.current) {
+                        toast.current.show({ severity: 'error', summary: 'Grade name is required', life: 4000 });
+                }
+                            console.error(e)
         }
     }
 
