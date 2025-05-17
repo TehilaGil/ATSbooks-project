@@ -115,13 +115,11 @@ const updateFile = async (req, res) => {
       return res.status(400).send({ message: "לא נבחר קובץ חדש לעדכון" });
     }
 
-    // מחיקת הקובץ הישן מהדיסק
     const oldFilePath = path.join(__dirname, "..", existingFile.path);
     if (fs.existsSync(oldFilePath)) {
       fs.unlinkSync(oldFilePath);
     }
 
-    // עדכון במסד הנתונים עם המידע החדש
     existingFile.name = req.file.originalname;
     existingFile.path = req.file.path;
     existingFile.size = Number((req.file.size / 1024).toFixed(2));

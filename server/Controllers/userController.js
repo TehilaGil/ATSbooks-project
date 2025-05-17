@@ -278,8 +278,6 @@ const deleteUser = async (req, res) => {
 }
 
 
-
-// Store the verification codes in memory (for simplicity; use a database in production).
 const verificationCodes = {};
 
 const sendVerificationCode = async (req, res) => {
@@ -290,20 +288,16 @@ const sendVerificationCode = async (req, res) => {
     }
 
     try {
-        // Find the user by email
         const user = await User.findOne({ email }).exec();
 
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }
 
-        // Generate a random verification code
         const verificationCode = crypto.randomInt(100000, 999999);
 
-        // Store the code along with the user's email
         verificationCodes[email] = verificationCode;
 
-        // Send the verification code via email
         const emailHtml = `
             <p>Your password reset verification code is: <strong>${verificationCode}</strong></p>
             <p>If you did not request this, please ignore this email.</p>
@@ -315,7 +309,6 @@ const sendVerificationCode = async (req, res) => {
 
         res.status(200).json({ message: 'Verification code sent to email.' });
     } catch (err) {
-        console.log("😉🤞🌹💋🐱‍🐉🐱‍👓🐱‍🚀✔✔🤳🤳🎉🎉😎👍👍🎶😎😎");
 
         res.status(500).json({ message: 'Error sending verification code.', error: err.message });
     }
@@ -329,12 +322,11 @@ const resetPasswordWithCode = async (req, res) => {
     }
 
     try {
-        // Validate the verification code
+       
         if (verificationCodes[email] !== parseInt(verificationCode)) {
             return res.status(400).json({ message: 'Invalid verification code.' });
         }
 
-        // Find the user by email
         const user = await User.findOne({ email }).exec();
 
         if (!user) {
@@ -342,16 +334,14 @@ const resetPasswordWithCode = async (req, res) => {
         }
         console.log(newPassword);
 
-        // Hash the new password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // Update the user's password
         user.password = hashedPassword;
 
-        // Save the updated user
+        
         await user.save();
 
-        // Remove the verification code (it's no longer needed)
+        
         delete verificationCodes[email];
 
         res.status(200).json({ message: 'Password reset successfully.' });
